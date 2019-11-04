@@ -1,0 +1,17 @@
+softmax_tb.v
+softmax.v
+mode1_max.v
+mode2_sub.v
+mode3_exp.v
+mode4_adderTree.v
+mode5_ln.v
+mode6_sub.v
+mode7_exp.v
+../lib/16bits/DW_fp_exp.v
+../lib/16bits/DW_exp2.v
+../lib/16bits/DW_fp_ln.v
+../lib/16bits/DW_ln.v
+../lib/16bits/DW_fp_add.v
+../lib/16bits/DW_fp_cmp.v
+../lib/16bits/DW_fp_sub.v
+../lib/16bits/DW_fp_addsub.v
