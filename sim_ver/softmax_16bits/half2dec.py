@@ -1,5 +1,7 @@
 import numpy as np
 import struct
-a=struct.pack("H",int("0101011101010000",2))
+a=struct.pack("H",int("393a",16))
 np.frombuffer(a, dtype =np.float16)[0]
-print(a)
+
+hex(np.float16(2.125).view('H'))[2:].zfill(4)
+

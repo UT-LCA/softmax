@@ -49,12 +49,12 @@ module softmax(
   wire [`DATAWIDTH-1:0] max_outp_temp;
   reg  [`DATAWIDTH-1:0] max_outp;
  
-  mode1_max max0(.inp0(inp[`DATAWIDTH-1:0]),
-                 .inp1(inp[`DATAWIDTH*2-1:`DATAWIDTH]),
-                 .inp2(inp[`DATAWIDTH*3-1:`DATAWIDTH*2]),
-                 .inp3(inp[`DATAWIDTH*4-1:`DATAWIDTH*3]),
-                 .ex_inp(`DATAWIDTH'd0),
-                 .outp(max_outp_temp)); 
+  mode1_max mode1_max(.inp0(inp[`DATAWIDTH-1:0]),
+                      .inp1(inp[`DATAWIDTH*2-1:`DATAWIDTH]),
+                      .inp2(inp[`DATAWIDTH*3-1:`DATAWIDTH*2]),
+                      .inp3(inp[`DATAWIDTH*4-1:`DATAWIDTH*3]),
+                      .ex_inp(`DATAWIDTH'd0),
+                      .outp(max_outp_temp)); 
   
   always @(posedge clk)
   begin
@@ -71,15 +71,15 @@ module softmax(
   wire [`DATAWIDTH-1:0] outp_sub2_temp;
   wire [`DATAWIDTH-1:0] outp_sub3_temp;
     
-  mode2_sub sub0(.a_inp0(sub0_inp[`DATAWIDTH-1:0]),
-                 .a_inp1(sub0_inp[`DATAWIDTH*2-1:`DATAWIDTH]),
-                 .a_inp2(sub0_inp[`DATAWIDTH*3-1:`DATAWIDTH*2]),
-                 .a_inp3(sub0_inp[`DATAWIDTH*4-1:`DATAWIDTH*3]),
-                 .b_inp(max_outp),
-                 .outp0(outp_sub0_temp),
-                 .outp1(outp_sub1_temp),
-                 .outp2(outp_sub2_temp),
-                 .outp3(outp_sub3_temp));
+  mode2_sub mode2_sub(.a_inp0(sub0_inp[`DATAWIDTH-1:0]),
+                      .a_inp1(sub0_inp[`DATAWIDTH*2-1:`DATAWIDTH]),
+                      .a_inp2(sub0_inp[`DATAWIDTH*3-1:`DATAWIDTH*2]),
+                      .a_inp3(sub0_inp[`DATAWIDTH*4-1:`DATAWIDTH*3]),
+                      .b_inp(max_outp),
+                      .outp0(outp_sub0_temp),
+                      .outp1(outp_sub1_temp),
+                      .outp2(outp_sub2_temp),
+                      .outp3(outp_sub3_temp));
  
   reg [`DATAWIDTH-1:0] outp_sub0;
   reg [`DATAWIDTH-1:0] outp_sub1;
@@ -107,14 +107,14 @@ module softmax(
   wire [`DATAWIDTH-1:0] outp_exp2_temp;
   wire [`DATAWIDTH-1:0] outp_exp3_temp;
   
-  mode3_exp exp0(.inp0(outp_sub0),
-                 .inp1(outp_sub1),
-                 .inp2(outp_sub2),
-                 .inp3(outp_sub3),
-                 .outp0(outp_exp0_temp),
-                 .outp1(outp_exp1_temp),
-                 .outp2(outp_exp2_temp),
-                 .outp3(outp_exp3_temp));
+  mode3_exp mode3_exp(.inp0(outp_sub0),
+                      .inp1(outp_sub1),
+                      .inp2(outp_sub2),
+                      .inp3(outp_sub3),
+                      .outp0(outp_exp0_temp),
+                      .outp1(outp_exp1_temp),
+                      .outp2(outp_exp2_temp),
+                      .outp3(outp_exp3_temp));
   
   reg [`DATAWIDTH-1:0] outp_exp0;
   reg [`DATAWIDTH-1:0] outp_exp1;
@@ -139,12 +139,12 @@ module softmax(
   //////------mode4 adder tree---------///////
   wire [`DATAWIDTH-1:0] outp_add_temp;
   reg  [`DATAWIDTH-1:0] outp_add;
-  mode4_adderTree adder_tree0(.inp0(outp_exp0), 
-                              .inp1(outp_exp1),
-                              .inp2(outp_exp2),
-                              .inp3(outp_exp3),
-                              .outp(outp_add_temp),
-                              .ex_inp(`DATAWIDTH'd0));
+  mode4_adderTree mode4_adderTree(.inp0(outp_exp0), 
+                                  .inp1(outp_exp1),
+                                  .inp2(outp_exp2),
+                                  .inp3(outp_exp3),
+                                  .outp(outp_add_temp),
+                                  .ex_inp(`DATAWIDTH'd0));
   
   always @(posedge clk)
   begin
@@ -158,7 +158,7 @@ module softmax(
   //////------mode5 log---------///////
   wire [`DATAWIDTH-1:0] outp_log_temp;
   reg  [`DATAWIDTH-1:0] outp_log;
-  mode5_ln ln0(.inp(outp_add), .outp(outp_log_temp));
+  mode5_ln mode5_ln(.inp(outp_add), .outp(outp_log_temp));
   
   always @(posedge clk)
   begin
@@ -181,14 +181,14 @@ module softmax(
   reg  [`DATAWIDTH-1:0] outp_presub3;
  
   mode6_sub pre_sub(.a_inp0(sub1_inp[`DATAWIDTH-1:0]),
-                 .a_inp1(sub1_inp[`DATAWIDTH*2-1:`DATAWIDTH]),
-                 .a_inp2(sub1_inp[`DATAWIDTH*3-1:`DATAWIDTH*2]),
-                 .a_inp3(sub1_inp[`DATAWIDTH*4-1:`DATAWIDTH*3]),
-                 .b_inp(max_outp),
-                 .outp0(outp_sub0_temp1),
-                 .outp1(outp_sub1_temp1),
-                 .outp2(outp_sub2_temp1),
-                 .outp3(outp_sub3_temp1));
+                    .a_inp1(sub1_inp[`DATAWIDTH*2-1:`DATAWIDTH]),
+                    .a_inp2(sub1_inp[`DATAWIDTH*3-1:`DATAWIDTH*2]),
+                    .a_inp3(sub1_inp[`DATAWIDTH*4-1:`DATAWIDTH*3]),
+                    .b_inp(max_outp),
+                    .outp0(outp_sub0_temp1),
+                    .outp1(outp_sub1_temp1),
+                    .outp2(outp_sub2_temp1),
+                    .outp3(outp_sub3_temp1));
 
   always @(posedge clk)
   begin
@@ -218,15 +218,15 @@ module softmax(
   reg [`DATAWIDTH-1:0] outp_logsub3;
 
   
-  mode6_sub sub2(.a_inp0(outp_presub0),
-                 .a_inp1(outp_presub1),
-                 .a_inp2(outp_presub2),
-                 .a_inp3(outp_presub3),
-                 .b_inp(outp_log),
-                 .outp0(outp_logsub0_temp),
-                 .outp1(outp_logsub1_temp),
-                 .outp2(outp_logsub2_temp),
-                 .outp3(outp_logsub3_temp));
+  mode6_sub mode6_sub(.a_inp0(outp_presub0),
+                      .a_inp1(outp_presub1),
+                      .a_inp2(outp_presub2),
+                      .a_inp3(outp_presub3),
+                      .b_inp(outp_log),
+                      .outp0(outp_logsub0_temp),
+                      .outp1(outp_logsub1_temp),
+                      .outp2(outp_logsub2_temp),
+                      .outp3(outp_logsub3_temp));
 
   always @(posedge clk)
   begin
@@ -248,14 +248,14 @@ module softmax(
   wire [`DATAWIDTH-1:0] outp_temp1;
   wire [`DATAWIDTH-1:0] outp_temp2;
   wire [`DATAWIDTH-1:0] outp_Temp3;*/    
-  mode7_exp exp1(.inp0(outp_logsub0),
-                 .inp1(outp_logsub1),
-                 .inp2(outp_logsub2),
-                 .inp3(outp_logsub3),
-                 .outp0(outp0),
-                 .outp1(outp1),
-                 .outp2(outp2),
-                 .outp3(outp3));
+  mode7_exp mode7_exp(.inp0(outp_logsub0),
+                      .inp1(outp_logsub1),
+                      .inp2(outp_logsub2),
+                      .inp3(outp_logsub3),
+                      .outp0(outp0),
+                      .outp1(outp1),
+                      .outp2(outp2),
+                      .outp3(outp3));
   
 
 endmodule
