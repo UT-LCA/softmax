@@ -2,6 +2,35 @@
 `define NUM 4
 `define ADDRSIZE 8
 
+//`include "DW_ram_rw_s_dff.v"
+
+//RAM model
+module ram (addr0, d0, we0, q0,  clk);
+
+  parameter DWIDTH = 16;
+  parameter AWIDTH = 10;
+  parameter MEM_SIZE = 1024;
+  
+  input [AWIDTH-1:0] addr0;
+  input [DWIDTH-1:0] d0;
+  input we0;
+  output [DWIDTH-1:0] q0;
+  input clk;
+  
+  //reg [DWIDTH-1:0] q0;
+  reg [DWIDTH-1:0] ram[MEM_SIZE-1:0];
+  
+  always @(posedge clk)  
+  begin 
+          if (we0) 
+          begin 
+              ram[addr0] <= d0; 
+  	end
+  end
+  assign #0.5 q0 = ram[addr0];
+
+endmodule
+
 module softmax_test;
 
   /* Make a reset that pulses once. */
@@ -20,10 +49,11 @@ module softmax_test;
   wire [`ADDRSIZE-1 :0] sub0_inp_addr;
   wire [`ADDRSIZE-1 :0] sub1_inp_addr;
 
-  reg [`DATAWIDTH*`NUM-1:0] memory1 [`ADDRSIZE+1:0];
-  reg [`DATAWIDTH*`NUM-1:0] memory2 [`ADDRSIZE+1:0];
-  reg [`DATAWIDTH*`NUM-1:0] memory3 [`ADDRSIZE+1:0];
+  //reg [`DATAWIDTH*`NUM-1:0] memory1 [`ADDRSIZE+1:0];
+  //reg [`DATAWIDTH*`NUM-1:0] memory2 [`ADDRSIZE+1:0];
+  //reg [`DATAWIDTH*`NUM-1:0] memory3 [`ADDRSIZE+1:0];
    
+  /* top level module */
   softmax softmax(
     .inp(inp),
     .sub0_inp(sub0_inp),
@@ -41,18 +71,45 @@ module softmax_test;
     .clk(clk),
     .reset(reset),
     .start_max(start_max)
-);
+  );
+
+  /* on-chip memory */
+  parameter data_width = `DATAWIDTH*`NUM; //each element of the memory stores these many bits
+  parameter depth = (1<<`ADDRSIZE)+1; //number of elements that can be stored in the memory. 
+  parameter rst_mode = 0; 
+  ram#(data_width, `ADDRSIZE, depth) memory1 (
+    .clk(clk),
+    .we0(1'b0),   
+    .addr0(addr),  
+    .d0({`DATAWIDTH*`NUM{1'b0}}),
+    .q0(inp) 
+  );
+
+  ram#(data_width, `ADDRSIZE, depth) memory2 (
+    .clk(clk),
+    .we0(1'b0),   
+    .addr0(sub0_inp_addr),  
+    .d0({`DATAWIDTH*`NUM{1'b0}}),
+    .q0(sub0_inp) 
+  );
+
+  ram#(data_width, `ADDRSIZE, depth) memory3 (
+    .clk(clk),
+    .we0(1'b0),   
+    .addr0(sub1_inp_addr),  
+    .d0({`DATAWIDTH*`NUM{1'b0}}),
+    .q0(sub1_inp) 
+  );
 
   always #2 clk = !clk;
-  always #0.5 inp = memory1[addr];
-  always #0.5 sub0_inp = memory2[sub0_inp_addr];
-  always #0.5 sub1_inp = memory3[sub1_inp_addr];
+  //always #0.5 inp = memory1[addr];
+  //always #0.5 sub0_inp = memory2[sub0_inp_addr];
+  //always #0.5 sub1_inp = memory3[sub1_inp_addr];
+
   initial begin
-     $dumpfile("softmax_test.vcd");
-     $dumpvars(0,softmax_test);
-     $readmemh("mem1.txt", memory1);
-     $readmemh("mem1.txt", memory2);
-     $readmemh("mem1.txt", memory3);
+     $readmemh("mem1.txt", memory1.ram);
+     $readmemh("mem1.txt", memory2.ram);
+     $readmemh("mem1.txt", memory3.ram);
      clk = 0;
      reset = 1;
      start_max = 0;
@@ -80,5 +137,14 @@ module softmax_test;
      #1600 $finish;  
   end
 
+  initial begin
+     `ifndef VCS
+     $dumpfile("softmax_test.vcd");
+     $dumpvars(0,softmax_test);
+     `else
+     $vcdpluson;
+     $vcdplusmemon;
+     `endif
+  end
 
 endmodule // test
