@@ -14,7 +14,7 @@ module mode5_ln(
   //
   //The fourth parameter is "extra_prec" for internal extra precision.
   //Setting is to 0. It doesn't matter because we'll not use DW IP for LN.
-  DW_fp_ln #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE, 0, 0) ln(.a(inp), .z(outp));
+  DW_fp_ln #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE, 0, 0) ln(.a(inp), .z(outp), .status());
 
 endmodule
 
