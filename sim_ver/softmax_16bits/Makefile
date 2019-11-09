@@ -24,3 +24,6 @@ run:
 
 waves:
 	${VCS_HOME}/bin/dve -full64 -vpd vcdplus.vpd
+
+clean:
+	\rm -rf csrc simv.daidir/ simv *.vpd ucli.key DVEfiles/
