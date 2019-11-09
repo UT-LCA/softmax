@@ -1,6 +1,6 @@
 `define DATAWIDTH 16
 `define NUM 4
-`define ADDRSIZE 8
+`define ADDRSIZE 16
 
 //`include "DW_ram_rw_s_dff.v"
 
@@ -27,18 +27,19 @@ module ram (addr0, d0, we0, q0,  clk);
               ram[addr0] <= d0; 
   	end
   end
-  assign #0.5 q0 = ram[addr0];
-
+  //assign #0.5 q0 = ram[addr0];
+  assign q0 = ram[addr0];
 endmodule
 
 module softmax_test;
 
   /* Make a reset that pulses once. */
-  reg reset, clk, start_max;
-  reg  [`DATAWIDTH*`NUM-1:0] inp;
-  reg  [`DATAWIDTH*`NUM-1:0] sub0_inp;
-  reg  [`DATAWIDTH*`NUM-1:0] sub1_inp;
-  reg  [`ADDRSIZE-1      :0] addr_limit;
+  reg reset, clk, start;
+  wire done;
+  wire  [`DATAWIDTH*`NUM-1:0] inp;
+  wire  [`DATAWIDTH*`NUM-1:0] sub0_inp;
+  wire  [`DATAWIDTH*`NUM-1:0] sub1_inp;
+  reg   [`ADDRSIZE-1      :0] addr_limit;
 
   wire [`DATAWIDTH-1:0] outp0;
   wire [`DATAWIDTH-1:0] outp1;
@@ -70,7 +71,8 @@ module softmax_test;
    
     .clk(clk),
     .reset(reset),
-    .start_max(start_max)
+    .done(done),
+    .start(start)
   );
 
   /* on-chip memory */
@@ -107,12 +109,12 @@ module softmax_test;
   //always #0.5 sub1_inp = memory3[sub1_inp_addr];
 
   initial begin
-     $readmemh("mem1.txt", memory1.ram);
-     $readmemh("mem1.txt", memory2.ram);
-     $readmemh("mem1.txt", memory3.ram);
+     $readmemh("mem3.txt", memory1.ram);
+     $readmemh("mem3.txt", memory2.ram);
+     $readmemh("mem3.txt", memory3.ram);
      clk = 0;
      reset = 1;
-     start_max = 0;
+     start = 0;
      #3 
         //inp[`DATAWIDTH-1:0]              = 16'h3800; // 0.5
         //inp[`DATAWIDTH*2-1:`DATAWIDTH]   = 16'h4040; // 2.125
@@ -129,11 +131,11 @@ module softmax_test;
 	//sub1_inp[`DATAWIDTH*3-1:`DATAWIDTH*2] = 32'h4210; // 3.03125
         //sub1_inp[`DATAWIDTH*4-1:`DATAWIDTH*3] = 32'h993e; //-0.0025597
        
-        addr_limit = 8'h2;
+        addr_limit = `ADDRSIZE'h4;
      #2 reset = 0;
-        start_max = 1;
+        start = 1;
 
-     #4 start_max = 0;
+     #4 start = 0;
      #1600 $finish;  
   end
 

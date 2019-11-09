@@ -1,29 +1,31 @@
 `timescale 1ns / 1ps
 `define DATAWIDTH 16
 `define NUM 4
-`define ADDRSIZE 8
+`define ADDRSIZE 16
 //fixed adder adds unsigned fixed numbers. Overflow flag is high in case of overflow
 module softmax(
-  inp,
-  sub0_inp,
-  sub1_inp,
-  addr_limit,
+  inp, //data in from memory to max block
+  sub0_inp, //data inputs from memory to first-stage subtractors
+  sub1_inp, //data inputs from memory to second-stage subtractors
+  addr_limit, //max address containing required data: needed to modify later
 
-  addr,
-  sub0_inp_addr,
-  sub1_inp_addr,  
-  outp0,
+  addr, //address corresponding to data inp
+  sub0_inp_addr, //address corresponding to sub0_inp
+  sub1_inp_addr, //address corresponding to sub1_inp
+  outp0,  
   outp1,
   outp2,
   outp3,
 
   clk, 
   reset, 
-  start_max);
+  done,
+  start); //start signal for softmax units
+  //done signal is also needed
   
   input clk;
   input reset;
-  input start_max;
+  input start;
   
   input  [`DATAWIDTH*`NUM-1:0] inp;
   input  [`DATAWIDTH*`NUM-1:0] sub0_inp;
@@ -37,59 +39,16 @@ module softmax(
   output [`DATAWIDTH-1:0] outp1;
   output [`DATAWIDTH-1:0] outp2;
   output [`DATAWIDTH-1:0] outp3;
-  
-  ////-----latch the input value-----//////
+  output done;
+  ////-----control logic for the modes-----//////
   reg [`DATAWIDTH*`NUM-1:0] inp_reg;
   reg [`ADDRSIZE-1:0] addr;
-
-  reg max_status;
-  reg done_max;
-  always @(posedge clk)
-  begin
-    if(reset) begin
-      inp_reg <= 0;
-      addr <= 0;
-      max_status <= 0;
-      done_max <= 0;
-    end else if(max_status == 1 && addr < addr_limit)begin
-      addr <= addr + 1;
-      inp_reg <= inp;
-    end else begin
-      max_status <= 0;
-    end
-
-    if(!reset && start_max) begin
-      max_status <= 1;
-    end
-
-  end
-
-  ////------mode1 max block---------///////
-  wire [`DATAWIDTH-1:0] max_outp_temp;
-  reg  [`DATAWIDTH-1:0] max_outp;
- 
-  mode1_max mode1_max(.inp0(inp_reg[`DATAWIDTH-1:0]),
-                      .inp1(inp_reg[`DATAWIDTH*2-1:`DATAWIDTH]),
-                      .inp2(inp_reg[`DATAWIDTH*3-1:`DATAWIDTH*2]),
-                      .inp3(inp_reg[`DATAWIDTH*4-1:`DATAWIDTH*3]),
-                      .ex_inp(max_outp),
-                      .outp(max_outp_temp)); 
-  
-  always @(posedge clk)
-  begin
-    if(reset)begin
-      max_outp <= 0;
-    end else if(max_status == 1)begin
-      max_outp <= max_outp_temp;
-    end
-  end
-
-
-  ////------done_max triggers the calculation------///// 
   reg [`DATAWIDTH*`NUM-1:0] sub0_inp_reg;
   reg [`DATAWIDTH*`NUM-1:0] sub1_inp_reg;
   reg [`ADDRSIZE-1:0] sub0_inp_addr;
   reg [`ADDRSIZE-1:0] sub1_inp_addr;
+  reg mode1_t;
+  reg mode1_run;
   reg mode2_t;
   reg mode2_run;
   reg mode3_run;
@@ -99,10 +58,15 @@ module softmax(
   reg presub_t;
   reg mode6_run;
   reg mode7_run;
-  
+  reg done;
+
   always @(posedge clk)
   begin
     if(reset) begin
+      inp_reg <= 0;
+      addr <= 0;
+      mode1_t <= 0;
+      mode1_run <= 0;
       sub0_inp_addr <= 0;
       sub1_inp_addr <= 0;
       sub0_inp_reg <= 0;
@@ -116,7 +80,20 @@ module softmax(
       mode7_run <= 0;
       presub_run <= 0;
       presub_t  <= 0;
-    end else if(mode2_t && sub0_inp_addr < addr_limit)begin
+      done <= 0;
+    end
+
+    if(!reset && mode1_t && addr < addr_limit) begin
+      addr <= addr + 1;
+      inp_reg <= inp;
+      mode1_run <= 1;
+    end else begin
+      mode1_t <= 0;
+      mode1_run <= 0;
+    end
+    
+
+    if(!reset && mode2_t && sub0_inp_addr < addr_limit)begin
       sub0_inp_addr <= sub0_inp_addr + 1;
       sub0_inp_reg <= sub0_inp;
       mode2_run <= 1;        
@@ -162,6 +139,19 @@ module softmax(
     end else begin
       mode7_run <= 0;
     end
+   
+    if(mode7_run == 1)begin
+      done <= 1;
+    end else begin
+      done <= 0;
+    end
+  end
+  ////----trigger the max logic------//////
+  always @(posedge start)
+  begin
+    if(reset == 0) begin
+      mode1_t = 1;
+    end
   end
 
   ////----trigger the latch address of presub----////
@@ -173,24 +163,40 @@ module softmax(
   end
    
   ////----trigger mode5 log----////
-  always @(mode4_run)
+  always @(negedge mode4_run)
   begin
-    if(reset == 0 && mode4_run == 0)begin
+    if(reset == 0)begin
       mode5_run = 1;
     end
-    
-//    if(reset == 0 && mode4_run == 1)begin
-//      presub_t = 1;
-//    end
   end
   
-  always @(max_status)
+  always @(negedge mode1_run)
   begin
-    if(reset == 0 && max_status == 1'b0)begin
-      done_max = 1;
+    if(reset == 0)begin
       mode2_t = 1;
     end
   end
+
+  ////------mode1 max block---------///////
+  wire [`DATAWIDTH-1:0] max_outp_temp;
+  reg  [`DATAWIDTH-1:0] max_outp;
+ 
+  mode1_max mode1_max(.inp0(inp_reg[`DATAWIDTH-1:0]),
+                      .inp1(inp_reg[`DATAWIDTH*2-1:`DATAWIDTH]),
+                      .inp2(inp_reg[`DATAWIDTH*3-1:`DATAWIDTH*2]),
+                      .inp3(inp_reg[`DATAWIDTH*4-1:`DATAWIDTH*3]),
+                      .ex_inp(max_outp),
+                      .outp(max_outp_temp)); 
+  
+  always @(posedge clk)
+  begin
+    if(reset)begin
+      max_outp <= 0;
+    end else if(mode1_run == 1)begin
+      max_outp <= max_outp_temp;
+    end
+  end
+
   
   ////------mode2 subtraction---------///////
   wire [`DATAWIDTH-1:0] outp_sub0_temp;
