@@ -1,3 +1,4 @@
+defines.v
 softmax_tb.v
 softmax.v
 mode1_max.v

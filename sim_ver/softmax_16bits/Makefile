@@ -6,6 +6,7 @@ compile:
 	-full64 \
 	-debug_access+all \
 	../lib/16bits/*.v \
+	defines.v \
 	mode1_max.v \
 	mode2_sub.v \
 	mode3_exp.v \

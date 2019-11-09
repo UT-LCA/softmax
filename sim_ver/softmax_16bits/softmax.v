@@ -1,7 +1,6 @@
 `timescale 1ns / 1ps
-`define DATAWIDTH 16
-`define NUM 4
-`define ADDRSIZE 16
+`include "defines.v"
+
 //fixed adder adds unsigned fixed numbers. Overflow flag is high in case of overflow
 module softmax(
   inp, //data in from memory to max block

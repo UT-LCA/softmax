@@ -1,6 +1,4 @@
-`define DATAWIDTH 16
-`define NUM 4
-`define ADDRSIZE 16
+`include "defines.v"
 
 //`include "DW_ram_rw_s_dff.v"
 
