@@ -33,7 +33,7 @@ endmodule
 module softmax_test;
 
   /* Make a reset that pulses once. */
-  reg reset, clk, start;
+  reg reset, clk, start, init;
   wire done;
   wire  [`DATAWIDTH*`NUM-1:0] inp;
   wire  [`DATAWIDTH*`NUM-1:0] sub0_inp;
@@ -72,6 +72,7 @@ module softmax_test;
    
     .clk(clk),
     .reset(reset),
+    .init(init),
     .done(done),
     .start(start)
   );
@@ -115,6 +116,7 @@ module softmax_test;
      $readmemh("mem3.txt", memory3.ram);
      clk = 0;
      reset = 1;
+     init = 1;
      start = 0;
      #5 
         //inp[`DATAWIDTH-1:0]              = 16'h3800; // 0.5
@@ -135,6 +137,7 @@ module softmax_test;
         start_addr = `ADDRSIZE'h3;
         end_addr = `ADDRSIZE'h7;
      #2 reset = 0;
+        init  = 0;
      #2 start = 1;
      #4 start = 0;
      #1600 $finish;  

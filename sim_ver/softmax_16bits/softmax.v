@@ -20,12 +20,14 @@ module softmax(
 
   clk, 
   reset, 
+  init,   //the signal indicating to latch the new start address
   done,   //done signal asserts when the softmax calculation is over
   start); //start signal for the overall softmax operation
   
   input clk;
   input reset;
   input start;
+  input init;
   
   input  [`DATAWIDTH*`NUM-1:0] inp;
   input  [`DATAWIDTH*`NUM-1:0] sub0_inp;
@@ -48,135 +50,150 @@ module softmax(
   reg [`DATAWIDTH*`NUM-1:0] sub1_inp_reg;
   reg [`ADDRSIZE-1:0] sub0_inp_addr;
   reg [`ADDRSIZE-1:0] sub1_inp_addr;
-  reg mode1_t;
+  reg mode3_run_a;
+  reg mode2_run_a;
+  reg mode1_start;
+  reg mode2_start;
+  reg presub_start;
   reg mode1_run;
-  reg mode2_t;
   reg mode2_run;
   reg mode3_run;
   reg mode4_run;
   reg mode5_run;
-  reg presub_run;
-  reg presub_t;
   reg mode6_run;
   reg mode7_run;
+  reg presub_run;
   reg done;
+
+  always @(posedge clk)begin
+    mode3_run_a <= mode3_run;
+    mode2_run_a <= mode2_run;
+  end
 
   always @(posedge clk)
   begin
     if(reset) begin
       inp_reg <= 0;
-      addr <= start_addr;
-      mode1_t <= 0;
-      mode1_run <= 0;
+      addr <= 0;
       sub0_inp_addr <= 0;
       sub1_inp_addr <= 0;
       sub0_inp_reg <= 0;
       sub1_inp_reg <= 0;
-      mode2_t <= 0;
-      mode2_run <= 0;  
+      mode1_start <= 0;
+      mode2_start <= 0;
+      presub_start <= 0;
+      mode1_run <= 0;
+      mode2_run <= 0;
       mode3_run <= 0;
       mode4_run <= 0;
       mode5_run <= 0;
       mode6_run <= 0;
       mode7_run <= 0;
       presub_run <= 0;
-      presub_t  <= 0;
       done <= 0;
     end
+    
+    //init latch the input address
+    if(init) begin
+      addr <= start_addr;
+    end
 
-    if(!reset && mode1_t && addr < end_addr) begin
+    //start the mode1 max calculation
+    if(start)begin
+      mode1_start <= 1;
+    end    
+
+    //logic when to finish mode1 and trigger mode2 to latch the mode2 address
+    if(~reset && mode1_start && addr < end_addr) begin
       addr <= addr + 1;
       inp_reg <= inp;
       mode1_run <= 1;
+      if(addr == end_addr - 1)begin
+        mode2_start <= 1;
+        sub0_inp_addr <= start_addr;
+      end
+    end else if(addr == end_addr)begin
+      addr <= 0;
+      mode1_run <= 0;
+      mode1_start <= 0;
     end else begin
-      mode1_t <= 0;
       mode1_run <= 0;
     end
-    
 
-    if(!reset && mode2_t && sub0_inp_addr < end_addr)begin
+    //logic when to finish mode2
+    if(~reset && mode2_start && sub0_inp_addr < end_addr)begin
       sub0_inp_addr <= sub0_inp_addr + 1;
       sub0_inp_reg <= sub0_inp;
-      mode2_run <= 1;        
-    end else begin
+      mode2_run <= 1;
+    end else if(sub0_inp_addr == end_addr)begin
+      sub0_inp_addr <= 0;
+      sub0_inp_reg <= 0;
       mode2_run <= 0;
-      mode2_t <= 0;
-    end
-
-    if(!reset && presub_t && sub1_inp_addr < end_addr)begin
-      sub1_inp_addr <= sub1_inp_addr + 1;
-      sub1_inp_reg <= sub1_inp;
-      presub_run <= 1;
-    end else begin
-      presub_t <= 0;
-      presub_run <= 0;
+      mode2_start <= 0;
     end
     
+    //logic when to trigger mode3
     if(mode2_run == 1)begin
       mode3_run <= 1;
     end else begin
       mode3_run <= 0;
     end
     
-    ////----trigger mdoe 4 adderTree----////
+    //logic when to trigger mode4 adderTree, since the final results of adderTree
+    //is always ready 1 cycle after mode3 finishes, so there is no need on extra
+    //logic to control the adderTree outputs
     if(mode3_run == 1)begin
       mode4_run <= 1;
     end else begin
       mode4_run <= 0;
     end
-
-    if(mode4_run == 0)begin
+    
+    //detects the falling edge of mode3, trigger mode5 when it is detected
+    if(mode3_run_a & ~mode3_run) begin
+      mode5_run <= 1;
+    end else if(mode4_run == 0) begin
       mode5_run <= 0;
     end
 
-    if(presub_run == 1)begin
+    //detects the falling edge of mode2, trigger presub to latch data address
+    if(mode2_run_a & ~mode2_run)begin
+      presub_start <= 1;
+      sub1_inp_addr <= start_addr;
+      sub1_inp_reg <= sub1_inp;
+    end
+
+    if(~reset && presub_start && sub1_inp_addr < end_addr)begin
+      sub1_inp_addr <= sub1_inp_addr + 1;
+      sub1_inp_reg <= sub1_inp;
+      presub_run <= 1;
+    end else if(sub1_inp_addr == end_addr) begin
+      presub_run <= 0;
+      presub_start <= 0;
+      sub1_inp_addr <= 0;
+      sub1_inp_reg <= 0;
+    end
+
+    if(presub_run) begin
       mode6_run <= 1;
     end else begin
       mode6_run <= 0;
     end
 
-    if(mode6_run == 1)begin
+    if(mode6_run) begin
       mode7_run <= 1;
     end else begin
       mode7_run <= 0;
     end
-   
-    if(mode7_run == 1)begin
+    
+    if(mode7_run) begin
       done <= 1;
     end else begin
       done <= 0;
     end
-  end
-  ////----trigger the max logic------//////
-  always @(posedge start)
-  begin
-    if(reset == 0) begin
-      mode1_t = 1;
-    end
-  end
-
-  ////----trigger the latch address of presub----////
-  always @(negedge mode3_run)
-  begin 
-    if(reset == 0) begin
-      presub_t = 1;
-    end
-  end
-   
-  ////----trigger mode5 log----////
-  always @(negedge mode4_run)
-  begin
-    if(reset == 0)begin
-      mode5_run = 1;
-    end
+    
   end
   
-  always @(negedge mode1_run)
-  begin
-    if(reset == 0)begin
-      mode2_t = 1;
-    end
-  end
+  
 
   ////------mode1 max block---------///////
   wire [`DATAWIDTH-1:0] max_outp_temp;
