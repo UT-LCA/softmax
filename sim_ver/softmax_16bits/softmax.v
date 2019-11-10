@@ -3,12 +3,14 @@
 
 //fixed adder adds unsigned fixed numbers. Overflow flag is high in case of overflow
 module softmax(
-  inp, //data in from memory to max block
+  inp,      //data in from memory to max block
   sub0_inp, //data inputs from memory to first-stage subtractors
   sub1_inp, //data inputs from memory to second-stage subtractors
-  addr_limit, //max address containing required data: needed to modify later
 
-  addr, //address corresponding to data inp
+  start_addr,   //the first address that contains input data in the on-chip memory
+  end_addr,     //max address containing required data
+
+  addr,          //address corresponding to data inp
   sub0_inp_addr, //address corresponding to sub0_inp
   sub1_inp_addr, //address corresponding to sub1_inp
   outp0,  
@@ -18,9 +20,8 @@ module softmax(
 
   clk, 
   reset, 
-  done,
-  start); //start signal for softmax units
-  //done signal is also needed
+  done,   //done signal asserts when the softmax calculation is over
+  start); //start signal for the overall softmax operation
   
   input clk;
   input reset;
@@ -29,7 +30,8 @@ module softmax(
   input  [`DATAWIDTH*`NUM-1:0] inp;
   input  [`DATAWIDTH*`NUM-1:0] sub0_inp;
   input  [`DATAWIDTH*`NUM-1:0] sub1_inp;
-  input  [`ADDRSIZE-1:0]       addr_limit;  
+  input  [`ADDRSIZE-1:0]       end_addr;  
+  input  [`ADDRSIZE-1:0]       start_addr;  
 
   output [`ADDRSIZE-1 :0] addr;
   output [`ADDRSIZE-1 :0] sub0_inp_addr;
@@ -59,11 +61,70 @@ module softmax(
   reg mode7_run;
   reg done;
 
+
+  localparam RESET_STATE = 4'b0000;
+  localparam MODE1_STATE = 4'b0001;
+  localparam MODE2_STATE = 4'b0010;
+  localparam MODE3_STATE = 4'b0011;
+  localparam MODE4_STATE = 4'b0100;
+  localparam MODE5_STATE = 4'b0101;
+  localparam MODE6_STATE = 4'b0110;
+  localparam MODE7_STATE = 4'b0111;
+
+  reg [3:0] curState;
+  reg [3:0] nextState;
+
+  always @(posedge clk) begin
+    if (reset) begin 
+      curState <= RESET_STATE;
+    end
+    else begin
+      curState <= nextState;
+    end
+  end
+
+  always @(*) begin
+    case (curState)
+      RESET_STATE: begin
+                   inp_reg <= 0;
+                   addr <= start_addr;
+                   mode1_t <= 0;
+                   mode1_run <= 0;
+                   sub0_inp_addr <= 0;
+                   sub1_inp_addr <= 0;
+                   sub0_inp_reg <= 0;
+                   sub1_inp_reg <= 0;
+                   mode2_t <= 0;
+                   mode2_run <= 0;  
+                   mode3_run <= 0;
+                   mode4_run <= 0;
+                   mode5_run <= 0;
+                   mode6_run <= 0;
+                   mode7_run <= 0;
+                   presub_run <= 0;
+                   presub_t  <= 0;
+                   done <= 0;
+                   if (start == 1'b1) begin
+                     nextState <= MODE1_STATE;
+                   end
+                   end
+
+      MODE1_STATE: begin
+                   mode1_run <= 1'b1;
+                   addr <= addr + 1;
+                   inp_reg <= inp;
+                   if (addr >= end_addr) begin
+                     nextState <= MODEL2_STATE;
+                   end
+      
+      
+  end
+
   always @(posedge clk)
   begin
     if(reset) begin
       inp_reg <= 0;
-      addr <= 0;
+      addr <= start_addr;
       mode1_t <= 0;
       mode1_run <= 0;
       sub0_inp_addr <= 0;
@@ -82,7 +143,7 @@ module softmax(
       done <= 0;
     end
 
-    if(!reset && mode1_t && addr < addr_limit) begin
+    if(!reset && mode1_t && addr < end_addr) begin
       addr <= addr + 1;
       inp_reg <= inp;
       mode1_run <= 1;
@@ -91,8 +152,7 @@ module softmax(
       mode1_run <= 0;
     end
     
-
-    if(!reset && mode2_t && sub0_inp_addr < addr_limit)begin
+    if(!reset && mode2_t && sub0_inp_addr < end_addr)begin
       sub0_inp_addr <= sub0_inp_addr + 1;
       sub0_inp_reg <= sub0_inp;
       mode2_run <= 1;        
@@ -101,7 +161,7 @@ module softmax(
       mode2_t <= 0;
     end
 
-    if(!reset && presub_t && sub1_inp_addr < addr_limit)begin
+    if(!reset && presub_t && sub1_inp_addr < end_addr)begin
       sub1_inp_addr <= sub1_inp_addr + 1;
       sub1_inp_reg <= sub1_inp;
       presub_run <= 1;
@@ -144,35 +204,24 @@ module softmax(
     end else begin
       done <= 0;
     end
-  end
+
   ////----trigger the max logic------//////
-  always @(posedge start)
-  begin
-    if(reset == 0) begin
-      mode1_t = 1;
+    if(start == 1) begin
+      mode1_t <= 1;
     end
-  end
 
   ////----trigger the latch address of presub----////
-  always @(negedge mode3_run)
-  begin 
-    if(reset == 0) begin
-      presub_t = 1;
+    if(mode3_run==0) begin
+      presub_t <= 1;
     end
-  end
-   
+
   ////----trigger mode5 log----////
-  always @(negedge mode4_run)
-  begin
-    if(reset == 0)begin
-      mode5_run = 1;
+    if(mode4_run==0) begin
+      mode5_run <= 1;
     end
-  end
-  
-  always @(negedge mode1_run)
-  begin
-    if(reset == 0)begin
-      mode2_t = 1;
+
+    if(mode1_run == 0) begin
+      mode2_t <= 1;
     end
   end
 
@@ -256,16 +305,16 @@ module softmax(
   always @(posedge clk)
   begin
     if(reset) begin
-	  mode3_outp_exp0 <= 0;
-	  mode3_outp_exp1 <= 0;
-	  mode3_outp_exp2 <= 0;
-	  mode3_outp_exp3 <= 0;
-	end else if(mode3_run)begin
-	  mode3_outp_exp0 <= outp_exp0_temp;
-	  mode3_outp_exp1 <= outp_exp1_temp;
-	  mode3_outp_exp2 <= outp_exp2_temp;
-	  mode3_outp_exp3 <= outp_exp3_temp;
-	end
+      mode3_outp_exp0 <= 0;
+      mode3_outp_exp1 <= 0;
+      mode3_outp_exp2 <= 0;
+      mode3_outp_exp3 <= 0;
+    end else if(mode3_run)begin
+      mode3_outp_exp0 <= outp_exp0_temp;
+      mode3_outp_exp1 <= outp_exp1_temp;
+      mode3_outp_exp2 <= outp_exp2_temp;
+      mode3_outp_exp3 <= outp_exp3_temp;
+    end
   end
   
   //////------mode4 adder tree---------///////
@@ -281,10 +330,10 @@ module softmax(
   always @(posedge clk)
   begin
     if(reset) begin
-	  mode4_outp_add <= 0;
-	end else if(mode4_run) begin
-	  mode4_outp_add <= outp_add_temp;
-	end
+      mode4_outp_add <= 0;
+    end else if(mode4_run) begin
+      mode4_outp_add <= outp_add_temp;
+    end
   end
   
   //////------mode5 log---------///////
@@ -294,10 +343,10 @@ module softmax(
   
   always @(posedge clk)
   begin
-	if(reset) begin
-	  mode5_outp_log <= 0;
-	end else if(mode5_run) begin
-	  mode5_outp_log <= outp_log_temp;
+    if(reset) begin
+      mode5_outp_log <= 0;
+    end else if(mode5_run) begin
+      mode5_outp_log <= outp_log_temp;
     end
   end
   

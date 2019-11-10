@@ -1,5 +1,9 @@
 export VCS_HOME=/usr/local/packages/synopsys_2018/vcs-mx/O-2018.09-SP1
 
+comp_run: compile run
+
+all: compile run waves
+
 compile:
 	${VCS_HOME}/bin/vcs \
 	-sverilog \
@@ -23,7 +27,8 @@ run:
 	./simv
 
 waves:
-	${VCS_HOME}/bin/dve -full64 -vpd vcdplus.vpd
+	${VCS_HOME}/bin/dve -full64 -vpd vcdplus.vpd&
 
 clean:
 	\rm -rf csrc simv.daidir/ simv *.vpd ucli.key DVEfiles/
+

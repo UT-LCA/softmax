@@ -29,6 +29,7 @@ module ram (addr0, d0, we0, q0,  clk);
   assign q0 = ram[addr0];
 endmodule
 
+//Top level testbench module
 module softmax_test;
 
   /* Make a reset that pulses once. */
@@ -37,7 +38,8 @@ module softmax_test;
   wire  [`DATAWIDTH*`NUM-1:0] inp;
   wire  [`DATAWIDTH*`NUM-1:0] sub0_inp;
   wire  [`DATAWIDTH*`NUM-1:0] sub1_inp;
-  reg   [`ADDRSIZE-1      :0] addr_limit;
+  reg   [`ADDRSIZE-1      :0] end_addr;
+  reg   [`ADDRSIZE-1      :0] start_addr;
 
   wire [`DATAWIDTH-1:0] outp0;
   wire [`DATAWIDTH-1:0] outp1;
@@ -57,7 +59,8 @@ module softmax_test;
     .inp(inp),
     .sub0_inp(sub0_inp),
     .sub1_inp(sub1_inp),
-    .addr_limit(addr_limit),
+    .start_addr(start_addr),
+    .end_addr(end_addr),
    
     .addr(addr),
     .sub0_inp_addr(sub0_inp_addr),
@@ -113,7 +116,7 @@ module softmax_test;
      clk = 0;
      reset = 1;
      start = 0;
-     #3 
+     #5 
         //inp[`DATAWIDTH-1:0]              = 16'h3800; // 0.5
         //inp[`DATAWIDTH*2-1:`DATAWIDTH]   = 16'h4040; // 2.125
 	//inp[`DATAWIDTH*3-1:`DATAWIDTH*2] = 16'h4210; // 3.03125
@@ -129,10 +132,10 @@ module softmax_test;
 	//sub1_inp[`DATAWIDTH*3-1:`DATAWIDTH*2] = 32'h4210; // 3.03125
         //sub1_inp[`DATAWIDTH*4-1:`DATAWIDTH*3] = 32'h993e; //-0.0025597
        
-        addr_limit = `ADDRSIZE'h4;
+        start_addr = `ADDRSIZE'h3;
+        end_addr = `ADDRSIZE'h7;
      #2 reset = 0;
-        start = 1;
-
+     #2 start = 1;
      #4 start = 0;
      #1600 $finish;  
   end
