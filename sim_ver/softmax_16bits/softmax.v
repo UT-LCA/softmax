@@ -50,15 +50,17 @@ module softmax(
   reg [`DATAWIDTH*`NUM-1:0] sub1_inp_reg;
   reg [`ADDRSIZE-1:0] sub0_inp_addr;
   reg [`ADDRSIZE-1:0] sub1_inp_addr;
-  reg mode3_run_a;
-  reg mode2_run_a;
+  reg mode4_stage1_run_a;
+  reg mode4_stage2_run_a;
   reg mode1_start;
   reg mode2_start;
   reg presub_start;
   reg mode1_run;
   reg mode2_run;
   reg mode3_run;
-  reg mode4_run;
+  reg mode4_stage2_run;
+  reg mode4_stage1_run;
+  reg mode4_stage0_run;
   reg mode5_run;
   reg mode6_run;
   reg mode7_run;
@@ -66,8 +68,8 @@ module softmax(
   reg done;
 
   always @(posedge clk)begin
-    mode3_run_a <= mode3_run;
-    mode2_run_a <= mode2_run;
+    mode4_stage1_run_a <= mode4_stage1_run;
+    mode4_stage2_run_a <= mode4_stage2_run;
   end
 
   always @(posedge clk)
@@ -85,7 +87,9 @@ module softmax(
       mode1_run <= 0;
       mode2_run <= 0;
       mode3_run <= 0;
-      mode4_run <= 0;
+      mode4_stage2_run <= 0;
+      mode4_stage1_run <= 0;
+      mode4_stage0_run <= 0;
       mode5_run <= 0;
       mode6_run <= 0;
       mode7_run <= 0;
@@ -139,24 +143,36 @@ module softmax(
       mode3_run <= 0;
     end
     
-    //logic when to trigger mode4 adderTree, since the final results of adderTree
+    //logic when to trigger mode4 last stage adderTree, since the final results of adderTree
     //is always ready 1 cycle after mode3 finishes, so there is no need on extra
     //logic to control the adderTree outputs
     if(mode3_run == 1)begin
-      mode4_run <= 1;
+      mode4_stage2_run <= 1;
     end else begin
-      mode4_run <= 0;
+      mode4_stage2_run <= 0;
     end
-    
-    //detects the falling edge of mode3, trigger mode5 when it is detected
-    if(mode3_run_a & ~mode3_run) begin
+
+    if(mode4_stage2_run == 1) begin
+      mode4_stage1_run <= 1;
+    end else begin
+      mode4_stage1_run <= 0;
+    end
+ 
+    if(mode4_stage1_run == 1) begin
+      mode4_stage0_run <= 1;
+    end else begin
+      mode4_stage0_run <=0;
+    end
+   
+    //mode5 should be triggered right at the falling edge of mode4_stage0_run 
+    if(mode4_stage1_run_a & ~mode4_stage1_run) begin
       mode5_run <= 1;
-    end else if(mode4_run == 0) begin
+    end else if(mode4_stage0_run == 0) begin
       mode5_run <= 0;
     end
 
     //detects the falling edge of mode2, trigger presub to latch data address
-    if(mode2_run_a & ~mode2_run)begin
+    if(mode4_stage2_run_a & ~mode4_stage2_run)begin
       presub_start <= 1;
       sub1_inp_addr <= start_addr;
       sub1_inp_reg <= sub1_inp;
@@ -196,201 +212,236 @@ module softmax(
   
 
   ////------mode1 max block---------///////
-  wire [`DATAWIDTH-1:0] max_outp_temp;
-  reg  [`DATAWIDTH-1:0] max_outp;
+  wire [`DATAWIDTH-1:0] max_outp;
+  reg  [`DATAWIDTH-1:0] max_outp_reg;
  
   mode1_max mode1_max(.inp0(inp_reg[`DATAWIDTH-1:0]),
                       .inp1(inp_reg[`DATAWIDTH*2-1:`DATAWIDTH]),
                       .inp2(inp_reg[`DATAWIDTH*3-1:`DATAWIDTH*2]),
                       .inp3(inp_reg[`DATAWIDTH*4-1:`DATAWIDTH*3]),
-                      .ex_inp(max_outp),
-                      .outp(max_outp_temp)); 
+                      .ex_inp(max_outp_reg),
+                      .outp(max_outp)); 
   
   always @(posedge clk)
   begin
     if(reset)begin
-      max_outp <= 0;
+      max_outp_reg <= 0;
     end else if(mode1_run == 1)begin
-      max_outp <= max_outp_temp;
+      max_outp_reg <= max_outp;
     end
   end
 
   
   ////------mode2 subtraction---------///////
-  wire [`DATAWIDTH-1:0] outp_sub0_temp;
-  wire [`DATAWIDTH-1:0] outp_sub1_temp;
-  wire [`DATAWIDTH-1:0] outp_sub2_temp;
-  wire [`DATAWIDTH-1:0] outp_sub3_temp;
+  wire [`DATAWIDTH-1:0] mode2_outp_sub0;
+  wire [`DATAWIDTH-1:0] mode2_outp_sub1;
+  wire [`DATAWIDTH-1:0] mode2_outp_sub2;
+  wire [`DATAWIDTH-1:0] mode2_outp_sub3;
 
   mode2_sub mode2_sub(.a_inp0(sub0_inp_reg[`DATAWIDTH-1:0]),
                       .a_inp1(sub0_inp_reg[`DATAWIDTH*2-1:`DATAWIDTH]),
                       .a_inp2(sub0_inp_reg[`DATAWIDTH*3-1:`DATAWIDTH*2]),
                       .a_inp3(sub0_inp_reg[`DATAWIDTH*4-1:`DATAWIDTH*3]),
-                      .b_inp(max_outp),
-                      .outp0(outp_sub0_temp),
-                      .outp1(outp_sub1_temp),
-                      .outp2(outp_sub2_temp),
-                      .outp3(outp_sub3_temp));
+                      .b_inp(max_outp_reg),
+                      .outp0(mode2_outp_sub0),
+                      .outp1(mode2_outp_sub1),
+                      .outp2(mode2_outp_sub2),
+                      .outp3(mode2_outp_sub3));
  
-  reg [`DATAWIDTH-1:0] mode2_outp_sub0;
-  reg [`DATAWIDTH-1:0] mode2_outp_sub1;
-  reg [`DATAWIDTH-1:0] mode2_outp_sub2;
-  reg [`DATAWIDTH-1:0] mode2_outp_sub3;
+  reg [`DATAWIDTH-1:0] mode2_outp_sub0_reg;
+  reg [`DATAWIDTH-1:0] mode2_outp_sub1_reg;
+  reg [`DATAWIDTH-1:0] mode2_outp_sub2_reg;
+  reg [`DATAWIDTH-1:0] mode2_outp_sub3_reg;
   
   always @(posedge clk)
   begin
     if(reset)begin
-      mode2_outp_sub0 <= 0;
-      mode2_outp_sub1 <= 0;
-      mode2_outp_sub2 <= 0;
-      mode2_outp_sub3 <= 0;
+      mode2_outp_sub0_reg <= 0;
+      mode2_outp_sub1_reg <= 0;
+      mode2_outp_sub2_reg <= 0;
+      mode2_outp_sub3_reg <= 0;
     end else if(mode2_run) begin
-      mode2_outp_sub0 <= outp_sub0_temp;
-      mode2_outp_sub1 <= outp_sub1_temp;
-      mode2_outp_sub2 <= outp_sub2_temp;
-      mode2_outp_sub3 <= outp_sub3_temp;
+      mode2_outp_sub0_reg <= mode2_outp_sub0;
+      mode2_outp_sub1_reg <= mode2_outp_sub1;
+      mode2_outp_sub2_reg <= mode2_outp_sub2;
+      mode2_outp_sub3_reg <= mode2_outp_sub3;
     end
   end
   
   ////------mode3 exponential---------///////
-  wire [`DATAWIDTH-1:0] outp_exp0_temp;
-  wire [`DATAWIDTH-1:0] outp_exp1_temp;
-  wire [`DATAWIDTH-1:0] outp_exp2_temp;
-  wire [`DATAWIDTH-1:0] outp_exp3_temp;
+  wire [`DATAWIDTH-1:0] mode3_outp_exp0;
+  wire [`DATAWIDTH-1:0] mode3_outp_exp1;
+  wire [`DATAWIDTH-1:0] mode3_outp_exp2;
+  wire [`DATAWIDTH-1:0] mode3_outp_exp3;
   
-  mode3_exp mode3_exp(.inp0(mode2_outp_sub0),
-                      .inp1(mode2_outp_sub1),
-                      .inp2(mode2_outp_sub2),
-                      .inp3(mode2_outp_sub3),
-                      .outp0(outp_exp0_temp),
-                      .outp1(outp_exp1_temp),
-                      .outp2(outp_exp2_temp),
-                      .outp3(outp_exp3_temp));
+  mode3_exp mode3_exp(.inp0(mode2_outp_sub0_reg),
+                      .inp1(mode2_outp_sub1_reg),
+                      .inp2(mode2_outp_sub2_reg),
+                      .inp3(mode2_outp_sub3_reg),
+                      .outp0(mode3_outp_exp0),
+                      .outp1(mode3_outp_exp1),
+                      .outp2(mode3_outp_exp2),
+                      .outp3(mode3_outp_exp3));
   
-  reg [`DATAWIDTH-1:0] mode3_outp_exp0;
-  reg [`DATAWIDTH-1:0] mode3_outp_exp1;
-  reg [`DATAWIDTH-1:0] mode3_outp_exp2;
-  reg [`DATAWIDTH-1:0] mode3_outp_exp3;
+  reg [`DATAWIDTH-1:0] mode3_outp_exp0_reg;
+  reg [`DATAWIDTH-1:0] mode3_outp_exp1_reg;
+  reg [`DATAWIDTH-1:0] mode3_outp_exp2_reg;
+  reg [`DATAWIDTH-1:0] mode3_outp_exp3_reg;
   
-  always @(posedge clk)
-  begin
+  always @(posedge clk) begin
     if(reset) begin
-	  mode3_outp_exp0 <= 0;
-	  mode3_outp_exp1 <= 0;
-	  mode3_outp_exp2 <= 0;
-	  mode3_outp_exp3 <= 0;
+	  mode3_outp_exp0_reg <= 0;
+	  mode3_outp_exp1_reg <= 0;
+	  mode3_outp_exp2_reg <= 0;
+	  mode3_outp_exp3_reg <= 0;
 	end else if(mode3_run)begin
-	  mode3_outp_exp0 <= outp_exp0_temp;
-	  mode3_outp_exp1 <= outp_exp1_temp;
-	  mode3_outp_exp2 <= outp_exp2_temp;
-	  mode3_outp_exp3 <= outp_exp3_temp;
+	  mode3_outp_exp0_reg <= mode3_outp_exp0;
+	  mode3_outp_exp1_reg <= mode3_outp_exp1;
+	  mode3_outp_exp2_reg <= mode3_outp_exp2;
+	  mode3_outp_exp3_reg <= mode3_outp_exp3;
 	end
   end
   
-  //////------mode4 adder tree---------///////
-  wire [`DATAWIDTH-1:0] outp_add_temp;
-  reg  [`DATAWIDTH-1:0] mode4_outp_add;
-  mode4_adderTree mode4_adderTree(.inp0(mode3_outp_exp0), 
-                                  .inp1(mode3_outp_exp1),
-                                  .inp2(mode3_outp_exp2),
-                                  .inp3(mode3_outp_exp3),
-                                  .outp(outp_add_temp),
-                                  .ex_inp(mode4_outp_add));
+  //////------mode4 pipelined adder tree---------///////
   
-  always @(posedge clk)
-  begin
+  //last stage of the adder tree
+  wire [`DATAWIDTH-1:0] mode4_stage2_outp0;
+  wire [`DATAWIDTH-1:0] mode4_stage2_outp1;
+  reg  [`DATAWIDTH-1:0] mode4_stage2_outp0_reg;
+  reg  [`DATAWIDTH-1:0] mode4_stage2_outp1_reg;
+  mode4_adderTree_stage2 stage2(.inp0(mode3_outp_exp0_reg),
+  				.inp1(mode3_outp_exp1_reg),
+ 				.inp2(mode3_outp_exp2_reg),
+				.inp3(mode3_outp_exp3_reg),
+				.outp0(mode4_stage2_outp0),
+				.outp1(mode4_stage2_outp1));
+
+  always @(posedge clk)begin
     if(reset) begin
-	  mode4_outp_add <= 0;
-	end else if(mode4_run) begin
-	  mode4_outp_add <= outp_add_temp;
-	end
+      mode4_stage2_outp0_reg <= 0;
+      mode4_stage2_outp1_reg <= 0;
+    end else if(mode4_stage2_run)begin
+      mode4_stage2_outp0_reg <= mode4_stage2_outp0;
+      mode4_stage2_outp1_reg <= mode4_stage2_outp1;
+    end
+  end
+
+  //first stage of the adder tree
+  wire [`DATAWIDTH-1:0] mode4_stage1_outp0;
+  reg  [`DATAWIDTH-1:0] mode4_stage1_outp0_reg;
+  mode4_adderTree_stage1 stage1(.inp0(mode4_stage2_outp0_reg), 
+ 				.inp1(mode4_stage2_outp1_reg),
+				.outp0(mode4_stage1_outp0));
+
+  always @(posedge clk) begin
+    if(reset) begin
+      mode4_stage1_outp0_reg <= 0;
+    end else if(mode4_stage1_run) begin
+      mode4_stage1_outp0_reg <= mode4_stage1_outp0;
+    end
   end
   
+  //the stage for the adder to accumulate results
+  wire [`DATAWIDTH-1:0] mode4_stage0_outp0;
+  reg  [`DATAWIDTH-1:0] mode4_stage0_outp0_reg;
+  
+  mode4_adderTree_stage0 stage0(.inp0(mode4_stage1_outp0_reg),
+ 				.inp1(mode4_stage0_outp0_reg),
+				.outp0(mode4_stage0_outp0));
+
+  always @(posedge clk) begin
+    if(reset) begin
+      mode4_stage0_outp0_reg <= 0;
+    end else if(mode4_stage0_run) begin
+      mode4_stage0_outp0_reg <= mode4_stage0_outp0;
+    end
+   end
+
   //////------mode5 log---------///////
-  wire [`DATAWIDTH-1:0] outp_log_temp;
-  reg  [`DATAWIDTH-1:0] mode5_outp_log;
-  mode5_ln mode5_ln(.inp(mode4_outp_add), .outp(outp_log_temp));
+  wire [`DATAWIDTH-1:0] mode5_outp_log;
+  reg  [`DATAWIDTH-1:0] mode5_outp_log_reg;
+  mode5_ln mode5_ln(.inp(mode4_stage0_outp0_reg), .outp(mode5_outp_log));
   
   always @(posedge clk)
   begin
 	if(reset) begin
-	  mode5_outp_log <= 0;
+	  mode5_outp_log_reg <= 0;
 	end else if(mode5_run) begin
-	  mode5_outp_log <= outp_log_temp;
+	  mode5_outp_log_reg <= mode5_outp_log;
     end
   end
   
   //////------mode6 pre-sub---------///////
-  wire [`DATAWIDTH-1:0] outp_sub0_temp1;
-  wire [`DATAWIDTH-1:0] outp_sub1_temp1;
-  wire [`DATAWIDTH-1:0] outp_sub2_temp1;
-  wire [`DATAWIDTH-1:0] outp_sub3_temp1;  
+  wire [`DATAWIDTH-1:0] mode6_outp_presub0;
+  wire [`DATAWIDTH-1:0] mode6_outp_presub1;
+  wire [`DATAWIDTH-1:0] mode6_outp_presub2;
+  wire [`DATAWIDTH-1:0] mode6_outp_presub3;
 
-  reg  [`DATAWIDTH-1:0] mode6_outp_presub0;
-  reg  [`DATAWIDTH-1:0] mode6_outp_presub1;
-  reg  [`DATAWIDTH-1:0] mode6_outp_presub2;
-  reg  [`DATAWIDTH-1:0] mode6_outp_presub3;
+  reg  [`DATAWIDTH-1:0] mode6_outp_presub0_reg;
+  reg  [`DATAWIDTH-1:0] mode6_outp_presub1_reg;
+  reg  [`DATAWIDTH-1:0] mode6_outp_presub2_reg;
+  reg  [`DATAWIDTH-1:0] mode6_outp_presub3_reg;
  
   mode6_sub pre_sub(.a_inp0(sub1_inp_reg[`DATAWIDTH-1:0]),
                     .a_inp1(sub1_inp_reg[`DATAWIDTH*2-1:`DATAWIDTH]),
                     .a_inp2(sub1_inp_reg[`DATAWIDTH*3-1:`DATAWIDTH*2]),
                     .a_inp3(sub1_inp_reg[`DATAWIDTH*4-1:`DATAWIDTH*3]),
-                    .b_inp(max_outp),
-                    .outp0(outp_sub0_temp1),
-                    .outp1(outp_sub1_temp1),
-                    .outp2(outp_sub2_temp1),
-                    .outp3(outp_sub3_temp1));
+                    .b_inp(max_outp_reg),
+                    .outp0(mode6_outp_presub0),
+                    .outp1(mode6_outp_presub1),
+                    .outp2(mode6_outp_presub2),
+                    .outp3(mode6_outp_presub3));
 
   always @(posedge clk)
   begin
     if(reset) begin
-      mode6_outp_presub0 <= 0;
-      mode6_outp_presub1 <= 0;
-      mode6_outp_presub2 <= 0;
-      mode6_outp_presub3 <= 0;
+      mode6_outp_presub0_reg <= 0;
+      mode6_outp_presub1_reg <= 0;
+      mode6_outp_presub2_reg <= 0;
+      mode6_outp_presub3_reg <= 0;
     end else if(presub_run) begin
-      mode6_outp_presub0 <= outp_sub0_temp1;
-      mode6_outp_presub1 <= outp_sub1_temp1;
-      mode6_outp_presub2 <= outp_sub2_temp1;
-      mode6_outp_presub3 <= outp_sub3_temp1;
+      mode6_outp_presub0_reg <= mode6_outp_presub0;
+      mode6_outp_presub1_reg <= mode6_outp_presub1;
+      mode6_outp_presub2_reg <= mode6_outp_presub2;
+      mode6_outp_presub3_reg <= mode6_outp_presub3;
     end
   end
 
 
   //////------mode6 sub log---------/////// 
-  wire [`DATAWIDTH-1:0] outp_logsub0_temp;
-  wire [`DATAWIDTH-1:0] outp_logsub1_temp;
-  wire [`DATAWIDTH-1:0] outp_logsub2_temp;
-  wire [`DATAWIDTH-1:0] outp_logsub3_temp;
+  wire [`DATAWIDTH-1:0] mode6_outp_logsub0;
+  wire [`DATAWIDTH-1:0] mode6_outp_logsub1;
+  wire [`DATAWIDTH-1:0] mode6_outp_logsub2;
+  wire [`DATAWIDTH-1:0] mode6_outp_logsub3;
 
-  reg [`DATAWIDTH-1:0] mode6_outp_logsub0;
-  reg [`DATAWIDTH-1:0] mode6_outp_logsub1;
-  reg [`DATAWIDTH-1:0] mode6_outp_logsub2;
-  reg [`DATAWIDTH-1:0] mode6_outp_logsub3;
+  reg [`DATAWIDTH-1:0] mode6_outp_logsub0_reg;
+  reg [`DATAWIDTH-1:0] mode6_outp_logsub1_reg;
+  reg [`DATAWIDTH-1:0] mode6_outp_logsub2_reg;
+  reg [`DATAWIDTH-1:0] mode6_outp_logsub3_reg;
 
   
-  mode6_sub mode6_sub(.a_inp0(mode6_outp_presub0),
-                      .a_inp1(mode6_outp_presub1),
-                      .a_inp2(mode6_outp_presub2),
-                      .a_inp3(mode6_outp_presub3),
-                      .b_inp(mode5_outp_log),
-                      .outp0(outp_logsub0_temp),
-                      .outp1(outp_logsub1_temp),
-                      .outp2(outp_logsub2_temp),
-                      .outp3(outp_logsub3_temp));
+  mode6_sub mode6_sub(.a_inp0(mode6_outp_presub0_reg),
+                      .a_inp1(mode6_outp_presub1_reg),
+                      .a_inp2(mode6_outp_presub2_reg),
+                      .a_inp3(mode6_outp_presub3_reg),
+                      .b_inp(mode5_outp_log_reg),
+                      .outp0(mode6_outp_logsub0),
+                      .outp1(mode6_outp_logsub1),
+                      .outp2(mode6_outp_logsub2),
+                      .outp3(mode6_outp_logsub3));
 
   always @(posedge clk)
   begin
     if(reset) begin
-      mode6_outp_logsub0 <= 0;
-      mode6_outp_logsub1 <= 0;
-      mode6_outp_logsub2 <= 0;
-      mode6_outp_logsub3 <= 0;
+      mode6_outp_logsub0_reg <= 0;
+      mode6_outp_logsub1_reg <= 0;
+      mode6_outp_logsub2_reg <= 0;
+      mode6_outp_logsub3_reg <= 0;
     end else if(mode6_run) begin
-      mode6_outp_logsub0 <= outp_logsub0_temp;
-      mode6_outp_logsub1 <= outp_logsub1_temp;
-      mode6_outp_logsub2 <= outp_logsub2_temp;
-      mode6_outp_logsub3 <= outp_logsub3_temp;
+      mode6_outp_logsub0_reg <= mode6_outp_logsub0;
+      mode6_outp_logsub1_reg <= mode6_outp_logsub1;
+      mode6_outp_logsub2_reg <= mode6_outp_logsub2;
+      mode6_outp_logsub3_reg <= mode6_outp_logsub3;
     end
   end
 
@@ -409,10 +460,10 @@ module softmax(
   reg [`DATAWIDTH-1:0] outp2;
   reg [`DATAWIDTH-1:0] outp3;
 
-  mode7_exp mode7_exp(.inp0(mode6_outp_logsub0),
-                      .inp1(mode6_outp_logsub1),
-                      .inp2(mode6_outp_logsub2),
-                      .inp3(mode6_outp_logsub3),
+  mode7_exp mode7_exp(.inp0(mode6_outp_logsub0_reg),
+                      .inp1(mode6_outp_logsub1_reg),
+                      .inp2(mode6_outp_logsub2_reg),
+                      .inp3(mode6_outp_logsub3_reg),
                       .outp0(outp0_temp),
                       .outp1(outp1_temp),
                       .outp2(outp2_temp),
