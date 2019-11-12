@@ -111,32 +111,32 @@ module softmax_test;
   //always #0.5 sub1_inp = memory3[sub1_inp_addr];
 
   initial begin
-     $readmemh("mem3.txt", memory1.ram);
-     $readmemh("mem3.txt", memory2.ram);
-     $readmemh("mem3.txt", memory3.ram);
+     if($test$plusargs("4_input_vals")) begin
+         $readmemh("mem1.txt", memory1.ram);
+         $readmemh("mem1.txt", memory2.ram);
+         $readmemh("mem1.txt", memory3.ram);
+         start_addr = `ADDRSIZE'h0;
+         end_addr = `ADDRSIZE'h1;
+     end
+     else if($test$plusargs("8_input_vals")) begin
+         $readmemh("mem2.txt", memory1.ram);
+         $readmemh("mem2.txt", memory2.ram);
+         $readmemh("mem2.txt", memory3.ram);
+         start_addr = `ADDRSIZE'h2;
+         end_addr = `ADDRSIZE'h4;
+     end
+     else if($test$plusargs("16_input_vals")) begin
+         $readmemh("mem3.txt", memory1.ram);
+         $readmemh("mem3.txt", memory2.ram);
+         $readmemh("mem3.txt", memory3.ram);
+         start_addr = `ADDRSIZE'h3;
+         end_addr = `ADDRSIZE'h7;
+     end
      clk = 0;
      reset = 1;
      init = 1;
      start = 0;
-     #5 
-        //inp[`DATAWIDTH-1:0]              = 16'h3800; // 0.5
-        //inp[`DATAWIDTH*2-1:`DATAWIDTH]   = 16'h4040; // 2.125
-	//inp[`DATAWIDTH*3-1:`DATAWIDTH*2] = 16'h4210; // 3.03125
-        //inp[`DATAWIDTH*4-1:`DATAWIDTH*3] = 16'h993e; //-0.0025597
-
-        //sub0_inp[`DATAWIDTH-1:0]              = 16'h3800; // 0.5
-        //sub0_inp[`DATAWIDTH*2-1:`DATAWIDTH]   = 16'h4040; // 2.125
-	//sub0_inp[`DATAWIDTH*3-1:`DATAWIDTH*2] = 16'h4210; // 3.03125
-        //sub0_inp[`DATAWIDTH*4-1:`DATAWIDTH*3] = 16'h993e; //-0.0025597
-
-        //sub1_inp[`DATAWIDTH-1:0]              = 32'h3800; // 0.5
-        //sub1_inp[`DATAWIDTH*2-1:`DATAWIDTH]   = 32'h4040; // 2.125
-	//sub1_inp[`DATAWIDTH*3-1:`DATAWIDTH*2] = 32'h4210; // 3.03125
-        //sub1_inp[`DATAWIDTH*4-1:`DATAWIDTH*3] = 32'h993e; //-0.0025597
-       
-        start_addr = `ADDRSIZE'h3;
-        end_addr = `ADDRSIZE'h7;
-     #2 reset = 0;
+     #7 reset = 0;
         init  = 0;
      #2 start = 1;
      #4 start = 0;
