@@ -208,21 +208,43 @@ module softmax(
     
   end
 
+  ////------mode1 max block---------///////
+  wire [`DATAWIDTH-1:0] max_outp;
+  reg  [`DATAWIDTH-1:0] max_outp_reg;
 
+  mode1_max mode1_max(
   <mode1_max>
+      .ex_inp(max_outp_reg),
+      .outp(max_outp)); 
 
+  always @(posedge clk)
+  begin
+    if(reset)begin
+      max_outp_reg <= 0;
+    end else if(mode1_run == 1)begin
+      max_outp_reg <= max_outp;
+    end
+  end
+
+  ////------mode2 subtraction---------///////
   <mode2_sub>
 
+  ////------mode3 exponential---------///////
   <mode3_exp>
 
+  //////------mode4 pipelined adder tree---------///////
   <mode4_adder_tree>
 
+  //////------mode5 log---------///////
   <mode5_ln>
 
+  //////------mode6 pre-sub---------///////
   <mode6_presub>
 
+  //////------mode6 sub log---------/////// 
   <mode6_sub>
 
+  //////------mode7 exp---------///////
   <mode7_exp>
 
 endmodule

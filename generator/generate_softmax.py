@@ -46,6 +46,58 @@ class generate_softmax():
           for i in range(self.num_inp_pins):
             print("  output [`DATAWIDTH-1:0] outp%d;" % (i))
 
+        mode1_max_tag = re.search(r'<mode1_max>', line)
+        if mode1_max_tag is not None:
+          for i in range(self.num_inp_pins):
+            print("      .inp%d(inp_reg[`DATAWIDTH*%d-1:`DATAWIDTH*%d])," % (i, i+1, i))
+
+        mode2_sub_tag = re.search(r'<mode2_sub>', line)
+        if mode2_sub_tag is not None:
+          for i in range(self.num_inp_pins):
+            print("wire [`DATAWIDTH-1:0] mode2_outp_sub%d;" % (i))
+          print("mode2_sub mode2_sub(")
+          for i in range(self.num_inp_pins):
+            print("      .a_inp%d(sub0_inp_reg[`DATAWIDTH*%d-1:`DATAWIDTH*%d])," % (i, i+1, i))
+          for i in range(self.num_inp_pins):
+            print("      .outp%d(mode2_outp_sub%d)," %(i,i))
+          print("      .b_inp(max_outp_reg));")
+          print("")
+          for i in range(self.num_inp_pins):
+            print("reg [`DATAWIDTH-1:0] mode2_outp_sub%d_reg;" % (i))
+          print("always @(posedge clk) begin")
+          print("  if (reset) begin")
+          for i in range(self.num_inp_pins):
+            print("    mode2_outp_sub%d_reg <= 0;" % (i))
+          print("  end else if (mode2_run) begin")
+          for i in range(self.num_inp_pins):
+            print("    mode2_outp_sub%d_reg <= mode2_outp_sub%d;" % (i,i))
+          print("  end")
+          print("end")
+
+        mode3_exp_tag = re.search(r'<mode3_exp>', line)
+        if mode3_exp_tag is not None:
+          for i in range(self.num_inp_pins):
+            print("wire [`DATAWIDTH-1:0] mode3_outp_exp%d;" % (i))
+          print("mode3_exp mode3_exp(")
+          for i in range(self.num_inp_pins):
+            print("      .inp%d(mode2_outp_sub%d_reg)," % (i,i))
+          for i in range(self.num_inp_pins):
+            print("      .outp%d(mode3_outp_exp%d)," %(i,i))
+          print("      .dummy());")
+          print("")
+          for i in range(self.num_inp_pins):
+            print("reg [`DATAWIDTH-1:0] mode3_outp_exp%d_reg;" % (i))
+          print("always @(posedge clk) begin")
+          print("  if (reset) begin")
+          for i in range(self.num_inp_pins):
+            print("    mode3_outp_exp%d_reg <= 0;" % (i))
+          print("  end else if (mode3_run) begin")
+          for i in range(self.num_inp_pins):
+            print("    mode3_outp_exp%d_reg <= mode3_outp_exp%d;" % (i,i))
+          print("  end")
+          print("end")
+
+
       else:      
         print(line)
 
