@@ -45,32 +45,35 @@ module softmax(
   output [`DATAWIDTH-1:0] outp3;
   output mode1_done;
   output done;
-  ////-----control logic for the modes-----//////
+
+  ////-----latches to latch the input and addr-----//////
   reg [`DATAWIDTH*`NUM-1:0] inp_reg;
   reg [`ADDRSIZE-1:0] addr;
   reg [`DATAWIDTH*`NUM-1:0] sub0_inp_reg;
   reg [`DATAWIDTH*`NUM-1:0] sub1_inp_reg;
   reg [`ADDRSIZE-1:0] sub0_inp_addr;
   reg [`ADDRSIZE-1:0] sub1_inp_addr;
-  reg mode4_stage1_run_a;
-  reg mode4_stage2_run_a;
+
+  ////---------control signals--------------------/////
   reg mode1_start;
-  reg mode2_start;
-  reg presub_start;
   reg mode1_run;
+  reg mode1_done;
+  reg mode2_start;
   reg mode2_run;
   reg mode3_run;
+
   reg mode4_stage2_run;
   reg mode4_stage1_run;
   reg mode4_stage0_run;
+  reg mode4_stage1_run_a;
+  reg mode4_stage2_run_a;
+
   reg mode5_run;
   reg mode6_run;
   reg mode7_run;
+  reg presub_start;
   reg presub_run;
-  reg mode1_done;
   reg done;
-  reg [`COUNTER_BITS-1:0] cycle_count_max;
-  reg cycle_counter;
 
   always @(posedge clk)begin
     mode4_stage1_run_a <= mode4_stage1_run;
@@ -99,8 +102,6 @@ module softmax(
       mode6_run <= 0;
       mode7_run <= 0;
       presub_run <= 0;
-      cycle_count_max <= 0;
-      cycle_counter <= 0;
       mode1_done <= 0;
       done <= 0;
     end
@@ -128,13 +129,6 @@ module softmax(
         sub0_inp_addr <= start_addr;
       end
     end else if(addr == end_addr)begin
-//      if(cycle_count_max == `COUNTER_BITS'd1)begin
-//        mode2_start <= 1;
-//        sub0_inp_addr <= start_addr;
-//      end else begin //turn on the cycle counter
-//        cycle_counter <= 1;
-//        cycle_count_max <= cycle_count_max - 1;
-//      end
       addr <= 0;
       mode1_done <= 1;
       mode1_run <= 0;
@@ -143,16 +137,6 @@ module softmax(
       mode1_run <= 0;
     end
    
-//    if(~reset && cycle_counter) begin
-//      if(cycle_count_max == `COUNTER_BITS'd1)begin
-//        mode2_start <= 1;
-//        sub0_inp_addr <= start_addr;
-//        cycle_counter <= 0;
-//      end else begin
-//        cycle_count_max <= cycle_count_max - 1;
-//      end
-//    end
-
 //////////--------------control logic in between is different for larger parallelism--------------///////////
 
     //logic when to finish mode2
@@ -254,16 +238,6 @@ module softmax(
                       .clk(clk),
                       .reset(reset)); 
   
- // always @(posedge clk)
- // begin
- //   if(reset)begin
- //     max_outp_reg <= 0;
- //   end else if(mode1_run == 1)begin
- //     max_outp_reg <= max_outp;
- //   end
- // end
-
-  
   ////------mode2 subtraction---------///////
   wire [`DATAWIDTH-1:0] mode2_outp_sub0;
   wire [`DATAWIDTH-1:0] mode2_outp_sub1;
@@ -335,64 +309,64 @@ module softmax(
   end
   
   //////------mode4 pipelined adder tree---------///////
-  
-  //last stage of the adder tree
-  wire [`DATAWIDTH-1:0] mode4_stage2_outp0;
-  wire [`DATAWIDTH-1:0] mode4_stage2_outp1;
-  reg  [`DATAWIDTH-1:0] mode4_stage2_outp0_reg;
-  reg  [`DATAWIDTH-1:0] mode4_stage2_outp1_reg;
-  mode4_adderTree_stage2 stage2(.inp0(mode3_outp_exp0_reg),
-  				.inp1(mode3_outp_exp1_reg),
- 				.inp2(mode3_outp_exp2_reg),
-				.inp3(mode3_outp_exp3_reg),
-				.outp0(mode4_stage2_outp0),
-				.outp1(mode4_stage2_outp1));
+  wire  [`DATAWIDTH-1 : 0] mode4_outp;
+  mode4_adderTree adderTree(.inp0(mode3_outp_exp0_reg),
+  			    .inp1(mode3_outp_exp1_reg),
+ 			    .inp2(mode3_outp_exp2_reg),
+			    .inp3(mode3_outp_exp3_reg),
+                           
+			    .mode4_stage2_run(mode4_stage2_run),
+			    .mode4_stage1_run(mode4_stage1_run),
+			    .mode4_stage0_run(mode4_stage0_run),
 
-  always @(posedge clk)begin
-    if(reset) begin
-      mode4_stage2_outp0_reg <= 0;
-      mode4_stage2_outp1_reg <= 0;
-    end else if(mode4_stage2_run)begin
-      mode4_stage2_outp0_reg <= mode4_stage2_outp0;
-      mode4_stage2_outp1_reg <= mode4_stage2_outp1;
-    end
-  end
-
-  //first stage of the adder tree
-  wire [`DATAWIDTH-1:0] mode4_stage1_outp0;
-  reg  [`DATAWIDTH-1:0] mode4_stage1_outp0_reg;
-  mode4_adderTree_stage1 stage1(.inp0(mode4_stage2_outp0_reg), 
- 				.inp1(mode4_stage2_outp1_reg),
-				.outp0(mode4_stage1_outp0));
-
-  always @(posedge clk) begin
-    if(reset) begin
-      mode4_stage1_outp0_reg <= 0;
-    end else if(mode4_stage1_run) begin
-      mode4_stage1_outp0_reg <= mode4_stage1_outp0;
-    end
-  end
-  
-  //the stage for the adder to accumulate results
-  wire [`DATAWIDTH-1:0] mode4_stage0_outp0;
-  reg  [`DATAWIDTH-1:0] mode4_stage0_outp0_reg;
-  
-  mode4_adderTree_stage0 stage0(.inp0(mode4_stage1_outp0_reg),
- 				.inp1(mode4_stage0_outp0_reg),
-				.outp0(mode4_stage0_outp0));
-
-  always @(posedge clk) begin
-    if(reset) begin
-      mode4_stage0_outp0_reg <= 0;
-    end else if(mode4_stage0_run) begin
-      mode4_stage0_outp0_reg <= mode4_stage0_outp0;
-    end
-   end
+			    .clk(clk),
+			    .reset(reset),
+			    .outp(mode4_outp));
+//  always @(posedge clk)begin
+//    if(reset) begin
+//      mode4_stage2_outp0_reg <= 0;
+//      mode4_stage2_outp1_reg <= 0;
+//    end else if(mode4_stage2_run)begin
+//      mode4_stage2_outp0_reg <= mode4_stage2_outp0;
+//      mode4_stage2_outp1_reg <= mode4_stage2_outp1;
+//    end
+//  end
+//
+//  //first stage of the adder tree
+//  wire [`DATAWIDTH-1:0] mode4_stage1_outp0;
+//  reg  [`DATAWIDTH-1:0] mode4_stage1_outp0_reg;
+//  mode4_adderTree_stage1 stage1(.inp0(mode4_stage2_outp0_reg), 
+// 				.inp1(mode4_stage2_outp1_reg),
+//				.outp0(mode4_stage1_outp0));
+//
+//  always @(posedge clk) begin
+//    if(reset) begin
+//      mode4_stage1_outp0_reg <= 0;
+//    end else if(mode4_stage1_run) begin
+//      mode4_stage1_outp0_reg <= mode4_stage1_outp0;
+//    end
+//  end
+//  
+//  //the stage for the adder to accumulate results
+//  wire [`DATAWIDTH-1:0] mode4_stage0_outp0;
+//  reg  [`DATAWIDTH-1:0] mode4_stage0_outp0_reg;
+//  
+//  mode4_adderTree_stage0 stage0(.inp0(mode4_stage1_outp0_reg),
+// 				.inp1(mode4_stage0_outp0_reg),
+//				.outp0(mode4_stage0_outp0));
+//
+//  always @(posedge clk) begin
+//    if(reset) begin
+//      mode4_stage0_outp0_reg <= 0;
+//    end else if(mode4_stage0_run) begin
+//      mode4_stage0_outp0_reg <= mode4_stage0_outp0;
+//    end
+//   end
 
   //////------mode5 log---------///////
   wire [`DATAWIDTH-1:0] mode5_outp_log;
   reg  [`DATAWIDTH-1:0] mode5_outp_log_reg;
-  mode5_ln mode5_ln(.inp(mode4_stage0_outp0_reg), .outp(mode5_outp_log));
+  mode5_ln mode5_ln(.inp(mode4_outp), .outp(mode5_outp_log));
   
   always @(posedge clk)
   begin

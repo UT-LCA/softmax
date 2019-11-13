@@ -6,8 +6,7 @@ module mode4_adderTree(
   inp2,
   inp3,
   
-  mode4_run,
-  mdoe4_stage2_run,
+  mode4_stage2_run,
   mode4_stage1_run,
   mode4_stage0_run,
   clk,
@@ -18,6 +17,12 @@ module mode4_adderTree(
   input  [`DATAWIDTH-1 : 0] inp1;
   input  [`DATAWIDTH-1 : 0] inp2;
   input  [`DATAWIDTH-1 : 0] inp3;
+  
+  input  mode4_stage2_run;
+  input  mode4_stage1_run;
+  input  mode4_stage0_run;
+  input  clk;
+  input  reset;
 
   output [`DATAWIDTH-1 : 0] outp;
   reg    [`DATAWIDTH-1 : 0] outp;
@@ -30,7 +35,8 @@ module mode4_adderTree(
   reg    [`DATAWIDTH-1 : 0] stage2_outp0_reg;
   reg    [`DATAWIDTH-1 : 0] stage2_outp1_reg;
   reg    [`DATAWIDTH-1 : 0] stage1_outp0_reg;
-  
+
+   
   /////////----------stage 2: two adders--------------/////////////
   DW_fp_add #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE) add0(.a(inp0),       .b(inp1),      .z(stage2_outp0), .rnd(3'b000),    .status());
   DW_fp_add #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE) add1(.a(inp2),       .b(inp3),      .z(stage2_outp1), .rnd(3'b000),    .status());
