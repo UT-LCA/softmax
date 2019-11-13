@@ -233,16 +233,44 @@ module softmax(
   <mode3_exp>
 
   //////------mode4 pipelined adder tree---------///////
+  wire [`DATAWIDTH-1:0] mode4_adder_tree_outp;
+  reg  [`DATAWIDTH-1:0] mode4_adder_tree_outp_reg;
+  mode4_adderTree(
+    .clk(clk),
+    .reset(reset),
   <mode4_adder_tree>
+    .ex_inp(mode4_adder_tree_outp_reg),
+    .outp(mode4_adder_tree_outp)
+  );
+
+  always @(posedge clk)
+  begin
+    if(reset)begin
+      mode4_adder_tree_outp_reg <= 0;
+    end else if(mode4_run == 1)begin
+      mode4_adder_tree_outp_reg <= mode4_adder_tree_outp;
+    end
+  end
 
   //////------mode5 log---------///////
-  <mode5_ln>
+  wire [`DATAWIDTH-1:0] mode5_outp_log;
+  reg  [`DATAWIDTH-1:0] mode5_outp_log_reg;
+  mode5_ln mode5_ln(.inp(mode4_adder_tree_outp0_reg), .outp(mode5_outp_log));
+  
+  always @(posedge clk)
+  begin
+	if(reset) begin
+	  mode5_outp_log_reg <= 0;
+	end else if(mode5_run) begin
+	  mode5_outp_log_reg <= mode5_outp_log;
+    end
+  end
 
   //////------mode6 pre-sub---------///////
   <mode6_presub>
 
-  //////------mode6 sub log---------/////// 
-  <mode6_sub>
+  //////------mode6 logsub ---------/////// 
+  <mode6_logsub>
 
   //////------mode7 exp---------///////
   <mode7_exp>

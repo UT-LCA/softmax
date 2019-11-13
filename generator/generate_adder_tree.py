@@ -6,13 +6,14 @@ import math
 class generate_addertree():
   def __init__(self, num_inputs):
     self.num_inputs = num_inputs
-    if ((sum(self.num_inputs>>shift)&1 for shift in range(16)) != 1):
+    #find if the num_inputs is a power of 2
+    if ((self.num_inputs-1) & self.num_inputs) != 0:
       raise SystemError("adder tree only supports number of inputs = power of 2")
     self.num_stages = int(math.log(num_inputs,2))
     self.printit()
   
   def printit(self):
-    print("module mode4_adderTreee(")
+    print("module mode4_adder_tree(")
     for iter in range(self.num_inputs):
       print("  inp%d, " % iter)
     print("  ex_inp,")
@@ -21,7 +22,6 @@ class generate_addertree():
     print("  reset")
     print(");")
     
-
     print("input clk;")
     print("input reset;")
     for iter in range(self.num_inputs):
@@ -30,7 +30,7 @@ class generate_addertree():
     print("output [`DATAWIDTH-1 : 0] outp;")
     print("")
 
-    num_adders_in_stage0 = self.num_inputs/2
+    num_adders_in_stage0 = int(self.num_inputs/2)
     input_num = 0
     output_num = 0
     for num_adder in range(num_adders_in_stage0):
@@ -71,5 +71,5 @@ class generate_addertree():
     print("")
     print("endmodule")
     
-generate_addertree(6)
+generate_addertree(8)
 
