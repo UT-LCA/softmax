@@ -72,7 +72,7 @@ class generate_max_tree():
     print("endmodule")
     
 
-generate_max_tree(8)
+generate_max_tree(4)
 
 
 

@@ -71,5 +71,5 @@ class generate_addertree():
     print("")
     print("endmodule")
     
-generate_addertree(8)
+generate_addertree(4)
 

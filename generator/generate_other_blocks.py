@@ -72,11 +72,43 @@ class generate_ln():
         print("endmodule")
 
 
+class generate_defines():
+    def __init__(self, num_inputs=4, dtype="fp16", addr_width=16):
+        self.num_inputs = num_inputs
+        self.dtype = dtype
+        self.addr_width = addr_width
+        self.print_it()
+
+    def print_it(self):
+        print("`ifndef DEFINES_DONE")
+        print("`define DEFINES_DONE")
+        if self.dtype == "fp16":
+            exponent_bits = 5
+            mantissa_bits = 10
+            sign_bits = 1
+        elif self.dtype == "bfloat16":
+            exponent_bits = 8
+            mantissa_bits = 7
+            sign_bits = 1
+        elif self.dtype == "fp32":
+            exponent_bits = 8
+            mantissa_bits = 23
+            sign_bits = 1
+        print("`define EXPONENT %d" % (exponent_bits))
+        print("`define MANTISSA %d" % (mantissa_bits))
+        print("`define SIGN %d" % (sign_bits))
+        print("`define DATAWIDTH (`SIGN+`EXPONENT+`MANTISSA)")
+        print("`define IEEE_COMPLIANCE 1")
+        print("`define NUM %d" % (self.num_inputs))
+        print("`define ADDRSIZE %d" % (self.addr_width))
+        print("`endif")
+
+
+generate_defines(4, "fp16", 16)
 generate_sub("mode2_sub", 4)
 generate_exp("mode3_exp", 4)
 generate_ln("mode5_ln", 4)
 generate_sub("mode6_sub", 4)
 generate_exp("mode7_exp", 4)
-
 
     
