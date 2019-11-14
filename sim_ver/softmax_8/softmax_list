@@ -4,9 +4,7 @@ softmax.v
 mode1_max.v
 mode2_sub.v
 mode3_exp.v
-mode4_adderTree_stage2.v
-mode4_adderTree_stage1.v
-mode4_adderTree_stage0.v
+mode4_adderTree.v
 mode5_ln.v
 mode6_sub.v
 mode7_exp.v

@@ -2,7 +2,7 @@ import numpy as np
 
 #Input array of type float16 populated with random values
 print("--------input value in decimal is:------------")
-input = np.random.rand(4,1).astype('float16')
+input = np.random.rand(32,1).astype('float16')
 print(input)
 
 print("----------input value in hex is:--------------")

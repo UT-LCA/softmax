@@ -5,7 +5,7 @@
 `define SIGN 1
 `define DATAWIDTH (`SIGN+`EXPONENT+`MANTISSA)
 `define IEEE_COMPLIANCE 1
-`define NUM 4
+`define NUM 8
 `define ADDRSIZE 16
 `define COUNTER_BITS 3
 `define PIPELINE_NUM 2
