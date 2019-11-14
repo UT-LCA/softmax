@@ -235,7 +235,7 @@ module softmax(
   //////------mode4 pipelined adder tree---------///////
   wire [`DATAWIDTH-1:0] mode4_adder_tree_outp;
   reg  [`DATAWIDTH-1:0] mode4_adder_tree_outp_reg;
-  mode4_adderTree(
+  mode4_adder_tree mode4_adder_tree(
     .clk(clk),
     .reset(reset),
   <mode4_adder_tree>
