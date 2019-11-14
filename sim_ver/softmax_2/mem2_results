@@ -1,0 +1,36 @@
+--------input value in decimal is:------------
+[[0.8594]
+ [0.4834]
+ [0.4365]
+ [0.818 ]]
+----------input value in hex is:--------------
+
+3ae037bc
+36fc3a8b
+----------MAX value is:-----------------------
+0.8594
+3ae0
+-----normalized value after subtraction is:---
+0000
+b604
+b6c4
+a950
+---------exponential value results:-----------
+3c00
+397e
+393e
+3bad
+------------summing results are:--------------
+429a
+------------log results are:------------------
+3cc7
+------second stage results are::--------------
+bcc7
+be48
+be78
+bcf2
+------final results are::--------------
+34d9
+32a8
+325a
+34a6
