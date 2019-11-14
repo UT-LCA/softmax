@@ -10,6 +10,7 @@ class generate_sub():
         self.print_it()
 
     def print_it(self):
+        print("")
         print("module %s(" % (self.name))
         for iter in range(self.num_inputs):
             print("  a_inp%d," % iter)
@@ -29,6 +30,7 @@ class generate_sub():
         for iter in range(self.num_inputs):
             print("  DW_fp_sub #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE) sub%d(.a(a_inp%d), .b(b_inp), .z(outp%d), .rnd(3'b000), .status());" % (iter, iter, iter))
         print("endmodule")
+        print("")
 
 class generate_exp():
     def __init__(self, name="mode3_exp", num_inputs=4):
@@ -37,6 +39,7 @@ class generate_exp():
         self.print_it()
 
     def print_it(self):
+        print("")
         print("module %s(" % (self.name))
         for iter in range(self.num_inputs):
             print("  inp%d, " % iter)
@@ -54,6 +57,7 @@ class generate_exp():
         for iter in range(self.num_inputs):
             print("  DW_fp_exp #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE,0) exp%d(.a(inp%d), .z(outp%d), .status());" % (iter, iter, iter))
         print("endmodule")
+        print("")
 
 class generate_ln():
     def __init__(self, name="mode5_ln", num_inputs=4):
@@ -62,6 +66,7 @@ class generate_ln():
         self.print_it()
     
     def print_it(self):
+        print("")
         print("module %s(" % (self.name))
         print("inp,")
         print("outp")
@@ -70,6 +75,7 @@ class generate_ln():
         print("  output [`DATAWIDTH-1 : 0] outp;")
         print("  DW_fp_ln #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE, 0, 0) ln(.a(inp), .z(outp), .status());")
         print("endmodule")
+        print("")
 
 
 class generate_defines():
@@ -80,6 +86,7 @@ class generate_defines():
         self.print_it()
 
     def print_it(self):
+        print("")
         print("`ifndef DEFINES_DONE")
         print("`define DEFINES_DONE")
         if self.dtype == "fp16":
@@ -102,5 +109,6 @@ class generate_defines():
         print("`define NUM %d" % (self.num_inputs))
         print("`define ADDRSIZE %d" % (self.addr_width))
         print("`endif")
+        print("")
 
 

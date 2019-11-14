@@ -260,7 +260,7 @@ module softmax(
   //////------mode5 log---------///////
   wire [`DATAWIDTH-1:0] mode5_outp_log;
   reg  [`DATAWIDTH-1:0] mode5_outp_log_reg;
-  mode5_ln mode5_ln(.inp(mode4_adder_tree_outp0_reg), .outp(mode5_outp_log));
+  mode5_ln mode5_ln(.inp(mode4_adder_tree_outp_reg), .outp(mode5_outp_log));
   
   always @(posedge clk)
   begin

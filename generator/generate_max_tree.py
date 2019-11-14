@@ -13,6 +13,7 @@ class generate_max_tree():
     self.printit()
   
   def printit(self):
+    print("")
     print("module mode1_max_tree(")
     for iter in range(self.num_inputs):
       print("  inp%d, " % iter)
@@ -68,8 +69,8 @@ class generate_max_tree():
           num_comparator_cur_stage = num_comparator_cur_stage + 2
       
     print("DW_fp_cmp #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE) cmp_extra(.a(cmp0_out_stage%d),       .b(ex_inp),      .z1(outp), .zctr(1'b0), .aeqb(), .altb(), .agtb(), .unordered(), .z0(), .status0(), .status1());" % (self.num_stages-1))
-    print("")
     print("endmodule")
+    print("")
     
 
 

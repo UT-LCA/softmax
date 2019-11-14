@@ -154,7 +154,7 @@ class generate_softmax():
           for i in range(self.num_inp_pins):
             print("wire [`DATAWIDTH-1:0] outp%d_temp;" % (i))
           for i in range(self.num_inp_pins):
-            print("wire [`DATAWIDTH-1:0] outp%d;" % (i))
+            print("reg [`DATAWIDTH-1:0] outp%d;" % (i))
           print("")
           print("mode7_exp mode7_exp(")
           for i in range(self.num_inp_pins):

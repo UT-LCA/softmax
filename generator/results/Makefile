@@ -3,7 +3,7 @@ export VCS_HOME=/usr/local/packages/synopsys_2018/vcs-mx/O-2018.09-SP1
 default: gen compile
 
 gen:
-	python ../generate.py | tee softmax.v
+	python ../generator.py | tee softmax.v
 compile:
 	${VCS_HOME}/bin/vcs \
 	-sverilog \
