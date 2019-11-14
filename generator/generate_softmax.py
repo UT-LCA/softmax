@@ -4,31 +4,10 @@ import argparse
 import math
 
 class generate_softmax():
-  def __init__(self):
-    self.parse_args()
+  def __init__(self, template_file, num_inp_pins):
+    self.num_inp_pins = num_inp_pins
+    self.template_file = template_file
     self.print_it()
-  
-  def parse_args(self):
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-p",
-                        "--num_inp_pins",
-                        action='store',
-                        default=4,
-                        help='Number of input pins on the softmax block')
-    parser.add_argument("-v",
-                        "--num_inp_vals",
-                        action='store',
-                        default=4,
-                        help='Number of input values to be handled by the softmax block')
-    parser.add_argument("-f",
-                        "--template_file",
-                        action='store',
-                        default="/mnt/c/Users/amana/DOCUME~1/WSL/softmax/softmax/generator/top_level_template.v",
-                        help='Path+Name of the top level template file')
-    args = parser.parse_args()
-    self.template_file = args.template_file
-    self.num_inp_pins = args.num_inp_pins
-    self.num_inp_vals = args.num_inp_vals
 
   def print_it(self):
     template_file = open(self.template_file, 'r')
@@ -89,8 +68,11 @@ class generate_softmax():
           for i in range(self.num_inp_pins):
             print("      .inp%d(mode2_outp_sub%d_reg)," % (i,i))
           for i in range(self.num_inp_pins):
-            print("      .outp%d(mode3_outp_exp%d)," %(i,i))
-          print("      .dummy());")
+            if i==self.num_inp_pins-1:
+              print("      .outp%d(mode3_outp_exp%d)" %(i,i))
+            else:
+              print("      .outp%d(mode3_outp_exp%d)," %(i,i))
+          print(");")
           print("")
           for i in range(self.num_inp_pins):
             print("reg [`DATAWIDTH-1:0] mode3_outp_exp%d_reg;" % (i))
@@ -108,7 +90,7 @@ class generate_softmax():
         mode4_adder_tree_tag = re.search(r'<mode4_adder_tree>', line)
         if mode4_adder_tree_tag is not None:
           for i in range(self.num_inp_pins):
-            print("  .inp%d(mode3_outp_exp%d_reg)" % (i,i))            
+            print("    .inp%d(mode3_outp_exp%d_reg)," % (i,i))            
 
         #mode6 pre-sub
         mode6_pre_sub_tag = re.search(r'<mode6_presub>', line)
@@ -116,14 +98,17 @@ class generate_softmax():
           for i in range(self.num_inp_pins):
             print("wire [`DATAWIDTH-1:0] mode6_outp_presub%d;" % (i))
           for i in range(self.num_inp_pins):
-            print("wire [`DATAWIDTH-1:0] mode6_outp_presub%d_reg;" % (i))
+            print("reg [`DATAWIDTH-1:0] mode6_outp_presub%d_reg;" % (i))
           print("")
           print("mode6_sub pre_sub(")
           for i in range(self.num_inp_pins):
             print("      .a_inp%d(sub1_inp_reg[`DATAWIDTH*%d-1:`DATAWIDTH*%d])," % (i, i+1, i))
           print("      .b_inp(max_outp_reg),")
           for i in range(self.num_inp_pins):
-            print("      .outp%d(mode6_outp_presub%d)," % (i,i))
+            if i==self.num_inp_pins-1:
+              print("      .outp%d(mode6_outp_presub%d)" % (i,i))
+            else: 
+              print("      .outp%d(mode6_outp_presub%d)," % (i,i))
           print(");")
           print("always @(posedge clk) begin")
           print("  if (reset) begin")
@@ -141,14 +126,17 @@ class generate_softmax():
           for i in range(self.num_inp_pins):
             print("wire [`DATAWIDTH-1:0] mode6_outp_logsub%d;" % (i))
           for i in range(self.num_inp_pins):
-            print("wire [`DATAWIDTH-1:0] mode6_outp_logsub%d_reg;" % (i))
+            print("reg [`DATAWIDTH-1:0] mode6_outp_logsub%d_reg;" % (i))
           print("")
           print("mode6_sub log_sub(")
           for i in range(self.num_inp_pins):
             print("      .a_inp%d(mode6_outp_presub%d_reg)," % (i, i))
           print("      .b_inp(mode5_outp_log_reg),")
           for i in range(self.num_inp_pins):
-            print("      .outp%d(mode6_outp_logsub%d)," % (i,i))
+            if i==self.num_inp_pins-1:
+              print("      .outp%d(mode6_outp_logsub%d)" % (i,i))
+            else:
+              print("      .outp%d(mode6_outp_logsub%d)," % (i,i))
           print(");")
           print("always @(posedge clk) begin")
           print("  if (reset) begin")
@@ -172,7 +160,10 @@ class generate_softmax():
           for i in range(self.num_inp_pins):
             print("      .inp%d(mode6_outp_logsub%d_reg)," % (i, i))
           for i in range(self.num_inp_pins):
-            print("      .outp%d(outp%d_temp)," % (i,i))
+            if i==self.num_inp_pins-1:
+              print("      .outp%d(outp%d_temp)" % (i,i))
+            else:
+              print("      .outp%d(outp%d_temp)," % (i,i))
           print(");")
           print("always @(posedge clk) begin")
           print("  if (reset) begin")
@@ -185,7 +176,3 @@ class generate_softmax():
           print("end")
       else:      
         print(line)
-
-
-    
-generate_softmax()

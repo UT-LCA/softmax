@@ -66,6 +66,9 @@ module softmax(
   reg presub_run;
   reg done;
 
+  //TODO: Remove this
+  reg mode4_run;
+
   always @(posedge clk)begin
     mode4_stage1_run_a <= mode4_stage1_run;
     mode4_stage2_run_a <= mode4_stage2_run;
@@ -212,7 +215,9 @@ module softmax(
   wire [`DATAWIDTH-1:0] max_outp;
   reg  [`DATAWIDTH-1:0] max_outp_reg;
 
-  mode1_max mode1_max(
+  mode1_max_tree mode1_max(
+      .clk(clk),
+      .reset(reset),
   <mode1_max>
       .ex_inp(max_outp_reg),
       .outp(max_outp)); 

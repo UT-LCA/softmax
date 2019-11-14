@@ -10,7 +10,7 @@ class generate_sub():
         self.print_it()
 
     def print_it(self):
-        print("module %s()" % (self.name))
+        print("module %s(" % (self.name))
         for iter in range(self.num_inputs):
             print("  a_inp%d," % iter)
         print("  b_inp,")
@@ -37,7 +37,7 @@ class generate_exp():
         self.print_it()
 
     def print_it(self):
-        print("module %s()" % (self.name))
+        print("module %s(" % (self.name))
         for iter in range(self.num_inputs):
             print("  inp%d, " % iter)
         for iter in range(self.num_inputs):
@@ -62,13 +62,13 @@ class generate_ln():
         self.print_it()
     
     def print_it(self):
-        print("module %s()" % (self.name))
+        print("module %s(" % (self.name))
         print("inp,")
-        print("outp,")
+        print("outp")
         print(");")
         print("  input  [`DATAWIDTH-1 : 0] inp;")  
-        print("output [`DATAWIDTH-1 : 0] outp;")
-        print("DW_fp_ln #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE, 0, 0) ln(.a(inp), .z(outp), .status());")
+        print("  output [`DATAWIDTH-1 : 0] outp;")
+        print("  DW_fp_ln #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE, 0, 0) ln(.a(inp), .z(outp), .status());")
         print("endmodule")
 
 
@@ -104,11 +104,3 @@ class generate_defines():
         print("`endif")
 
 
-generate_defines(4, "fp16", 16)
-generate_sub("mode2_sub", 4)
-generate_exp("mode3_exp", 4)
-generate_ln("mode5_ln", 4)
-generate_sub("mode6_sub", 4)
-generate_exp("mode7_exp", 4)
-
-    
