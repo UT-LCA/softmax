@@ -5,9 +5,9 @@
 `define SIGN 1
 `define DATAWIDTH (`SIGN+`EXPONENT+`MANTISSA)
 `define IEEE_COMPLIANCE 1
-`define NUM 8
+`define NUM 2
 `define ADDRSIZE 16
 `define COUNTER_BITS 3
-`define PIPELINE_NUM 2
+`define PIPELINE_NUM 0
 `else
 `endif

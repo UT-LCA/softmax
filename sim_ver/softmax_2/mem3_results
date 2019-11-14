@@ -1,0 +1,58 @@
+--------input value in decimal is:------------
+[[0.932 ]
+ [0.1548]
+ [0.926 ]
+ [0.2937]
+ [0.537 ]
+ [0.8755]
+ [0.5464]
+ [0.1488]]
+----------input value in hex is:--------------
+
+3b7530f4
+3b6834b3
+384c3b01
+385f30c3
+----------MAX value is:-----------------------
+0.932
+3b75
+-----normalized value after subtraction is:---
+0000
+ba38
+9e80
+b91c
+b652
+ab40
+b62c
+ba44
+---------exponential value results:-----------
+3c00
+375b
+3bf3
+3839
+3964
+3b8f
+3971
+3750
+------------summing results are:--------------
+45bd
+------------log results are:------------------
+3efd
+------second stage results are::--------------
+befd
+c10c
+bf04
+c0c6
+c049
+bf37
+c044
+c110
+------final results are::--------------
+3194
+2d22
+318a
+2de2
+2f83
+3145
+2f96
+2d18
