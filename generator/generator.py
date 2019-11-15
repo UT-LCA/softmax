@@ -40,13 +40,13 @@ class generator:
 
   def print_it(self):
     generate_defines(self.num_inp_pins, "fp16", 16)
+    generate_max_tree(self.num_inp_pins)
     generate_sub("mode2_sub", self.num_inp_pins)
     generate_exp("mode3_exp", self.num_inp_pins)
+    generate_addertree(self.num_inp_pins)
     generate_ln("mode5_ln", self.num_inp_pins)
     generate_sub("mode6_sub", self.num_inp_pins)
     generate_exp("mode7_exp", self.num_inp_pins)
-    generate_addertree(self.num_inp_pins)
-    generate_max_tree(self.num_inp_pins)
     generate_softmax(self.template_file, self.num_inp_pins)
 
 # ###############################################################

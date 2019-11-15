@@ -57,21 +57,17 @@ module softmax(
   reg mode1_run;
   reg mode2_run;
   reg mode3_run;
-  reg mode4_stage2_run;
-  reg mode4_stage1_run;
-  reg mode4_stage0_run;
+  <mode4_stage_run_regs>
+  reg mode3_run_a
   reg mode5_run;
   reg mode6_run;
   reg mode7_run;
   reg presub_run;
   reg done;
 
-  //TODO: Remove this
-  reg mode4_run;
-
   always @(posedge clk)begin
-    mode4_stage1_run_a <= mode4_stage1_run;
-    mode4_stage2_run_a <= mode4_stage2_run;
+    <mode4_stage_run_regs_assign>
+    mode3_run_a        <= mode3_run;
   end
 
   always @(posedge clk)
@@ -110,22 +106,8 @@ module softmax(
     end    
 
     //logic when to finish mode1 and trigger mode2 to latch the mode2 address
-    if(~reset && mode1_start && addr < end_addr) begin
-      addr <= addr + 1;
-      inp_reg <= inp;
-      mode1_run <= 1;
-      if(addr == end_addr - 1)begin
-        mode2_start <= 1;
-        sub0_inp_addr <= start_addr;
-      end
-    end else if(addr == end_addr)begin
-      addr <= 0;
-      mode1_run <= 0;
-      mode1_start <= 0;
-    end else begin
-      mode1_run <= 0;
-    end
-
+    <mode1_finish_mode2_trigger>
+   
     //logic when to finish mode2
     if(~reset && mode2_start && sub0_inp_addr < end_addr)begin
       sub0_inp_addr <= sub0_inp_addr + 1;
@@ -148,23 +130,7 @@ module softmax(
     //logic when to trigger mode4 last stage adderTree, since the final results of adderTree
     //is always ready 1 cycle after mode3 finishes, so there is no need on extra
     //logic to control the adderTree outputs
-    if(mode3_run == 1)begin
-      mode4_stage2_run <= 1;
-    end else begin
-      mode4_stage2_run <= 0;
-    end
-
-    if(mode4_stage2_run == 1) begin
-      mode4_stage1_run <= 1;
-    end else begin
-      mode4_stage1_run <= 0;
-    end
- 
-    if(mode4_stage1_run == 1) begin
-      mode4_stage0_run <= 1;
-    end else begin
-      mode4_stage0_run <=0;
-    end
+    <mode4_stagex_run>
    
     //mode5 should be triggered right at the falling edge of mode4_stage0_run 
     if(mode4_stage1_run_a & ~mode4_stage1_run) begin
@@ -173,8 +139,7 @@ module softmax(
       mode5_run <= 0;
     end
 
-    //detects the falling edge of mode2, trigger presub to latch data address
-    if(mode4_stage2_run_a & ~mode4_stage2_run)begin
+    <presub_trigger>
       presub_start <= 1;
       sub1_inp_addr <= start_addr;
       sub1_inp_reg <= sub1_inp;

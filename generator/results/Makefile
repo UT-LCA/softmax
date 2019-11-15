@@ -1,9 +1,13 @@
 export VCS_HOME=/usr/local/packages/synopsys_2018/vcs-mx/O-2018.09-SP1
 
+export NUM_INPUTS=8
+
 default: gen compile
 
+#python3 is important here. Don't use python version 2.x
 gen:
-	python ../generator.py | tee softmax.v
+	python3 ../generator.py -p ${NUM_INPUTS} | tee softmax.v
+
 compile:
 	${VCS_HOME}/bin/vcs \
 	-sverilog \

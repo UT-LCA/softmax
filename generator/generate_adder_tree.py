@@ -68,7 +68,7 @@ class generate_addertree():
           num_adder_next_stage = num_adder_next_stage + 1
           num_adder_cur_stage = num_adder_cur_stage + 2
       
-    print("DW_fp_add #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE) add_extra(.a(add0_out_stage%d),       .b(ex_inp),      .z(outp), .rnd(3'b000),    .status());" % (self.num_stages-1))
+    print("DW_fp_add #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE) add_extra(.a(add0_out_stage%d_reg),       .b(ex_inp),      .z(outp), .rnd(3'b000),    .status());" % (self.num_stages-1))
     print("endmodule")
     print("")
     

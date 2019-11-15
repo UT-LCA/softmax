@@ -7,6 +7,10 @@ class generate_softmax():
   def __init__(self, template_file, num_inp_pins):
     self.num_inp_pins = num_inp_pins
     self.template_file = template_file
+    self.num_adder_stages_in_adder_tree = int(math.log(self.num_inp_pins,2)) + 1
+    self.num_flop_stages_in_adder_tree = self.num_adder_stages_in_adder_tree
+    self.num_comparator_stages_in_max_tree = int(math.log(self.num_inp_pins,2)) + 1
+    self.num_flop_stages_in_max_tree = math.ceil(self.num_comparator_stages_in_adder_tree/3)
     self.print_it()
 
   def print_it(self):
@@ -28,6 +32,79 @@ class generate_softmax():
         if outp_declaration_tag is not None: 
           for i in range(self.num_inp_pins):
             print("  output [`DATAWIDTH-1:0] outp%d;" % (i))
+
+        #mode4_stage_run_regs
+        mode4_stage_run_regs_tag = re.search(r'<mode4_stage_run_regs>', line)
+        if mode4_stage_run_regs_tag is not None:
+          for i in range(self.num_flop_stages_in_adder_tree):
+            print("  reg mode4_stage%d_run;" % (i))
+            print("  reg mode4_stage%d_run_a;" % (i))
+
+        #mode4_stage_run_regs_assign
+        mode4_stage_run_regs_assign_tag = re.search(r'<mode4_stage_run_regs_assign>', line)
+        if mode4_stage_run_regs_assign_tag is not None:
+          for i in range(self.num_flop_stages_in_adder_tree):
+            print("  mode4_stage%d_run_a <= mode4_stage%d_run;" % (i))
+
+        #mode1_finish_mode2_trigger
+        mode1_finish_mode2_trigger_tag = re.search(r'<mode1_finish_mode2_trigger>', line)
+        if mode1_finish_mode2_trigger_tag is not None:
+          if self.num_inp_pins <= 8:
+            print("if(~reset && mode1_start && addr < end_addr) begin")
+            print("  addr <= addr + 1;")
+            print("  inp_reg <= inp;")
+            print("  mode1_run <= 1;")
+            print("end else if(addr == end_addr)begin")
+            print("  mode2_start <= 1;")
+            print("  sub0_inp_addr <= start_addr;")
+            print("  addr <= 0;")
+            print("  mode1_done <= 1;")
+            print("  mode1_run <= 0;")
+            print("  mode1_start <= 0;")
+            print("end else begin")
+            print("  mode1_run <= 0;")
+            print("end")
+          else:
+            print("if(~reset && mode1_start && addr < end_addr) begin")
+            print("  addr <= addr + 1;")
+            print("  inp_reg <= inp;")
+            print("  mode1_run <= 1;")
+            print("  if(addr == end_addr - 1) begin")
+            print("    mode2_start <= 1;")
+            print("    sub0_inp_addr <= start_addr;")
+            print("  end")
+            print("end else if(addr == end_addr)begin")
+            print("  addr <= 0;")
+            print("  mode1_done <= 1;")
+            print("  mode1_run <= 0;")
+            print("  mode1_start <= 0;")
+            print("end else begin")
+            print("  mode1_run <= 0;")
+            print("end")
+
+        #mode4_stagex_run
+        mode4_stagex_run_tag = re.search(r'<mode4_stagex_run>', line)
+        if mode4_stagex_run_tag is not None:
+          print("if mode3_run == 1) begin")
+          print("  mode4_stage%d_run <= 1;" % (self.num_flop_stages_in_adder_tree))
+          print("end else begin")
+          print("  mode4_stage%d_run <= 0;" % (self.num_flop_stages_in_adder_tree))
+          print("end")
+          for i in reversed(range(1,self.num_flop_stages_in_adder_tree-1)):
+            print("if mode4_stage%d_run == 1) begin" % (i+1))
+            print("  mode4_stage%d_run <= 1;" % (i))
+            print("end else begin")
+            print("  mode4_stage%d_run <= 0;" % (i))
+            print("end") 
+
+
+        #presub_trigger
+        presub_trigger_tag = re.search(r'<presub_trigger>', line)
+        if presub_trigger_tag is not None:
+        if self.num_inp_pins <= 2:
+				  print("if (mode3_run_a & ~mode3_run) begin")
+				else:         
+					print("if(mode4_stage2_run_a & ~mode4_stage2_run) begin")
 
         #mode1 max
         mode1_max_tag = re.search(r'<mode1_max>', line)
