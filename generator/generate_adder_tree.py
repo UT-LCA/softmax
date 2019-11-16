@@ -37,7 +37,7 @@ class generate_addertree():
     print("input  [`DATAWIDTH-1 : 0] ex_inp;")
     print("output [`DATAWIDTH-1 : 0] outp;")
     for iter in range(1,self.num_add_stages_in_adder_tree):
-        print("output mode4_stage%d_run," % (iter+1))
+        print("input mode4_stage%d_run;" % (iter+1))
     print("")
     
     #Left most stage

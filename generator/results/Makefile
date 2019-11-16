@@ -1,6 +1,6 @@
 export VCS_HOME=/usr/local/packages/synopsys_2018/vcs-mx/O-2018.09-SP1
 
-export NUM_INPUTS=8
+export NUM_INPUTS=4
 
 default: gen compile
 
@@ -15,6 +15,7 @@ compile:
 	-debug_access+all \
 	../../sim_ver/lib/16bits/*.v \
 	softmax.v \
+  ../softmax_tb.v \
 	+incdir+/misc/linuxws/packages/synopsys_2018/syn/O-2018.06-SP5/dw/sim_ver/ \
 	-timescale=1ns/1ps \
 

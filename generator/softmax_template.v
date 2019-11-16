@@ -16,7 +16,7 @@ module softmax(
   sub1_inp_addr, //address corresponding to sub1_inp
 
   <outp_ports>  
-
+   
   clk, 
   reset, 
   init,   //the signal indicating to latch the new start address
@@ -56,7 +56,7 @@ module softmax(
   reg mode2_run;
   reg mode3_run;
   <mode4_stage_run_regs>
-  reg mode3_run_a
+  reg mode3_run_a;
   reg mode5_run;
   reg mode6_run;
   reg mode7_run;
@@ -130,10 +130,10 @@ module softmax(
     //logic to control the adderTree outputs
     <mode4_stagex_run>
    
-    //mode5 should be triggered right at the falling edge of mode4_stage0_run 
+    //mode5 should be triggered right at the falling edge of mode4_stage1_run 
     if(mode4_stage1_run_a & ~mode4_stage1_run) begin
       mode5_run <= 1;
-    end else if(mode4_stage0_run == 0) begin
+    end else if(mode4_stage1_run == 0) begin
       mode5_run <= 0;
     end
 

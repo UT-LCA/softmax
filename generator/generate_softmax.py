@@ -40,46 +40,54 @@ class generate_softmax():
         #mode1_stage_run_regs
         mode1_stage_run_regs_tag = re.search(r'<mode1_stage_run_regs>', line)
         if mode1_stage_run_regs_tag is not None:
-          for i in range(self.num_comparator_stages_in_max_tree):
+          print("  reg mode1_stage1_run;")
+          for i in range(1,self.num_comparator_stages_in_max_tree+1):
             if max_tree_stage_has_flops(i):
               print("  reg mode1_stage%d_run;" % (i+1))
 
         #mode4_stage_run_regs
         mode4_stage_run_regs_tag = re.search(r'<mode4_stage_run_regs>', line)
         if mode4_stage_run_regs_tag is not None:
-          for i in range(self.num_flop_stages_in_adder_tree):
-            print("  reg mode4_stage%d_run;" % (i+1))
-            print("  reg mode4_stage%d_run_a;" % (i+1))
+          for i in range(1,self.num_flop_stages_in_adder_tree+1):
+            print("  reg mode4_stage%d_run;" % (i))
+            print("  reg mode4_stage%d_run_a;" % (i))
 
         #mode4_stage_run_regs_assign
         mode4_stage_run_regs_assign_tag = re.search(r'<mode4_stage_run_regs_assign>', line)
         if mode4_stage_run_regs_assign_tag is not None:
-          for i in range(self.num_flop_stages_in_adder_tree):
-            print("    mode4_stage%d_run_a <= mode4_stage%d_run;" % (i+1,i+1))
+          for i in range(1,self.num_flop_stages_in_adder_tree+1):
+            print("    mode4_stage%d_run_a <= mode4_stage%d_run;" % (i,i))
 
         #mode1_run_reset
         mode1_run_reset_tag = re.search(r'mode1_run_reset', line)
         if mode1_run_reset_tag is not None:
-          for i in range(self.num_comparator_stages_in_max_tree):
+          print("      mode1_stage1_run <= 0;")
+          for i in range(1,self.num_comparator_stages_in_max_tree+1):
             if max_tree_stage_has_flops(i):
               print("      mode1_stage%d_run <= 0;" % (i+1))
 
         #mode4_run_reset
         mode4_run_reset_tag = re.search(r'mode4_run_reset', line)
         if mode4_run_reset_tag is not None:
-          for i in range(self.num_flop_stages_in_adder_tree):
-            print("      mode4_stage%d_run <= 0;" % (i+1))
+          for i in range(1,self.num_flop_stages_in_adder_tree+1):
+            print("      mode4_stage%d_run <= 0;" % (i))
 
         #mode1_stagex_run
         mode1_stagex_run_tag = re.search(r'<mode1_stagex_run>', line)
         if mode1_stagex_run_tag is not None:
-          for i in reversed(range(1,self.num_comparator_stages_in_max_tree)):
-            if max_tree_stage_has_flops(i):
+          for i in reversed(range(1,self.num_comparator_stages_in_max_tree+1)):
+            if max_tree_stage_has_flops(i) and (i+1-3 != 0):
               print("    if (mode1_stage%d_run == 1) begin" % (i+1))
               print("      mode1_stage%d_run <= 1;" % (i+1-3))
               print("    end else begin")
               print("      mode1_stage%d_run <= 0;" % (i+1-3))
               print("    end") 
+
+        largest_stage_num_with_flop_in_max_tree = 1
+        for iter in reversed(range(1,self.num_comparator_stages_in_max_tree)):
+          if max_tree_stage_has_flops(iter):
+            largest_stage_num_with_flop_in_max_tree = iter+1
+            break
 
         #mode1_finish_mode2_trigger
         mode1_finish_mode2_trigger_tag = re.search(r'<mode1_finish_mode2_trigger>', line)
@@ -88,33 +96,31 @@ class generate_softmax():
             print("    if(~reset && mode1_start && addr < end_addr) begin")
             print("      addr <= addr + 1;")
             print("      inp_reg <= inp;")
-            print("      mode1_stage%d_run <= 1;" % (self.num_comparator_stages_in_max_tree))
+            print("      mode1_stage%d_run <= 1;" % (largest_stage_num_with_flop_in_max_tree))
             print("    end else if(addr == end_addr)begin")
             print("      mode2_start <= 1;")
             print("      sub0_inp_addr <= start_addr;")
             print("      addr <= 0;")
-            print("      mode1_done <= 1;")
-            print("      mode1_stage%d_run <= 0;" % (self.num_comparator_stages_in_max_tree))
+            print("      mode1_stage%d_run <= 0;" % (largest_stage_num_with_flop_in_max_tree))
             print("      mode1_start <= 0;")
             print("    end else begin")
-            print("      mode1_stage%d_run <= 0;" % (self.num_comparator_stages_in_max_tree))
+            print("      mode1_stage%d_run <= 0;" % (largest_stage_num_with_flop_in_max_tree))
             print("    end")
           else:
             print("    if(~reset && mode1_start && addr < end_addr) begin")
             print("      addr <= addr + 1;")
             print("      inp_reg <= inp;")
-            print("      mode1_stage%d_run <= 1;" % (self.num_comparator_stages_in_max_tree))
+            print("      mode1_stage%d_run <= 1;" % (largest_stage_num_with_flop_in_max_tree))
             print("      if(addr == end_addr - 1) begin")
             print("        mode2_start <= 1;")
             print("        sub0_inp_addr <= start_addr;")
             print("      end")
             print("    end else if(addr == end_addr)begin")
             print("      addr <= 0;")
-            print("      mode1_done <= 1;")
-            print("      mode1_stage%d_run <= 0;" % (self.num_comparator_stages_in_max_tree))
+            print("      mode1_stage%d_run <= 0;" % (largest_stage_num_with_flop_in_max_tree))
             print("      mode1_start <= 0;")
             print("    end else begin")
-            print("      mode1_stage%d_run <= 0;" % (self.num_comparator_stages_in_max_tree))
+            print("      mode1_stage%d_run <= 0;" % (largest_stage_num_with_flop_in_max_tree))
             print("    end")
 
         #mode4_stagex_run
@@ -126,7 +132,7 @@ class generate_softmax():
           print("      mode4_stage%d_run <= 0;" % (self.num_flop_stages_in_adder_tree))
           print("    end")
           for i in reversed(range(1,self.num_flop_stages_in_adder_tree-1)):
-            print("    if mode4_stage%d_run == 1) begin" % (i+1))
+            print("    if (mode4_stage%d_run == 1) begin" % (i+1))
             print("      mode4_stage%d_run <= 1;" % (i))
             print("    end else begin")
             print("      mode4_stage%d_run <= 0;" % (i))
@@ -148,7 +154,7 @@ class generate_softmax():
             print("      .inp%d(inp_reg[`DATAWIDTH*%d-1:`DATAWIDTH*%d])," % (i, i+1, i))
           for iter in range(1,self.num_comparator_stages_in_max_tree):
             if max_tree_stage_has_flops(iter):
-              print("      .mode1_stage%d_run(mode1_stage%d_run)" % (iter+1, iter+1))
+              print("      .mode1_stage%d_run(mode1_stage%d_run)," % (iter+1, iter+1))
 
         #mode2 sub
         mode2_sub_tag = re.search(r'<mode2_sub>', line)
@@ -207,7 +213,7 @@ class generate_softmax():
           for i in range(self.num_inp_pins):
             print("    .inp%d(mode3_outp_exp%d_reg)," % (i,i))            
           for iter in range(1,self.num_add_stages_in_adder_tree):
-            print("    .mode4_stage%d_run(mode4_stage%d_run)" % (iter+1, iter+1))
+            print("    .mode4_stage%d_run(mode4_stage%d_run)," % (iter+1, iter+1))
 
         #mode6 pre-sub
         mode6_pre_sub_tag = re.search(r'<mode6_presub>', line)
