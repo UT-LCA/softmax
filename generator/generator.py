@@ -22,11 +22,13 @@ class generator:
                         "--num_inp_pins",
                         action='store',
                         default=8,
+                        type=int,
                         help='Number of input pins on the softmax block')
     parser.add_argument("-v",
                         "--num_inp_vals",
                         action='store',
                         default=4,
+                        type=int,
                         help='Number of input values to be handled by the softmax block')
     parser.add_argument("-f",
                         "--template_file",

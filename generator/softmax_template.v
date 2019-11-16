@@ -49,12 +49,10 @@ module softmax(
   reg [`DATAWIDTH*`NUM-1:0] sub1_inp_reg;
   reg [`ADDRSIZE-1:0] sub0_inp_addr;
   reg [`ADDRSIZE-1:0] sub1_inp_addr;
-  reg mode4_stage1_run_a;
-  reg mode4_stage2_run_a;
   reg mode1_start;
   reg mode2_start;
   reg presub_start;
-  reg mode1_run;
+  <mode1_stage_run_regs>
   reg mode2_run;
   reg mode3_run;
   <mode4_stage_run_regs>
@@ -82,12 +80,10 @@ module softmax(
       mode1_start <= 0;
       mode2_start <= 0;
       presub_start <= 0;
-      mode1_run <= 0;
+      <mode1_run_reset>
       mode2_run <= 0;
       mode3_run <= 0;
-      mode4_stage2_run <= 0;
-      mode4_stage1_run <= 0;
-      mode4_stage0_run <= 0;
+      <mode4_run_reset>
       mode5_run <= 0;
       mode6_run <= 0;
       mode7_run <= 0;
@@ -104,6 +100,8 @@ module softmax(
     if(start)begin
       mode1_start <= 1;
     end    
+
+    <mode1_stagex_run>
 
     //logic when to finish mode1 and trigger mode2 to latch the mode2 address
     <mode1_finish_mode2_trigger>
@@ -191,7 +189,7 @@ module softmax(
   begin
     if(reset)begin
       max_outp_reg <= 0;
-    end else if(mode1_run == 1)begin
+    end else if(mode1_stage1_run == 1)begin
       max_outp_reg <= max_outp;
     end
   end
@@ -217,7 +215,7 @@ module softmax(
   begin
     if(reset)begin
       mode4_adder_tree_outp_reg <= 0;
-    end else if(mode4_run == 1)begin
+    end else if(mode4_stage1_run == 1)begin
       mode4_adder_tree_outp_reg <= mode4_adder_tree_outp;
     end
   end

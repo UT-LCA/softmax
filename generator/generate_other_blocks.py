@@ -101,6 +101,8 @@ class generate_defines():
             exponent_bits = 8
             mantissa_bits = 23
             sign_bits = 1
+        else:
+            raise SystemExit
         print("`define EXPONENT %d" % (exponent_bits))
         print("`define MANTISSA %d" % (mantissa_bits))
         print("`define SIGN %d" % (sign_bits))
