@@ -71,12 +71,12 @@ class tb_generator:
         #start_addr_assign
         start_addr_assign_tag = re.search(r'start_addr_assign', line)
         if start_addr_assign_tag is not None:
-          print("    start_addr = `ADDRSIZE'd%d;" % (self.num_blank_locations))
+          print("        start_addr = `ADDRSIZE'd%d;" % (self.num_blank_locations))
 
         #end_addr_assign
         end_addr_assign_tag = re.search(r'end_addr_assign', line)
         if end_addr_assign_tag is not None:
-          print("    end_addr = `ADDRSIZE'd%d;" % (self.num_blank_locations + int(self.num_inp_vals/self.num_inp_pins)))
+          print("        end_addr = `ADDRSIZE'd%d;" % (self.num_blank_locations + int(self.num_inp_vals/self.num_inp_pins)))
 
         #delay_to_finish
         delay_to_finish_tag = re.search(r'delay_to_finish', line)

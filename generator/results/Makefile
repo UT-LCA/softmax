@@ -1,13 +1,11 @@
 export VCS_HOME=/usr/local/packages/synopsys_2018/vcs-mx/O-2018.09-SP1
 
 #Run commands like the following:
-#make PARALLELISM=8 NUM_INP_VALS=128
+#make PARALLELISM=8 NUM_INP_VALS=128 NUM_BLANK_LOCATIONS = 2 all
 
 NUM_INP_VALS ?= 8
 PARALLELISM ?= 4
 NUM_BLANK_LOCATIONS ?= 2
-
-default: gen compile
 
 all: gen compile run 
 
