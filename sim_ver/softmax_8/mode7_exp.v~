@@ -40,14 +40,14 @@ module mode7_exp(
   //The fourth parameter is "arch" for selecting an implementation
   //0 means area optimized, 1 means speed optimized
   //But it doesn't matter because we'll not use DW IP for EXP
-  expunit exp0(.a(inp0), .z(outp0),  .status());
-  expunit exp1(.a(inp1), .z(outp1),  .status());
-  expunit exp2(.a(inp2), .z(outp2),  .status());
-  expunit exp3(.a(inp3), .z(outp3),  .status());
-  expunit exp4(.a(inp4), .z(outp4),  .status());
-  expunit exp5(.a(inp5), .z(outp5),  .status());
-  expunit exp6(.a(inp6), .z(outp6),  .status());
-  expunit exp7(.a(inp7), .z(outp7),  .status());
+  DW_fp_exp #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE, 0) exp0(.a(inp0), .z(outp0),  .status());
+  DW_fp_exp #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE, 0) exp1(.a(inp1), .z(outp1),  .status());
+  DW_fp_exp #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE, 0) exp2(.a(inp2), .z(outp2),  .status());
+  DW_fp_exp #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE, 0) exp3(.a(inp3), .z(outp3),  .status());
+  DW_fp_exp #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE, 0) exp4(.a(inp4), .z(outp4),  .status());
+  DW_fp_exp #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE, 0) exp5(.a(inp5), .z(outp5),  .status());
+  DW_fp_exp #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE, 0) exp6(.a(inp6), .z(outp6),  .status());
+  DW_fp_exp #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE, 0) exp7(.a(inp7), .z(outp7),  .status());
 
 endmodule
 

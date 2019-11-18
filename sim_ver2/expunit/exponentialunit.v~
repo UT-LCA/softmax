@@ -1,5 +1,5 @@
 `include "defines.v"
-module expunit (a, z, status);
+module exp0 (a, z, status);
 
 	parameter int_width = 3; // fixed point integer length
 	parameter frac_width = 4; // fixed point fraction length
