@@ -12,7 +12,7 @@ module logunit (a, z, status);
 
 	LUT1 lut1 (.addr(a[14:10]),.log(fxout1)); 
 	LUT2 lut2 (.addr(a[9:0]),.log(fxout2));  
-	DW_fp_addsub #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE, 0) add(.a(fxout1), .b(fxout2), .rnd(3'b0), .op(1'b0), .z(z), .status(status[7:0]));
+	DW_fp_addsub #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE) add(.a(fxout1), .b(fxout2), .rnd(3'b0), .op(1'b0), .z(z), .status(status[7:0]));
 	
 endmodule
 

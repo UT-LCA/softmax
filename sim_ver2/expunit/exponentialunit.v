@@ -14,8 +14,8 @@ module expunit (a, z, status);
 
 	fptofixed_para fpfx (.fp(a), .fx(fxout));
 	LUT lut(.addr(fxout[int_width + frac_width - 1 : 0]), .exp(LUTout)); 
-	DW_fp_mult #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE, 0) fpmult (.a(a), .b(LUTout[31:16]), .rnd(3'b000), .z(Mult_out), .status());
-	DW_fp_add #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE, 0) fpsub (.a(Mult_out), .b(LUTout[15:0]), .rnd(3'b000), .z(z), .status(status[7:0]));
+	DW_fp_mult #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE) fpmult (.a(a), .b(LUTout[31:16]), .rnd(3'b000), .z(Mult_out), .status());
+	DW_fp_add #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE) fpsub (.a(Mult_out), .b(LUTout[15:0]), .rnd(3'b000), .z(z), .status(status[7:0]));
 endmodule
 
 module fptofixed_para (
@@ -61,7 +61,7 @@ begin
 		end
 end	
 
-DW01_ash #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE, 0) ash( .A(Mant[15:0]), .DATA_TC(1'b0), .SH(Ea[4:0]), .SH_TC(1'b1), .B(sftfx));
+DW01_ash #(`DATAWIDTH, 5) ash( .A(Mant[15:0]), .DATA_TC(1'b0), .SH(Ea[4:0]), .SH_TC(1'b1), .B(sftfx));
 
 endmodule
 

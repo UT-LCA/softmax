@@ -18,6 +18,8 @@ compile:
 	mode7_exp.v \
 	softmax.v \
 	softmax_tb.v \
+	exponentialunit.v \
+	logunit.v \
 	+incdir+/misc/linuxws/packages/synopsys_2018/syn/O-2018.06-SP5/dw/sim_ver/ \
 	-timescale=1ns/1ps \
 

@@ -1,5 +1,5 @@
 `include "defines.v"
-module exp0 (a, z, status);
+module expunit (a, z, status);
 
 	parameter int_width = 3; // fixed point integer length
 	parameter frac_width = 4; // fixed point fraction length
@@ -61,7 +61,7 @@ begin
 		end
 end	
 
-DW01_ash #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE, 0) ash( .A(Mant[15:0]), .DATA_TC(1'b0), .SH(Ea[4:0]), .SH_TC(1'b1), .B(sftfx));
+DW01_ash #(`DATAWIDTH, 5) ash( .A(Mant[15:0]), .DATA_TC(1'b0), .SH(Ea[4:0]), .SH_TC(1'b1), .B(sftfx));
 
 endmodule
 
