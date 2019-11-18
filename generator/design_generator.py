@@ -9,9 +9,9 @@ from generate_max_tree import *
 from generate_softmax import *
 
 # ###############################################################
-# Top-level generator class. Calls methods from other generators.
+# Top-level design generator class. Calls methods from other generators.
 # ###############################################################
-class generator:
+class design_generator:
   def __init__(self):
     self.parse_args()
     self.print_it()
@@ -33,7 +33,7 @@ class generator:
     parser.add_argument("-f",
                         "--template_file",
                         action='store',
-                        default="../softmax_template.v",
+                        default="../design_template.v",
                         help='Path+Name of the top level template file')
     args = parser.parse_args()
     self.template_file = args.template_file
@@ -55,4 +55,4 @@ class generator:
 # main()
 # ###############################################################
 if __name__ == "__main__":
-  generator()
+  design_generator()

@@ -34,10 +34,7 @@ module softmax_test;
   reg   [`ADDRSIZE-1      :0] end_addr;
   reg   [`ADDRSIZE-1      :0] start_addr;
 
-  wire [`DATAWIDTH-1:0] outp0;
-  wire [`DATAWIDTH-1:0] outp1;
-  wire [`DATAWIDTH-1:0] outp2;
-  wire [`DATAWIDTH-1:0] outp3;
+  <outp_wires>
   
   wire [`ADDRSIZE-1 :0] addr;
   wire [`ADDRSIZE-1 :0] sub0_inp_addr;
@@ -54,6 +51,8 @@ module softmax_test;
     .addr(addr),
     .sub0_inp_addr(sub0_inp_addr),
     .sub1_inp_addr(sub1_inp_addr),
+
+    <outp_connections>
    
     .clk(clk),
     .reset(reset),
@@ -93,26 +92,24 @@ module softmax_test;
   always #2 clk = !clk;
 
   initial begin
-     if($test$plusargs("4_input_vals")) begin
-         $readmemh("../mem1.txt", memory1.ram);
-         $readmemh("../mem1.txt", memory2.ram);
-         $readmemh("../mem1.txt", memory3.ram);
-         start_addr = `ADDRSIZE'h0;
-         end_addr = `ADDRSIZE'h1;
+     integer parallelism = 4;
+     if ($test$plusargs("parallelism")) begin
+         $value$plusargs("parallelism=%d", parallelism);
      end
-     else if($test$plusargs("8_input_vals")) begin
-         $readmemh("../mem2.txt", memory1.ram);
-         $readmemh("../mem2.txt", memory2.ram);
-         $readmemh("../mem2.txt", memory3.ram);
-         start_addr = `ADDRSIZE'h2;
-         end_addr = `ADDRSIZE'h4;
+     else begin
+        $error("Parallelism not provided on command line.");
+        $finish;
      end
-     else if($test$plusargs("16_input_vals")) begin
-         $readmemh("../mem3.txt", memory1.ram);
-         $readmemh("../mem3.txt", memory2.ram);
-         $readmemh("../mem3.txt", memory3.ram);
-         start_addr = `ADDRSIZE'h3;
-         end_addr = `ADDRSIZE'h7;
+     <parallelism_if>
+         $readmemh("mem.txt", memory1.ram);
+         $readmemh("mem.txt", memory2.ram);
+         $readmemh("mem.txt", memory3.ram);
+         <start_addr_assign>
+         <end_addr_assign>
+     end
+     else begin
+        $error("Unsupported value of parallelism (%d)", parallelism);
+        $finish;
      end
      clk = 0;
      reset = 1;
@@ -122,8 +119,13 @@ module softmax_test;
         init  = 0;
      #2 start = 1;
      #4 start = 0;
-     #1600 $finish;  
+     <delay_to_finish> 
+     $finish;  
   end
+
+  //check output values
+  //golden values are located in the memory itself.
+  <output_check>
 
   initial begin
      `ifndef VCS
