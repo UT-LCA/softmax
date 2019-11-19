@@ -97,27 +97,23 @@ class generate_addertree():
      
       num_adders_in_current_stage = int(1<<(stage-1))
       num_adder_cur_stage = 0
-      num_adder_next_stage = 0
+      num_adder_last_stage = 0
 
-      #for the frist stage
+      #for the left most stage
       if stage == self.num_add_stages_in_adder_tree - 1:
         inp_num = 0
         for num_adder in range(num_adders_in_current_stage):
-          print("  DW_fp_add #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE) add%d_stage%d(.a(inp%d),       .b(inp%d),      .z(add%d_out_stage%d), .rnd(3'b000),    .status());" % (num_adder_next_stage, stage, inp_num, inp_num+1, num_adder_next_stage, stage))
+          print("  DW_fp_add #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE) add%d_stage%d(.a(inp%d),       .b(inp%d),      .z(add%d_out_stage%d), .rnd(3'b000),    .status());" % (num_adder_cur_stage, stage, inp_num, inp_num+1, num_adder_cur_stage, stage))
           inp_num = inp_num + 2
-          num_adder_next_stage = num_adder_next_stage + 1
-          num_adder_cur_stage = num_adder_cur_stage + 2
+          num_adder_cur_stage = num_adder_cur_stage + 1
         print("")
         continue
 
       for num_adder in range(num_adders_in_current_stage):
-        #For num_inputs = 16, 'stage' will vary from 4,3,2
-        for num_adder in range(num_adders_in_current_stage):
-          print("  DW_fp_add #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE) add%d_stage%d(.a(add%d_out_stage%d_reg),       .b(add%d_out_stage%d_reg),      .z(add%d_out_stage%d), .rnd(3'b000),    .status());" % (num_adder_next_stage, stage, num_adder_cur_stage, stage+1, num_adder_cur_stage+1, stage+1, num_adder_next_stage, stage))
-          print("")
-          num_adder_next_stage = num_adder_next_stage + 1
-          num_adder_cur_stage = num_adder_cur_stage + 2
-          
+        print("  DW_fp_add #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE) add%d_stage%d(.a(add%d_out_stage%d_reg),       .b(add%d_out_stage%d_reg),      .z(add%d_out_stage%d), .rnd(3'b000),    .status());" % (num_adder_cur_stage, stage, num_adder_last_stage, stage+1, num_adder_last_stage+1, stage+1, num_adder_cur_stage, stage))
+        num_adder_cur_stage = num_adder_cur_stage + 1
+        num_adder_last_stage = num_adder_last_stage + 2
+      print("")  
     print("endmodule")
     print("")
     

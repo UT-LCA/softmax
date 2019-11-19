@@ -125,7 +125,7 @@ class generate_softmax():
         mode1_stagex_run_tag = re.search(r'<mode1_stagex_run>', line)
         if mode1_stagex_run_tag is not None and self.num_comparator_stages_in_max_tree > 3:
           for i in reversed(range(self.num_comparator_stages_in_max_tree)):
-            if max_tree_stage_has_flops(i):
+            if max_tree_stage_has_flops(i) and i != self.num_comparator_stages_in_max_tree - 1:
               print("    if (mode1_stage%d_run == 1) begin" % (i + 3))
               print("      mode1_stage%d_run <= 1;"% (i))
               print("    end else begin")

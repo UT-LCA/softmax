@@ -55,11 +55,11 @@ class generate_max_tree():
       if i == 0:
         print("  wire   [`DATAWIDTH-1 : 0] cmp0_out_stage0;")
         continue
-      num_comps_in_stageN = int(1 << (i-1))
-      for num_comps in range(num_comps_in_stageN):
+      num_cmps_in_stageN = int(1 << (i-1))
+      for num_cmps in range(num_cmps_in_stageN):
         if stage_has_flops(stageN):
-          print("  reg    [`DATAWIDTH-1 : 0] cmp%d_out_stage%d_reg;" % (num_comps, stageN))
-        print("  wire   [`DATAWIDTH-1 : 0] cmp%d_out_stage%d;" %(num_comps, stageN))
+          print("  reg    [`DATAWIDTH-1 : 0] cmp%d_out_stage%d_reg;" % (num_cmps, stageN))
+        print("  wire   [`DATAWIDTH-1 : 0] cmp%d_out_stage%d;" %(num_cmps, stageN))
 
     print("")
 
@@ -73,9 +73,9 @@ class generate_max_tree():
       if i == 0:
         break
       elif(stage_has_flops(stageN)):
-        num_comps_in_stageN = int(1<<(i-1))
-        for num_comps in range(num_comps_in_stageN):
-          print("      comp%d_out_stage%d_reg <= 0;" % (num_comps, stageN))
+        num_cmps_in_stageN = int(1<<(i-1))
+        for num_cmps in range(num_cmps_in_stageN):
+          print("      cmp%d_out_stage%d_reg <= 0;" % (num_cmps, stageN))
     print("    end")
     print("")
     for i in reversed(range(self.num_comparator_stages_in_max_tree)):
@@ -86,10 +86,10 @@ class generate_max_tree():
         print("    end")
         print("")
       elif(stage_has_flops(stageN)):
-        num_comps_in_stageN = int(1<<(i-1))
-        print("    if(~reset && mode4_stage%d_run) begin" % (stageN))
-        for num_comps in range(num_comps_in_stageN):
-          print("      comp%d_out_stage%d_reg <= comp%d_out_stage%d;" %(num_comps, stageN, num_comps, stageN))
+        num_cmps_in_stageN = int(1<<(i-1))
+        print("    if(~reset && mode1_stage%d_run) begin" % (stageN))
+        for num_cmps in range(num_cmps_in_stageN):
+          print("      cmp%d_out_stage%d_reg <= cmp%d_out_stage%d;" %(num_cmps, stageN, num_cmps, stageN))
         print("    end")
         print("")
     print("  end")
@@ -106,31 +106,31 @@ class generate_max_tree():
         print("")
         continue
       
-      num_comps_in_current_stage = int(1 << (stage-1))
-      num_comps_cur_stage = 0
-      num_comps_last_stage = 0
+      num_cmps_in_current_stage = int(1 << (stage-1))
+      num_cmps_cur_stage = 0
+      num_cmps_last_stage = 0
 
       #for the left most stage
       if stage == self.num_comparator_stages_in_max_tree - 1:
         inp_num = 0
-        for num_comps in range(num_comps_in_current_stage):
-          print("DW_fp_cmp #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE) cmp%d_stage%d(.a(inp%d),       .b(inp%d),      .z1(cmp%d_out_stage%d), .zctr(1'b0), .aeqb(), .altb(), .agtb(), .unordered(), .z0(), .status0(), .status1());" % (num_comps_cur_stage, stage, inp_num, inp_num+1, num_comps_cur_stage, stage))
+        for num_cmps in range(num_cmps_in_current_stage):
+          print("DW_fp_cmp #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE) cmp%d_stage%d(.a(inp%d),       .b(inp%d),      .z1(cmp%d_out_stage%d), .zctr(1'b0), .aeqb(), .altb(), .agtb(), .unordered(), .z0(), .status0(), .status1());" % (num_cmps_cur_stage, stage, inp_num, inp_num+1, num_cmps_cur_stage, stage))
           inp_num = inp_num + 2
-          num_comps_cur_stage = num_comps_cur_stage + 1
+          num_cmps_cur_stage = num_cmps_cur_stage + 1
         print("")
         continue
 
             
-      for num_comps in range(num_comps_in_current_stage):
+      for num_cmps in range(num_cmps_in_current_stage):
         if stage_has_flops(stage + 1):
-          print("DW_fp_cmp #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE) cmp%d_stage%d(.a(cmp%d_out_stage%d_reg),       .b(cmp%d_out_stage%d_reg),      .z1(cmp%d_out_stage%d), .zctr(1'b0), .aeqb(), .altb(), .agtb(), .unordered(), .z0(), .status0(), .status1());" % (num_comps_cur_stage, stage, num_comps_last_stage, stage+1, num_comps_last_stage+1, stage+1, num_comps_cur_stage, stage))
-          num_comps_cur_stage = num_comps_cur_stage + 1
-          num_comps_last_stage = num_comps_last_stage + 2
+          print("DW_fp_cmp #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE) cmp%d_stage%d(.a(cmp%d_out_stage%d_reg),       .b(cmp%d_out_stage%d_reg),      .z1(cmp%d_out_stage%d), .zctr(1'b0), .aeqb(), .altb(), .agtb(), .unordered(), .z0(), .status0(), .status1());" % (num_cmps_cur_stage, stage, num_cmps_last_stage, stage+1, num_cmps_last_stage+1, stage+1, num_cmps_cur_stage, stage))
+          num_cmps_cur_stage = num_cmps_cur_stage + 1
+          num_cmps_last_stage = num_cmps_last_stage + 2
           continue
 
-        print("DW_fp_cmp #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE) cmp%d_stage%d(.a(cmp%d_out_stage%d),       .b(cmp%d_out_stage%d),      .z1(cmp%d_out_stage%d), .zctr(1'b0), .aeqb(), .altb(), .agtb(), .unordered(), .z0(), .status0(), .status1());" % (num_comps_cur_stage, stage, num_comps_last_stage, stage+1, num_comps_last_stage+1, stage+1, num_comps_cur_stage, stage))
-        num_comps_cur_stage = num_comps_cur_stage + 1
-        num_comps_last_stage = num_comps_last_stage + 2
+        print("DW_fp_cmp #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE) cmp%d_stage%d(.a(cmp%d_out_stage%d),       .b(cmp%d_out_stage%d),      .z1(cmp%d_out_stage%d), .zctr(1'b0), .aeqb(), .altb(), .agtb(), .unordered(), .z0(), .status0(), .status1());" % (num_cmps_cur_stage, stage, num_cmps_last_stage, stage+1, num_cmps_last_stage+1, stage+1, num_cmps_cur_stage, stage))
+        num_cmps_cur_stage = num_cmps_cur_stage + 1
+        num_cmps_last_stage = num_cmps_last_stage + 2
       print("")
     print("endmodule")
     print("")
