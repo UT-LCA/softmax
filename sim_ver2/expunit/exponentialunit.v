@@ -1,4 +1,4 @@
-`include "defines.v"
+//`include "defines.v"
 module expunit (a, z, status);
 
 	parameter int_width = 3; // fixed point integer length

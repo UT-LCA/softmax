@@ -1,7 +1,5 @@
 `timescale 1ns / 1ps
 
-<defines>
-
 //fixed adder adds unsigned fixed numbers. Overflow flag is high in case of overflow
 module softmax(
   inp,      //data in from memory to max block
@@ -17,7 +15,6 @@ module softmax(
 
   <outp_ports>
   
-  mode1_done,   
   clk, 
   reset, 
   init,   //the signal indicating to latch the new start address
@@ -40,10 +37,8 @@ module softmax(
   output [`ADDRSIZE-1 :0] sub1_inp_addr;
 
   <outp_declaration>
-  output mode1_done;
   output done;
 
-  reg mode1_done;
   reg [`DATAWIDTH*`NUM-1:0] inp_reg;
   reg [`ADDRSIZE-1:0] addr;
   reg [`DATAWIDTH*`NUM-1:0] sub0_inp_reg;
@@ -96,14 +91,12 @@ module softmax(
       mode7_run <= 0;
       presub_start <= 0;
       presub_run <= 0;
-      mode1_done <= 0;
       done <= 0;
     end
     
     //init latch the input address
     if(init) begin
       addr <= start_addr;
-      mode1_done <= 0;
     end
 
     //start the mode1 max calculation

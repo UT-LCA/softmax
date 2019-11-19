@@ -32,6 +32,12 @@ class tb_generator:
                         default=2,
                         type=int,
                         help='Number of blank locations in the memory before actual data starts')
+    parser.add_argument("-r",
+                        "--precision",
+                        action='store',
+                        default='float16',
+                        type=str,
+                        help='Value of the precision knob - float16 or fixed32')
     parser.add_argument("-f",
                         "--template_file",
                         action='store',
@@ -41,6 +47,7 @@ class tb_generator:
     self.template_file = args.template_file
     self.num_inp_pins = args.num_inp_pins
     self.num_inp_vals = args.num_inp_vals
+    self.precision = args.precision
     self.num_blank_locations = args.num_blank_locations
 
   def print_it(self):
@@ -55,7 +62,7 @@ class tb_generator:
         #generate defines parameters
         defines_tag = re.search(r'<defines>', line)
         if defines_tag is not None: 
-          generate_defines(self.num_inp_pins, "fp16", 16)
+          generate_defines(self.num_inp_pins, "float16")
         
         #output port wires
         outp_wires_tag = re.search(r'<outp_wires>', line)
@@ -98,8 +105,13 @@ class tb_generator:
             print("    @(negedge reset);")
             print("    forever begin")
             print("      @(outp%d);" % (i))
-            loc_of_output = self.num_blank_locations + int(self.num_inp_vals/self.num_inp_pins) + i + 1
-            print("      if (outp%d !== memory1.ram[%d+iter]) begin" % (i, loc_of_output))
+            loc_of_output = self.num_blank_locations + int(self.num_inp_vals/self.num_inp_pins) - i + self.num_inp_pins
+            bitcount = re.search(r'(\d+)', self.precision)
+            if bitcount is not None:
+              msb = int(bitcount.group(1)) - 1
+            else:
+              raise SystemExit("Unable to find number of bits from the precision string.")
+            print("      if (outp%d[%d:2] !== memory1.ram[%d+iter][%d:2]) begin" % (i, msb, loc_of_output, msb))
             print("        $error(\"Mismatch in outp%d at location %d (expected=%%0h, actual=%%0h)\", memory1.ram[%d+iter], outp%d);" % (i, loc_of_output, loc_of_output, i))
             print("      end")
             print("      else begin")
