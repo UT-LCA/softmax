@@ -19,3 +19,7 @@ print(sum)
 #Find probabilities: e^x/sum(e^x)
 probabilities = exp_array / sum
 print(probabilities)
+#Probabilities in hex
+for i in range (8):
+	x = hex(np.float16(probabilities[i]).view('H'))[2:].zfill(4)
+	print(x)
