@@ -6,6 +6,7 @@ import math
 # ###############################################################
 # Testbench generator class
 # ###############################################################
+from generate_other_blocks import *
 class tb_generator:
   def __init__(self):
     self.parse_args()
@@ -49,8 +50,13 @@ class tb_generator:
 
       #Any tag found?
       tag_found = re.search(r'<.*>', line)
-      if tag_found is not None:
+      if tag_found is not None:\
 
+        #generate defines parameters
+        defines_tag = re.search(r'<defines>', line)
+        if defines_tag is not None: 
+          generate_defines(self.num_inp_pins, "fp16", 16)
+        
         #output port wires
         outp_wires_tag = re.search(r'<outp_wires>', line)
         if outp_wires_tag is not None: 
