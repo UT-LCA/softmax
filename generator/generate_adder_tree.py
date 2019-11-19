@@ -22,67 +22,98 @@ class generate_addertree():
     print("module mode4_adder_tree(")
     for iter in range(self.num_inputs):
       print("  inp%d, " % iter)
-    print("  ex_inp,")
-    print("  outp,")
-    for iter in range(1,self.num_add_stages_in_adder_tree):
-        print("  mode4_stage%d_run," % (iter+1))
-    print("  clk,")
-    print("  reset")
-    print(");")
-    
-    print("input clk;")
-    print("input reset;")
-    for iter in range(self.num_inputs):
-      print("input  [`DATAWIDTH-1 : 0] inp%d; " % iter)
-    print("input  [`DATAWIDTH-1 : 0] ex_inp;")
-    print("output [`DATAWIDTH-1 : 0] outp;")
-    for iter in range(1,self.num_add_stages_in_adder_tree):
-        print("input mode4_stage%d_run;" % (iter+1))
+    for iter in range(self.num_add_stages_in_adder_tree):
+        print("  mode4_stage%d_run," % (iter))
     print("")
-    
-    #Left most stage
-    #For num_inputs=16, this is stage 5 and num_adders_in_stageN = 8
-    stageN = self.num_add_stages_in_adder_tree
-    num_adders_in_stageN = int(self.num_inputs/2)
-    input_num = 0
-    output_num = 0
-    for num_adder in range(num_adders_in_stageN):
-      #For num_inputs=16, num_comparator will range from 0 to 7
-      print("wire   [`DATAWIDTH-1 : 0] add%d_out_stage%d;" % (output_num, stageN))
-      print("reg    [`DATAWIDTH-1 : 0] add%d_out_stage%d_reg;" % (output_num, stageN))
-      print("always @(posedge clk) begin")
-      print("  if (reset) begin")
-      print("    add%d_out_stage%d_reg <= 0;" % (output_num, stageN))
-      print("  end else if (mode4_stage%d_run) begin" % (stageN))
-      print("    add%d_out_stage%d_reg <= add%d_out_stage%d;" % (output_num, stageN, output_num, stageN))
-      print("  end")
-      print("end")
-      print("DW_fp_add #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE) add%d_stage%d(.a(inp%d),       .b(inp%d),      .z(add%d_out_stage%d), .rnd(3'b000),    .status());" % (output_num, stageN, input_num, input_num+1, output_num, stageN))
-      print("")
-      input_num = input_num + 2
-      output_num = output_num + 1
+    print("  clk,")
+    print("  reset,")
+    print("  outp")
+    print(");")
+    print("")
 
-    for stage in reversed(range(2,self.num_add_stages_in_adder_tree)):
-      #For num_inputs = 16, 'stage' will vary from 4,3,2
-      num_adders_in_current_stage = int((1<<(stage-1))/2)
+    print("  input clk;")
+    print("  input reset;")
+    for iter in range(self.num_inputs):
+      print("  input  [`DATAWIDTH-1 : 0] inp%d; " % iter)
+    print("  output [`DATAWIDTH-1 : 0] outp;")
+    for iter in range(self.num_add_stages_in_adder_tree):
+        print("  input mode4_stage%d_run;" % (iter))
+    print("")
+   
+    for i in reversed(range(self.num_add_stages_in_adder_tree)):
+      stageN = i;
+      if i == 0:
+        print("  wire   [`DATAWIDTH-1 : 0] add0_out_stage0;")
+        break
+      else:
+        num_adders_in_stageN = int(1<<(i-1))
+      for num_adder in range(num_adders_in_stageN):
+        print("  wire   [`DATAWIDTH-1 : 0] add%d_out_stage%d;" % (num_adder, stageN))
+        print("  reg    [`DATAWIDTH-1 : 0] add%d_out_stage%d_reg;" % (num_adder, stageN))
+      print("")
+    print("  reg    [`DATAWIDTH-1 : 0] outp;")
+    print("")
+
+
+#-----------------internal control logic------------------# 
+    print("  always @(posedge clk) begin") 
+    print("    if (reset) begin")
+    print("      outp <= 0;")
+    for i in reversed(range(self.num_add_stages_in_adder_tree)):
+      stageN = i;
+      if i == 0:
+        break
+      else:
+        num_adders_in_stageN = int(1<<(i-1))
+      for num_adder in range(num_adders_in_stageN):
+        print("      add%d_out_stage%d_reg <= 0;" % (num_adder, stageN))
+    print("    end")
+    print("")
+    for i in reversed(range(self.num_add_stages_in_adder_tree)):
+      stageN = i;
+      if i == 0:
+        print("    if(~reset && mode4_stage%d_run) begin" % (stageN))
+        print("      outp <= add0_out_stage0;")  
+        print("    end")
+        print("")
+      else:
+        num_adders_in_stageN = int(1<<(i-1))
+        print("    if(~reset && mode4_stage%d_run) begin" % (stageN))
+        for num_adder in range(num_adders_in_stageN):
+          print("      add%d_out_stage%d_reg <= add%d_out_stage%d;" %(num_adder, stageN, num_adder, stageN))
+        print("    end")
+        print("")
+    print("  end")
+ 
+#-----------------Instantiate and connect blocks------------------# 
+    for stage in reversed(range(self.num_add_stages_in_adder_tree)):
+      if stage == 0:
+        if(self.num_add_stages_in_adder_tree > 1):
+          print("  DW_fp_add #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE) add0_stage0(.a(outp),       .b(add0_out_stage1_reg),      .z(add0_out_stage0), .rnd(3'b000),    .status());")
+        else:
+          print("  DW_fp_add #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE) add0_stage0(.a(outp),       .b(inp0),      .z(add0_out_stage0), .rnd(3'b000),    .status());")
+        print("")
+        continue
+     
+      num_adders_in_current_stage = int(1<<(stage-1))
       num_adder_cur_stage = 0
-      num_adder_next_stage = 0
+      num_adder_last_stage = 0
+
+      #for the left most stage
+      if stage == self.num_add_stages_in_adder_tree - 1:
+        inp_num = 0
+        for num_adder in range(num_adders_in_current_stage):
+          print("  DW_fp_add #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE) add%d_stage%d(.a(inp%d),       .b(inp%d),      .z(add%d_out_stage%d), .rnd(3'b000),    .status());" % (num_adder_cur_stage, stage, inp_num, inp_num+1, num_adder_cur_stage, stage))
+          inp_num = inp_num + 2
+          num_adder_cur_stage = num_adder_cur_stage + 1
+        print("")
+        continue
+
       for num_adder in range(num_adders_in_current_stage):
-          print("wire   [`DATAWIDTH-1 : 0] add%d_out_stage%d;" % (num_adder_next_stage, stage))
-          print("reg    [`DATAWIDTH-1 : 0] add%d_out_stage%d_reg;" % (num_adder_next_stage, stage))
-          print("always @(posedge clk) begin")
-          print("  if (reset) begin")
-          print("    add%d_out_stage%d_reg <= 0;" % (num_adder_next_stage, stage))
-          print("  end else if (mode4_stage%d_run) begin" % (stage))
-          print("    add%d_out_stage%d_reg <= add%d_out_stage%d;" % (num_adder_next_stage, stage, num_adder_next_stage, stage))
-          print("  end")
-          print("end")
-          print("DW_fp_add #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE) add%d_stage%d(.a(add%d_out_stage%d_reg),       .b(add%d_out_stage%d_reg),      .z(add%d_out_stage%d), .rnd(3'b000),    .status());" % (num_adder_next_stage, stage, num_adder_cur_stage, stage+1, num_adder_cur_stage+1, stage+1, num_adder_next_stage, stage))
-          print("")
-          num_adder_next_stage = num_adder_next_stage + 1
-          num_adder_cur_stage = num_adder_cur_stage + 2
-      
-    print("DW_fp_add #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE) add_stage1(.a(add0_out_stage2_reg),       .b(ex_inp),      .z(outp), .rnd(3'b000),    .status());")
+        print("  DW_fp_add #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE) add%d_stage%d(.a(add%d_out_stage%d_reg),       .b(add%d_out_stage%d_reg),      .z(add%d_out_stage%d), .rnd(3'b000),    .status());" % (num_adder_cur_stage, stage, num_adder_last_stage, stage+1, num_adder_last_stage+1, stage+1, num_adder_cur_stage, stage))
+        num_adder_cur_stage = num_adder_cur_stage + 1
+        num_adder_last_stage = num_adder_last_stage + 2
+      print("")  
     print("endmodule")
     print("")
     

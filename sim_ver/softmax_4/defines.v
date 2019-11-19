@@ -7,7 +7,5 @@
 `define IEEE_COMPLIANCE 1
 `define NUM 4
 `define ADDRSIZE 16
-`define COUNTER_BITS 3
-`define PIPELINE_NUM 0
 `else
 `endif

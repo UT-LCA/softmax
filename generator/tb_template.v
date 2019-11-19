@@ -1,3 +1,4 @@
+<defines>
 //RAM model
 module ram (addr0, d0, we0, q0,  clk);
 
