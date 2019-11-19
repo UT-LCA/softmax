@@ -56,7 +56,8 @@ class design_generator:
 
   def print_it(self):
     generate_defines(self.parallelism, self.precision)
-    generate_includes(self.accuracy)
+#    generate_includes(self.accuracy)
+    generate_softmax(self.template_file, self.parallelism, self.accuracy)
     generate_max_tree(self.parallelism)
     generate_sub("mode2_sub", self.parallelism)
     generate_exp("mode3_exp", self.parallelism, self.accuracy)
@@ -64,7 +65,6 @@ class design_generator:
     generate_ln("mode5_ln", self.parallelism, self.accuracy)
     generate_sub("mode6_sub", self.parallelism)
     generate_exp("mode7_exp", self.parallelism, self.accuracy)
-    generate_softmax(self.template_file, self.parallelism)
 
 # ###############################################################
 # main()

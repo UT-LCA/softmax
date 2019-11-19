@@ -4,9 +4,10 @@ import argparse
 import math
 
 class generate_softmax():
-  def __init__(self, template_file, num_inp_pins):
+  def __init__(self, template_file, num_inp_pins, accuracy):
     self.num_inp_pins = num_inp_pins
     self.template_file = template_file
+    self.accuracy = accuracy
     self.num_add_stages_in_adder_tree = int(math.log(self.num_inp_pins,2)) + 1
     self.num_flop_stages_in_adder_tree = self.num_add_stages_in_adder_tree
     self.num_comparator_stages_in_max_tree = int(math.log(self.num_inp_pins,2)) + 1
