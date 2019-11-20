@@ -12,14 +12,16 @@ module expunit (a, z, status, stage_run, clk, reset);
 
   wire [int_width + frac_width - 1: 0] fxout;
   wire [31:0] LUTout;
+  reg  [31:0] LUTout_reg;
   wire [15:0] Mult_out;
-  reg  [15:0] Mult_out_reg;
   
   always @(posedge clk) begin
     if(reset) begin
       Mult_out_reg <= 0;
+      LUTout_reg <= 0;
     end else if(stage_run) begin
       Mult_out_reg <= Mult_out;
+      LUTout_reg <= LUTout;
     end
   end
   
@@ -27,7 +29,7 @@ module expunit (a, z, status, stage_run, clk, reset);
   fptofixed_para fpfx (.fp(a), .fx(fxout));
   LUT lut(.addr(fxout[int_width + frac_width - 1 : 0]), .exp(LUTout)); 
   DW_fp_mult #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE) fpmult (.a(a), .b(LUTout[31:16]), .rnd(3'b000), .z(Mult_out), .status());
-  DW_fp_add #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE) fpsub (.a(Mult_out_reg), .b(LUTout[15:0]), .rnd(3'b000), .z(z), .status(status[7:0]));
+  DW_fp_add #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE) fpsub (.a(Mult_out_reg), .b(LUTout_reg[15:0]), .rnd(3'b000), .z(z), .status(status[7:0]));
 endmodule
 
 module fptofixed_para (fp, fx);

@@ -15,10 +15,10 @@
 `include "DW_fp_addsub.v"
 `include "DW_fp_add.v"
 `include "DW_fp_sub.v"
-`include "DW_ln.v"
-`include "DW_exp2.v"
-`include "DW_fp_exp.v"
-`include "DW_fp_ln.v"
+`include "DW_fp_mult.v"
+`include "DW01_ash.v"
+`include "exponentialunit.v"
+`include "logunit.v"
 
 `timescale 1ns / 1ps
 
@@ -79,6 +79,10 @@ module softmax(
   reg mode1_run;
   reg mode2_start;
   reg mode2_run;
+
+  reg mode3_stage_run;
+  reg mode7_stage_run;
+
   reg mode3_run;
 
   wire mode1_stage0_run;
@@ -114,6 +118,8 @@ module softmax(
       mode1_start <= 0;
       mode1_run <= 0;
 
+      mode3_stage_run <= 0;
+      mode7_stage_run <= 0;
       mode2_start <= 0;
       mode2_run <= 0;
       mode3_run <= 0;
@@ -170,6 +176,12 @@ module softmax(
 
     //logic when to trigger mode3
     if(mode2_run == 1) begin
+      mode3_stage_run <= 1;
+    end else begin
+      mode3_stage_run <= 0;
+    end
+
+    if(mode3_stage_run == 1) begin
       mode3_run <= 1;
     end else begin
       mode3_run <= 0;
@@ -227,6 +239,12 @@ module softmax(
     end
 
     if(mode6_run == 1) begin
+      mode7_stage_run <= 1;
+    end else begin
+      mode7_stage_run <= 0;
+    end
+
+    if(mode7_stage_run == 1) begin
       mode7_run <= 1;
     end else begin
       mode7_run <= 0;
@@ -297,6 +315,11 @@ module softmax(
       .inp1(mode2_outp_sub1_reg),
       .inp2(mode2_outp_sub2_reg),
       .inp3(mode2_outp_sub3_reg),
+
+      .clk(clk),
+      .reset(reset),
+      .stage_run(mode3_stage_run),
+
       .outp0(mode3_outp_exp0),
       .outp1(mode3_outp_exp1),
       .outp2(mode3_outp_exp2),
@@ -436,6 +459,11 @@ module softmax(
       .inp1(mode6_outp_logsub1_reg),
       .inp2(mode6_outp_logsub2_reg),
       .inp3(mode6_outp_logsub3_reg),
+
+      .clk(clk),
+      .reset(reset),
+      .stage_run(mode7_stage_run),
+
       .outp0(outp0_temp),
       .outp1(outp1_temp),
       .outp2(outp2_temp),
@@ -541,6 +569,11 @@ module mode3_exp(
   inp1, 
   inp2, 
   inp3, 
+
+  clk,
+  reset,
+  stage_run,
+
   outp0, 
   outp1, 
   outp2, 
@@ -551,14 +584,19 @@ module mode3_exp(
   input  [`DATAWIDTH-1 : 0] inp1;
   input  [`DATAWIDTH-1 : 0] inp2;
   input  [`DATAWIDTH-1 : 0] inp3;
+
+  input  clk;
+  input  reset;
+  input  stage_run;
+
   output  [`DATAWIDTH-1 : 0] outp0;
   output  [`DATAWIDTH-1 : 0] outp1;
   output  [`DATAWIDTH-1 : 0] outp2;
   output  [`DATAWIDTH-1 : 0] outp3;
-  DW_fp_exp #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE,0) exp0(.a(inp0), .z(outp0), .status());
-  DW_fp_exp #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE,0) exp1(.a(inp1), .z(outp1), .status());
-  DW_fp_exp #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE,0) exp2(.a(inp2), .z(outp2), .status());
-  DW_fp_exp #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE,0) exp3(.a(inp3), .z(outp3), .status());
+  expunit exp0(.a(inp0), .z(outp0), .status(), .stage_run(stage_run), .clk(clk), .reset(reset));
+  expunit exp1(.a(inp1), .z(outp1), .status(), .stage_run(stage_run), .clk(clk), .reset(reset));
+  expunit exp2(.a(inp2), .z(outp2), .status(), .stage_run(stage_run), .clk(clk), .reset(reset));
+  expunit exp3(.a(inp3), .z(outp3), .status(), .stage_run(stage_run), .clk(clk), .reset(reset));
 endmodule
 
 
@@ -636,7 +674,7 @@ outp
 );
   input  [`DATAWIDTH-1 : 0] inp;
   output [`DATAWIDTH-1 : 0] outp;
-  DW_fp_ln #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE, 0, 0) ln(.a(inp), .z(outp), .status());
+  logunit ln(.a(inp), .z(outp), .status());
 endmodule
 
 
@@ -673,6 +711,11 @@ module mode7_exp(
   inp1, 
   inp2, 
   inp3, 
+
+  clk,
+  reset,
+  stage_run,
+
   outp0, 
   outp1, 
   outp2, 
@@ -683,13 +726,18 @@ module mode7_exp(
   input  [`DATAWIDTH-1 : 0] inp1;
   input  [`DATAWIDTH-1 : 0] inp2;
   input  [`DATAWIDTH-1 : 0] inp3;
+
+  input  clk;
+  input  reset;
+  input  stage_run;
+
   output  [`DATAWIDTH-1 : 0] outp0;
   output  [`DATAWIDTH-1 : 0] outp1;
   output  [`DATAWIDTH-1 : 0] outp2;
   output  [`DATAWIDTH-1 : 0] outp3;
-  DW_fp_exp #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE,0) exp0(.a(inp0), .z(outp0), .status());
-  DW_fp_exp #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE,0) exp1(.a(inp1), .z(outp1), .status());
-  DW_fp_exp #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE,0) exp2(.a(inp2), .z(outp2), .status());
-  DW_fp_exp #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE,0) exp3(.a(inp3), .z(outp3), .status());
+  expunit exp0(.a(inp0), .z(outp0), .status(), .stage_run(stage_run), .clk(clk), .reset(reset));
+  expunit exp1(.a(inp1), .z(outp1), .status(), .stage_run(stage_run), .clk(clk), .reset(reset));
+  expunit exp2(.a(inp2), .z(outp2), .status(), .stage_run(stage_run), .clk(clk), .reset(reset));
+  expunit exp3(.a(inp3), .z(outp3), .status(), .stage_run(stage_run), .clk(clk), .reset(reset));
 endmodule
 
