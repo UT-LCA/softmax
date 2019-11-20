@@ -14,6 +14,7 @@ module expunit (a, z, status, stage_run, clk, reset);
   wire [31:0] LUTout;
   reg  [31:0] LUTout_reg;
   wire [15:0] Mult_out;
+  reg  [15:0] Mult_out_reg;
   
   always @(posedge clk) begin
     if(reset) begin

@@ -24,8 +24,8 @@ compile:
 	-full64 \
 	-debug_access+all \
 	+incdir+../../sim_ver/lib/16bits/ \
-	+incdir+../../sim_ver2/expunit/ \
-	+incdir+../../sim_ver2/logunit/logunit8 \
+	+incdir+../../sim_ver3/ \
+	+incdir+../../sim_ver3/ \
 	softmax.v \
   softmax_tb.v \
 	+incdir+/misc/linuxws/packages/synopsys_2018/syn/O-2018.06-SP5/dw/sim_ver/ \
