@@ -51,6 +51,7 @@ module softmax(
   reg mode1_run;
   reg mode2_start;
   reg mode2_run;
+  <exp_stage_run_tags>
   reg mode3_run;
 
   <mode1_stage_run_regs>
@@ -81,7 +82,7 @@ module softmax(
       mode1_run <= 0;
 
       <mode1_run_reset>
-
+      <exp_stage_run_reset>
       mode2_start <= 0;
       mode2_run <= 0;
       mode3_run <= 0;
@@ -122,11 +123,7 @@ module softmax(
     end
     
     //logic when to trigger mode3
-    if(mode2_run == 1)begin
-      mode3_run <= 1;
-    end else begin
-      mode3_run <= 0;
-    end
+    <mode3_run>
     
     //logic when to trigger mode4 last stage adderTree, since the final results of adderTree
     //is always ready 1 cycle after mode3 finishes, so there is no need on extra
@@ -163,11 +160,7 @@ module softmax(
       mode6_run <= 0;
     end
 
-    if(mode6_run) begin
-      mode7_run <= 1;
-    end else begin
-      mode7_run <= 0;
-    end
+    <mode7_run>
     
     if(mode7_run) begin
       done <= 1;

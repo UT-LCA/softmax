@@ -44,6 +44,12 @@ class generate_exp():
         print("module %s(" % (self.name))
         for iter in range(self.num_inputs):
             print("  inp%d, " % iter)
+        if self.implementation == "lut":
+            print("")
+            print("  clk,")
+            print("  reset,")
+            print("  stage_run,")
+            print("")
         for iter in range(self.num_inputs):
             if iter==self.num_inputs-1:
                 print("  outp%d" % iter)
@@ -53,13 +59,19 @@ class generate_exp():
         print("")
         for iter in range(self.num_inputs):
             print("  input  [`DATAWIDTH-1 : 0] inp%d;" % iter)
+        if self.implementation == "lut":
+            print("")
+            print("  input  clk;")
+            print("  input  reset;")
+            print("  input  stage_run;")
+            print("")
         for iter in range(self.num_inputs):
             print("  output  [`DATAWIDTH-1 : 0] outp%d;" % iter)
         for iter in range(self.num_inputs):
             if self.implementation == "dw":
                 print("  DW_fp_exp #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE,0) exp%d(.a(inp%d), .z(outp%d), .status());" % (iter, iter, iter))
             elif self.implementation == "lut":
-                print("  expunit exp%d(.a(inp%d), .z(outp%d), .status());" % (iter, iter, iter))
+                print("  expunit exp%d(.a(inp%d), .z(outp%d), .status(), .stage_run(stage_run), .clk(clk), .reset(reset));" % (iter, iter, iter))
             else:
                 raise SystemExit("Incorrect value passed for implementation to the EXP block. Given = %s. Supported = lut, dw" % (self.implementation))
         print("endmodule")

@@ -32,6 +32,14 @@ class generate_softmax():
           for i in range(self.num_inp_pins):
             print("  outp%d," % (i))
 
+        exp_stage_run_tag = re.search(r'<exp_stage_run_tags>', line)
+        if exp_stage_run_tag is not None:
+          if self.accuracy == "lut":
+            print("")
+            print("  reg mode3_stage_run;")
+            print("  reg mode7_stage_run;")
+            print("")
+        
         #output declarations
         outp_declaration_tag = re.search(r'<outp_declaration>', line)
         if outp_declaration_tag is not None: 
@@ -74,13 +82,20 @@ class generate_softmax():
             
 
         #mode1_run_reset
-        mode1_run_reset_tag = re.search(r'mode1_run_reset', line)
+        mode1_run_reset_tag = re.search(r'<mode1_run_reset>', line)
         if mode1_run_reset_tag is not None:
           last_stage_num = ((self.num_comparator_stages_in_max_tree - 1)//3)*3
           for i in range(self.num_comparator_stages_in_max_tree):
             if max_tree_stage_has_flops(i):
               if(i != last_stage_num):
                 print("      mode1_stage%d_run <= 0;" % (i))
+
+        #exp_stage_run_reset
+        exp_stage_run_reset_tag = re.search(r'<exp_stage_run_reset>', line)
+        if exp_stage_run_reset_tag is not None:
+          if self.accuracy == "lut":
+            print("      mode3_stage_run <= 0;")
+            print("      mode7_stage_run <= 0;")
 
         #mode4_run_reset
         mode4_run_reset_tag = re.search(r'mode4_run_reset', line)
@@ -134,9 +149,32 @@ class generate_softmax():
               print("      mode1_stage%d_run <= 0;" % (i))
               print("    end") 
 
+        #mode3_run
+        mode3_run_tag = re.search(r'<mode3_run>', line)
+        if mode3_run_tag is not None:
+          if self.accuracy == "dw":
+            print("    if(mode2_run == 1) begin") 
+            print("      mode3_run <= 1;") 
+            print("    end else begin") 
+            print("      mode3_run <= 0;") 
+            print("    end")
+          elif self.accuracy == "lut":
+            print("    if(mode2_run == 1) begin")
+            print("      mode3_stage_run <= 1;")
+            print("    end else begin")
+            print("      mode3_stage_run <= 0;")
+            print("    end")
+            print("")
+            print("    if(mode3_stage_run == 1) begin")
+            print("      mode3_run <= 1;")
+            print("    end else begin")
+            print("      mode3_run <= 0;")
+            print("    end")
+          else:
+            raise SystemExit("Incorrect value passed for implementation to the EXP block. Given = %s. Supported = lut, dw" % (self.implementation))
+
         #mode4_stagex_run
         mode4_stagex_run_tag = re.search(r'<mode4_stagex_run>', line)
-        print("")
         if mode4_stagex_run_tag is not None:
           print("    if (mode3_run == 1) begin")
           print("      mode4_stage%d_run <= 1;" % (self.num_flop_stages_in_adder_tree-1))
@@ -148,7 +186,7 @@ class generate_softmax():
             print("      mode4_stage%d_run <= 1;" % (i))
             print("    end else begin")
             print("      mode4_stage%d_run <= 0;" % (i))
-            print("    end\n") 
+            print("    end\n")
 
 
         #presub_trigger
@@ -158,6 +196,30 @@ class generate_softmax():
             print("    if (mode3_run_a & ~mode3_run) begin")
           else:         
             print("    if(mode4_stage2_run_a & ~mode4_stage2_run) begin")
+
+        #mode7_run
+        mode7_run_tag = re.search(r'<mode7_run>', line)
+        if mode7_run_tag is not None:
+          if self.accuracy == "dw":
+            print("    if(mode6_run == 1) begin") 
+            print("      mode7_run <= 1;") 
+            print("    end else begin") 
+            print("      mode7_run <= 0;") 
+            print("    end")
+          elif self.accuracy == "lut":
+            print("    if(mode6_run == 1) begin")
+            print("      mode7_stage_run <= 1;")
+            print("    end else begin")
+            print("      mode7_stage_run <= 0;")
+            print("    end")
+            print("")
+            print("    if(mode7_stage_run == 1) begin")
+            print("      mode7_run <= 1;")
+            print("    end else begin")
+            print("      mode7_run <= 0;")
+            print("    end")
+          else:
+            raise SystemExit("Incorrect value passed for implementation to the EXP block. Given = %s. Supported = lut, dw" % (self.implementation))
 
         #mode1 max
         mode1_max_tag = re.search(r'<mode1_max>', line)
@@ -200,6 +262,12 @@ class generate_softmax():
           print("  mode3_exp mode3_exp(")
           for i in range(self.num_inp_pins):
             print("      .inp%d(mode2_outp_sub%d_reg)," % (i,i))
+          if self.accuracy == "lut":
+            print("")
+            print("      .clk(clk),")
+            print("      .reset(reset),")
+            print("      .stage_run(mode3_stage_run),")
+            print("")
           for i in range(self.num_inp_pins):
             if i==self.num_inp_pins-1:
               print("      .outp%d(mode3_outp_exp%d)" %(i,i))
@@ -294,6 +362,12 @@ class generate_softmax():
           print("  mode7_exp mode7_exp(")
           for i in range(self.num_inp_pins):
             print("      .inp%d(mode6_outp_logsub%d_reg)," % (i, i))
+          if self.accuracy == "lut":
+            print("")
+            print("      .clk(clk),")
+            print("      .reset(reset),")
+            print("      .stage_run(mode7_stage_run),")
+            print("")
           for i in range(self.num_inp_pins):
             if i==self.num_inp_pins-1:
               print("      .outp%d(outp%d_temp)" % (i,i))
