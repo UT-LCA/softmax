@@ -1,0 +1,10 @@
+softmax_tb.v
+softmax.v
+../../sim_ver/lib/16bits/DW_fp_exp.v
+../../sim_ver/lib/16bits/DW_exp2.v
+../../sim_ver/lib/16bits/DW_fp_ln.v
+../../sim_ver/lib/16bits/DW_ln.v
+../../sim_ver/lib/16bits/DW_fp_add.v
+../../sim_ver/lib/16bits/DW_fp_cmp.v
+../../sim_ver/lib/16bits/DW_fp_sub.v
+../../sim_ver/lib/16bits/DW_fp_addsub.v
