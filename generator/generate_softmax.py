@@ -61,10 +61,10 @@ class generate_softmax():
         #mode4_stage_run_regs
         mode4_stage_run_regs_tag = re.search(r'<mode4_stage_run_regs>', line)
         if mode4_stage_run_regs_tag is not None:
-          if(self.num_flop_stages_in_adder_tree > 1):
+          if(self.num_flop_stages_in_adder_tree > 2):
             print("  reg mode4_stage1_run_a;")
             print("  reg mode4_stage2_run_a;")
-          elif(self.num_flop_stages_in_adder_tree > 0):
+          elif(self.num_flop_stages_in_adder_tree > 1):
             print("  reg mode4_stage1_run_a;")
             print("  reg mode3_run_a;")
           for i in range(self.num_flop_stages_in_adder_tree):
@@ -73,10 +73,10 @@ class generate_softmax():
         #mode4_stage_run_regs_assign
         mode4_stage_run_regs_assign_tag = re.search(r'<mode4_stage_run_regs_assign>', line)
         if mode4_stage_run_regs_assign_tag is not None:
-          if(self.num_flop_stages_in_adder_tree > 1):
+          if(self.num_flop_stages_in_adder_tree > 2):
             print("    mode4_stage1_run_a <= mode4_stage1_run;")
             print("    mode4_stage2_run_a <= mode4_stage2_run;")
-          elif(self.num_flop_stages_in_adder_tree > 0):
+          elif(self.num_flop_stages_in_adder_tree > 1):
             print("    mode4_stage1_run_a <= mode4_stage1_run;")
             print("    mode3_run_a <= mode3_run;")
             
