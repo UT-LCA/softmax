@@ -29,7 +29,7 @@ class design_generator:
                         action='store',
                         default='mem',
                         type=str,
-                        help='Value of the storage knob - mem or fifo')
+                        help='Value of the storage knob - mem or reg')
     parser.add_argument("-r",
                         "--precision",
                         action='store',
@@ -47,17 +47,31 @@ class design_generator:
                         action='store',
                         default="../design_template.v",
                         help='Path+Name of the top level template file')
+    parser.add_argument("-v",
+                        "--num_inp_vals",
+                        action='store',
+                        default=8,
+                        type=int,
+                        help='Number of input values to be handled by the softmax block')
+    parser.add_argument("-b",
+                        "--num_blank_locations",
+                        action='store',
+                        default=2,
+                        type=int,
+                        help='Number of blank locations in the memory before actual data starts')
     args = parser.parse_args()
     self.parallelism = args.parallelism
     self.storage = args.storage
     self.precision = args.precision
     self.accuracy = args.accuracy
     self.template_file = args.template_file
+    self.num_inp_vals = args.num_inp_vals
+    self.num_blank_locations = args.num_blank_locations
 
   def print_it(self):
-    generate_defines(self.parallelism, self.precision)
+    generate_defines(self.parallelism, self.precision, self.num_inp_vals, self.num_blank_locations)
     generate_includes(self.accuracy)
-    generate_softmax(self.template_file, self.parallelism, self.accuracy)
+    generate_softmax(self.template_file, self.parallelism, self.accuracy, self.storage)
     generate_max_tree(self.parallelism)
     generate_sub("mode2_sub", self.parallelism)
     generate_exp("mode3_exp", self.parallelism, self.accuracy)

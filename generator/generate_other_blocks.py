@@ -104,10 +104,11 @@ class generate_ln():
 
 
 class generate_defines():
-    def __init__(self, num_inputs=4, dtype="float16", addr_width=16):
+    def __init__(self, num_inputs=4, dtype="float16", num_inp_vals=128, num_blank_locations=2):
         self.num_inputs = num_inputs
         self.dtype = dtype
-        self.addr_width = addr_width
+        self.addr_width = math.ceil(math.log((num_inp_vals/num_inputs) + num_blank_locations + 1,2))
+        self.addr_width_for_tb = math.ceil(math.log((num_inp_vals/num_inputs) + num_blank_locations + 1 + num_inp_vals,2))
         self.print_it()
 
     def print_it(self):
@@ -135,6 +136,7 @@ class generate_defines():
         print("`define IEEE_COMPLIANCE 1")
         print("`define NUM %d" % (self.num_inputs))
         print("`define ADDRSIZE %d" % (self.addr_width))
+        print("`define ADDRSIZE_FOR_TB %d" % (self.addr_width_for_tb))
         print("`endif")
         print("")
 

@@ -4,10 +4,11 @@ import argparse
 import math
 
 class generate_softmax():
-  def __init__(self, template_file, num_inp_pins, accuracy):
+  def __init__(self, template_file, num_inp_pins, accuracy, storage):
     self.num_inp_pins = num_inp_pins
     self.template_file = template_file
     self.accuracy = accuracy
+    self.storage = storage
     self.num_add_stages_in_adder_tree = int(math.log(self.num_inp_pins,2)) + 1
     self.num_flop_stages_in_adder_tree = self.num_add_stages_in_adder_tree
     self.num_comparator_stages_in_max_tree = int(math.log(self.num_inp_pins,2)) + 1
@@ -26,12 +27,58 @@ class generate_softmax():
       #Any tag found?
       tag_found = re.search(r'<.*>', line)
       if tag_found is not None:
+
+        #subx_inp_ports 
+        subx_inp_ports_tag = re.search(r'<subx_inp_ports>', line)
+        if subx_inp_ports_tag is not None:
+          if self.storage == "mem":
+            print("  sub0_inp, //data inputs from memory to first-stage subtractors")
+            print("  sub1_inp, //data inputs from memory to second-stage subtractors")
+          elif self.storage == "reg":
+            pass #nothing to print
+          else:
+            raise SystemExit("Incorrect value of 'Storage' knob passed (%s)" % (self.storage))
+
+        #subx_inp_addr_ports 
+        subx_inp_addr_ports_tag = re.search(r'<subx_inp_addr_ports>', line)
+        if subx_inp_addr_ports_tag is not None:
+          if self.storage == "mem":
+            print("  sub0_inp_addr, //address corresponding to sub0_inp")
+            print("  sub1_inp_addr, //address corresponding to sub1_inp")
+          elif self.storage == "reg":
+            pass #nothing to print
+          else:
+            raise SystemExit("Incorrect value of 'Storage' knob passed (%s)" % (self.storage))
+
         #output ports
         outp_ports_tag = re.search(r'<outp_ports>', line)
         if outp_ports_tag is not None: 
           for i in range(self.num_inp_pins):
             print("  outp%d," % (i))
 
+        #subx_inp_decl
+        subx_inp_decl_tag = re.search(r'<subx_inp_decl>', line)
+        if subx_inp_decl_tag is not None:
+          if self.storage == "mem":
+            print("  input  [`DATAWIDTH*`NUM-1:0] sub0_inp;")
+            print("  input  [`DATAWIDTH*`NUM-1:0] sub1_inp;")
+          elif self.storage == "reg":
+            pass #nothing to print
+          else:
+            raise SystemExit("Incorrect value of 'Storage' knob passed (%s)" % (self.storage))
+ 
+        #subx_inp_addr_decl
+        subx_inp_addr_decl_tag = re.search(r'<subx_inp_addr_decl>', line)
+        if subx_inp_addr_decl_tag is not None:
+          if self.storage == "mem":
+            print("  output  [`ADDRSIZE-1:0] sub0_inp_addr;")
+            print("  output  [`ADDRSIZE-1:0] sub1_inp_addr;")
+          elif self.storage == "reg":
+            pass #nothing to print
+          else:
+            raise SystemExit("Incorrect value of 'Storage' knob passed (%s)" % (self.storage))
+
+        #exp_stage_run
         exp_stage_run_tag = re.search(r'<exp_stage_run_tags>', line)
         if exp_stage_run_tag is not None:
           if self.accuracy == "lut":
@@ -45,6 +92,23 @@ class generate_softmax():
         if outp_declaration_tag is not None: 
           for i in range(self.num_inp_pins):
             print("  output [`DATAWIDTH-1:0] outp%d;" % (i))
+
+        #subx_inp_code_for_reg
+        subx_inp_code_for_reg_tag = re.search(r'<subx_inp_code_for_reg', line)
+        if subx_inp_code_for_reg_tag is not None:
+          if self.storage == "mem":
+            pass #nothing to print
+          elif self.storage == "reg":
+            print("  ///-------internal buffers--------//")
+            print("  reg [`DATAWIDTH*`NUM-1:0] buffer[(1<<`ADDRSIZE):0];")
+            print("  wire  [`DATAWIDTH*`NUM-1:0] sub0_inp;")
+            print("  wire  [`DATAWIDTH*`NUM-1:0] sub1_inp;")
+            print("  ///-----read logic for internal buffers-----//")
+            print("  assign sub0_inp = buffer[sub0_inp_addr]; ")
+            print("  assign sub1_inp = buffer[sub1_inp_addr]; ")
+          else:
+            raise SystemExit("Incorrect value of 'Storage' knob passed (%s)" % (self.storage))
+        
 
         #mode1_stage_run_regs
         mode1_stage_run_regs_tag = re.search(r'<mode1_stage_run_regs>', line)
@@ -110,6 +174,13 @@ class generate_softmax():
             print("    if(~reset && mode1_start && addr < end_addr) begin")
             print("      addr <= addr + 1;")
             print("      inp_reg <= inp;")
+            if self.storage == "mem":
+              pass #nothing to print
+            elif self.storage == "reg":
+              print("    //store inputs into buffer")
+              print("    buffer[addr] <= inp;")
+            else:
+              raise SystemExit("Incorrect value of 'Storage' knob passed (%s)" % (self.storage))
             print("      mode1_run <= 1;")
             print("    end else if(addr == end_addr)begin")
             print("      mode2_start <= 1;")
@@ -124,6 +195,13 @@ class generate_softmax():
             print("    if(~reset && mode1_start && addr < end_addr) begin")
             print("      addr <= addr + 1;")
             print("      inp_reg <= inp;")
+            if self.storage == "mem":
+              pass #nothing to print
+            elif self.storage == "reg":
+              print("    //store inputs into buffer")
+              print("    buffer[addr] <= inp;")
+            else:
+              raise SystemExit("Incorrect value of 'Storage' knob passed (%s)" % (self.storage))
             print("      mode1_run <= 1;")
             print("      if(addr == end_addr - 1) begin")
             print("        mode2_start <= 1;")
@@ -171,7 +249,7 @@ class generate_softmax():
             print("      mode3_run <= 0;")
             print("    end")
           else:
-            raise SystemExit("Incorrect value passed for implementation to the EXP block. Given = %s. Supported = lut, dw" % (self.implementation))
+            raise SystemExit("Incorrect value passed for implementation to the EXP block. Given = %s. Supported = lut, dw" % (self.accuracy))
 
         #mode4_stagex_run
         mode4_stagex_run_tag = re.search(r'<mode4_stagex_run>', line)
@@ -219,7 +297,7 @@ class generate_softmax():
             print("      mode7_run <= 0;")
             print("    end")
           else:
-            raise SystemExit("Incorrect value passed for implementation to the EXP block. Given = %s. Supported = lut, dw" % (self.implementation))
+            raise SystemExit("Incorrect value passed for implementation to the EXP block. Given = %s. Supported = lut, dw" % (self.accuracy))
 
         #mode1 max
         mode1_max_tag = re.search(r'<mode1_max>', line)

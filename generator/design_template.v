@@ -3,15 +3,13 @@
 //fixed adder adds unsigned fixed numbers. Overflow flag is high in case of overflow
 module softmax(
   inp,      //data in from memory to max block
-  sub0_inp, //data inputs from memory to first-stage subtractors
-  sub1_inp, //data inputs from memory to second-stage subtractors
+  <subx_inp_ports> 
 
   start_addr,   //the first address that contains input data in the on-chip memory
   end_addr,     //max address containing required data
 
   addr,          //address corresponding to data inp
-  sub0_inp_addr, //address corresponding to sub0_inp
-  sub1_inp_addr, //address corresponding to sub1_inp
+  <subx_inp_addr_ports>
 
   <outp_ports>
   
@@ -27,14 +25,12 @@ module softmax(
   input init;
   
   input  [`DATAWIDTH*`NUM-1:0] inp;
-  input  [`DATAWIDTH*`NUM-1:0] sub0_inp;
-  input  [`DATAWIDTH*`NUM-1:0] sub1_inp;
+  <subx_inp_decl>
   input  [`ADDRSIZE-1:0]       end_addr;  
   input  [`ADDRSIZE-1:0]       start_addr;  
 
   output [`ADDRSIZE-1 :0] addr;
-  output [`ADDRSIZE-1 :0] sub0_inp_addr;
-  output [`ADDRSIZE-1 :0] sub1_inp_addr;
+  <subx_inp_addr_decl>
 
   <outp_declaration>
   output done;
@@ -45,6 +41,8 @@ module softmax(
   reg [`DATAWIDTH*`NUM-1:0] sub1_inp_reg;
   reg [`ADDRSIZE-1:0] sub0_inp_addr;
   reg [`ADDRSIZE-1:0] sub1_inp_addr;
+
+  <subx_inp_code_for_reg>
 
   ////-----------control signals--------------////
   reg mode1_start;

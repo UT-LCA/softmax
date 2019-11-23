@@ -14,9 +14,9 @@ all: gen compile run
 
 #python3 is important here. Don't use python version 2.x
 gen:
-	python3 ../design_generator.py -p ${PARALLELISM} -s ${STORAGE} -r ${PRECISION} -a ${ACCURACY}  | tee softmax.v
+	python3 ../design_generator.py -p ${PARALLELISM} -s ${STORAGE} -r ${PRECISION} -a ${ACCURACY} -v ${NUM_INP_VALS} -b ${NUM_BLANK_LOCATIONS}  | tee softmax.v
 	python3 ../golden_val_generator.py -p ${PARALLELISM} -v ${NUM_INP_VALS} -b ${NUM_BLANK_LOCATIONS} | tee mem.txt
-	python3 ../tb_generator.py -p ${PARALLELISM} -v ${NUM_INP_VALS} -b ${NUM_BLANK_LOCATIONS} -r ${PRECISION} | tee softmax_tb.v
+	python3 ../tb_generator.py -p ${PARALLELISM} -s ${STORAGE} -r ${PRECISION} -v ${NUM_INP_VALS} -b ${NUM_BLANK_LOCATIONS} | tee softmax_tb.v
 
 compile:
 	${VCS_HOME}/bin/vcs \
