@@ -1,0 +1,30 @@
+****************************************
+Report : area
+Design : softmax
+Version: O-2018.06-SP5
+Date   : Thu Nov 21 12:40:24 2019
+****************************************
+
+Information: Updating design information... (UID-85)
+Warning: Design 'softmax' contains 1 high-fanout nets. A fanout number of 1000 will be used for delay calculations involving these nets. (TIM-134)
+Library(s) Used:
+
+    gscl45nm (File: /usr/local/packages/cadence_2007/FreePDK45/osu_soc/lib/files/gscl45nm.db)
+
+Number of ports:                        18345
+Number of nets:                        106964
+Number of cells:                        88784
+Number of combinational cells:          86126
+Number of sequential cells:              1828
+Number of macros/black boxes:               0
+Number of buf/inv:                      35642
+Number of references:                      24
+
+Combinational area:             221710.926147
+Buf/Inv area:                    61439.815866
+Noncombinational area:           14583.966476
+Macro/Black Box area:                0.000000
+Net Interconnect area:      undefined  (No wire load specified)
+
+Total cell area:                236294.892624
+Total area:                 undefined

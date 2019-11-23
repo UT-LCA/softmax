@@ -1,0 +1,181 @@
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -max_paths 1
+        -sort_by group
+Design : softmax
+Version: O-2018.06-SP5
+Date   : Thu Nov 21 15:30:16 2019
+****************************************
+
+ # A fanout number of 1000 was used for high fanout net computations.
+
+Operating Conditions: typical   Library: gscl45nm
+Wire Load Model Mode: top
+
+  Startpoint: mode4_adder_tree/outp_reg[0]
+              (rising edge-triggered flip-flop clocked by CLK_0)
+  Endpoint: mode5_outp_log_reg_reg[0]
+            (rising edge-triggered flip-flop clocked by CLK_0)
+  Path Group: CLK_0
+  Path Type: max
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock CLK_0 (rise edge)                                 0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  mode4_adder_tree/outp_reg[0]/CLK (DFFPOSX1)             0.00 #     0.00 r
+  mode4_adder_tree/outp_reg[0]/Q (DFFPOSX1)               0.11       0.11 f
+  mode4_adder_tree/outp[0] (mode4_adder_tree)             0.00       0.11 f
+  mode5_ln/inp[0] (mode5_ln)                              0.00       0.11 f
+  mode5_ln/ln/a[0] (logunit)                              0.00       0.11 f
+  mode5_ln/ln/lut2/addr[0] (LUT2)                         0.00       0.11 f
+  mode5_ln/ln/lut2/U4404/Y (INVX1)                        0.02       0.13 r
+  mode5_ln/ln/lut2/U3671/Y (AND2X1)                       0.46       0.59 r
+  mode5_ln/ln/lut2/U3672/Y (INVX1)                        0.18       0.77 f
+  mode5_ln/ln/lut2/U4367/Y (BUFX2)                        0.09       0.86 f
+  mode5_ln/ln/lut2/U3902/Y (INVX1)                        0.58       1.43 r
+  mode5_ln/ln/lut2/U2045/Y (AOI21X1)                      0.18       1.61 f
+  mode5_ln/ln/lut2/U2234/Y (INVX1)                        0.10       1.71 r
+  mode5_ln/ln/lut2/U202/Y (OR2X1)                         0.04       1.75 r
+  mode5_ln/ln/lut2/U167/Y (OR2X1)                         0.06       1.81 r
+  mode5_ln/ln/lut2/U2033/Y (NOR3X1)                       0.04       1.85 f
+  mode5_ln/ln/lut2/U3877/Y (INVX1)                        0.01       1.85 r
+  mode5_ln/ln/lut2/U2029/Y (NOR3X1)                       0.03       1.89 f
+  mode5_ln/ln/lut2/U2028/Y (NAND3X1)                      0.03       1.92 r
+  mode5_ln/ln/lut2/U2315/Y (BUFX2)                        0.04       1.96 r
+  mode5_ln/ln/lut2/U2313/Y (INVX1)                        0.02       1.97 f
+  mode5_ln/ln/lut2/U1781/Y (NAND3X1)                      0.03       2.01 r
+  mode5_ln/ln/lut2/U317/Y (BUFX2)                         0.04       2.04 r
+  mode5_ln/ln/lut2/U1778/Y (NOR3X1)                       0.03       2.08 f
+  mode5_ln/ln/lut2/U1777/Y (NAND3X1)                      0.03       2.11 r
+  mode5_ln/ln/lut2/U2328/Y (BUFX2)                        0.04       2.15 r
+  mode5_ln/ln/lut2/U2327/Y (INVX1)                        0.02       2.16 f
+  mode5_ln/ln/lut2/U702/Y (AND2X1)                        0.03       2.20 f
+  mode5_ln/ln/lut2/U703/Y (INVX1)                         0.01       2.20 r
+  mode5_ln/ln/lut2/U1476/Y (NOR3X1)                       0.03       2.23 f
+  mode5_ln/ln/lut2/U1439/Y (NAND3X1)                      0.04       2.27 r
+  mode5_ln/ln/lut2/U3666/Y (BUFX2)                        0.05       2.32 r
+  mode5_ln/ln/lut2/log[11] (LUT2)                         0.00       2.32 r
+  mode5_ln/ln/add/b[11] (logunit_DW_fp_addsub_0)          0.00       2.32 r
+  mode5_ln/ln/add/U120/Y (AND2X1)                         0.03       2.35 r
+  mode5_ln/ln/add/U121/Y (INVX1)                          0.03       2.37 f
+  mode5_ln/ln/add/U353/Y (NAND3X1)                        0.04       2.41 r
+  mode5_ln/ln/add/U354/Y (OAI21X1)                        0.02       2.43 f
+  mode5_ln/ln/add/U302/Y (INVX1)                          0.01       2.44 r
+  mode5_ln/ln/add/U357/Y (AOI22X1)                        0.03       2.47 f
+  mode5_ln/ln/add/U67/Y (AND2X2)                          0.04       2.51 f
+  mode5_ln/ln/add/U68/Y (INVX1)                           0.00       2.50 r
+  mode5_ln/ln/add/U69/Y (AND2X2)                          0.04       2.54 r
+  mode5_ln/ln/add/U377/Y (AOI22X1)                        0.03       2.57 f
+  mode5_ln/ln/add/U298/Y (INVX1)                          0.39       2.96 r
+  mode5_ln/ln/add/U590/Y (MUX2X1)                         0.13       3.09 f
+  mode5_ln/ln/add/U294/Y (INVX1)                          0.13       3.22 r
+  mode5_ln/ln/add/U570/Y (NOR3X1)                         0.07       3.29 f
+  mode5_ln/ln/add/U569/Y (NAND3X1)                        0.03       3.33 r
+  mode5_ln/ln/add/U327/Y (INVX1)                          0.02       3.35 f
+  mode5_ln/ln/add/U31/Y (AND2X1)                          0.04       3.39 f
+  mode5_ln/ln/add/U212/Y (INVX1)                          0.06       3.45 r
+  mode5_ln/ln/add/U568/Y (NAND3X1)                        0.02       3.47 f
+  mode5_ln/ln/add/U182/Y (BUFX2)                          0.04       3.52 f
+  mode5_ln/ln/add/U6/Y (OR2X1)                            0.06       3.58 f
+  mode5_ln/ln/add/sub_225/U2_1/YS (FAX1)                  0.09       3.67 f
+  mode5_ln/ln/add/U248/Y (INVX1)                          0.03       3.70 r
+  mode5_ln/ln/add/U208/Y (AND2X1)                         0.14       3.84 r
+  mode5_ln/ln/add/U209/Y (INVX1)                          0.08       3.92 f
+  mode5_ln/ln/add/U503/Y (AOI22X1)                        0.03       3.95 r
+  mode5_ln/ln/add/U183/Y (BUFX2)                          0.04       3.98 r
+  mode5_ln/ln/add/U501/Y (NAND3X1)                        0.02       4.00 f
+  mode5_ln/ln/add/U83/Y (BUFX2)                           0.03       4.03 f
+  mode5_ln/ln/add/U500/Y (AOI22X1)                        0.02       4.06 r
+  mode5_ln/ln/add/U32/Y (BUFX2)                           0.04       4.09 r
+  mode5_ln/ln/add/U499/Y (NAND3X1)                        0.01       4.10 f
+  mode5_ln/ln/add/U218/Y (BUFX2)                          0.04       4.14 f
+  mode5_ln/ln/add/U498/Y (MUX2X1)                         0.04       4.18 r
+  mode5_ln/ln/add/U12/Y (AND2X1)                          0.03       4.21 r
+  mode5_ln/ln/add/U217/Y (INVX1)                          0.03       4.24 f
+  mode5_ln/ln/add/add_1_root_add_240_2/B[0] (logunit_DW01_add_0)
+                                                          0.00       4.24 f
+  mode5_ln/ln/add/add_1_root_add_240_2/U1/Y (AND2X1)      0.05       4.29 f
+  mode5_ln/ln/add/add_1_root_add_240_2/U3/Y (AND2X1)      0.04       4.34 f
+  mode5_ln/ln/add/add_1_root_add_240_2/U2/Y (AND2X1)      0.05       4.38 f
+  mode5_ln/ln/add/add_1_root_add_240_2/U1_3/YC (FAX1)     0.08       4.46 f
+  mode5_ln/ln/add/add_1_root_add_240_2/U1_4/YC (FAX1)     0.08       4.54 f
+  mode5_ln/ln/add/add_1_root_add_240_2/U1_5/YC (FAX1)     0.08       4.63 f
+  mode5_ln/ln/add/add_1_root_add_240_2/U1_6/YC (FAX1)     0.08       4.71 f
+  mode5_ln/ln/add/add_1_root_add_240_2/U1_7/YC (FAX1)     0.08       4.79 f
+  mode5_ln/ln/add/add_1_root_add_240_2/U1_8/YC (FAX1)     0.08       4.87 f
+  mode5_ln/ln/add/add_1_root_add_240_2/U1_9/YC (FAX1)     0.08       4.95 f
+  mode5_ln/ln/add/add_1_root_add_240_2/U1_10/YC (FAX1)
+                                                          0.08       5.03 f
+  mode5_ln/ln/add/add_1_root_add_240_2/U1_11/YC (FAX1)
+                                                          0.08       5.11 f
+  mode5_ln/ln/add/add_1_root_add_240_2/U1_12/YC (FAX1)
+                                                          0.08       5.20 f
+  mode5_ln/ln/add/add_1_root_add_240_2/U1_13/YC (FAX1)
+                                                          0.08       5.27 f
+  mode5_ln/ln/add/add_1_root_add_240_2/U4/Y (XOR2X1)      0.08       5.36 r
+  mode5_ln/ln/add/add_1_root_add_240_2/SUM[14] (logunit_DW01_add_0)
+                                                          0.00       5.36 r
+  mode5_ln/ln/add/U1/a[13] (logunit_DW_lzd_0)             0.00       5.36 r
+  mode5_ln/ln/add/U1/U17/Y (OR2X1)                        0.04       5.39 r
+  mode5_ln/ln/add/U1/U18/Y (INVX1)                        0.02       5.41 f
+  mode5_ln/ln/add/U1/U40/Y (NAND3X1)                      0.03       5.44 r
+  mode5_ln/ln/add/U1/U16/Y (BUFX2)                        0.04       5.48 r
+  mode5_ln/ln/add/U1/U1/Y (OR2X1)                         0.04       5.52 r
+  mode5_ln/ln/add/U1/U22/Y (INVX1)                        0.04       5.55 f
+  mode5_ln/ln/add/U1/enc[3] (logunit_DW_lzd_0)            0.00       5.55 f
+  mode5_ln/ln/add/U200/Y (AND2X1)                         0.03       5.59 f
+  mode5_ln/ln/add/U201/Y (INVX1)                          0.01       5.60 r
+  mode5_ln/ln/add/U344/Y (NAND3X1)                        0.02       5.61 f
+  mode5_ln/ln/add/U345/Y (OAI21X1)                        0.02       5.63 r
+  mode5_ln/ln/add/U322/Y (INVX1)                          0.03       5.66 f
+  mode5_ln/ln/add/U347/Y (AOI22X1)                        0.03       5.69 r
+  mode5_ln/ln/add/U37/Y (AND2X2)                          0.03       5.73 r
+  mode5_ln/ln/add/U38/Y (INVX1)                           0.01       5.74 f
+  mode5_ln/ln/add/U350/Y (OAI21X1)                        0.06       5.80 r
+  mode5_ln/ln/add/U566/Y (MUX2X1)                         0.08       5.88 f
+  mode5_ln/ln/add/U228/Y (INVX1)                          0.03       5.91 r
+  mode5_ln/ln/add/U95/Y (AND2X1)                          0.14       6.05 r
+  mode5_ln/ln/add/U549/Y (AOI22X1)                        0.06       6.11 f
+  mode5_ln/ln/add/U160/Y (AND2X2)                         0.04       6.15 f
+  mode5_ln/ln/add/U161/Y (INVX1)                          0.03       6.18 r
+  mode5_ln/ln/add/U426/Y (NAND3X1)                        0.01       6.19 f
+  mode5_ln/ln/add/U74/Y (BUFX2)                           0.03       6.22 f
+  mode5_ln/ln/add/U425/Y (NAND3X1)                        0.03       6.25 r
+  mode5_ln/ln/add/U146/Y (BUFX2)                          0.04       6.29 r
+  mode5_ln/ln/add/U424/Y (NOR3X1)                         0.03       6.32 f
+  mode5_ln/ln/add/U421/Y (NAND3X1)                        0.04       6.36 r
+  mode5_ln/ln/add/U242/Y (INVX1)                          0.03       6.39 f
+  mode5_ln/ln/add/U420/Y (AOI21X1)                        0.04       6.42 r
+  mode5_ln/ln/add/U145/Y (BUFX2)                          0.04       6.46 r
+  mode5_ln/ln/add/U419/Y (NOR3X1)                         0.03       6.49 f
+  mode5_ln/ln/add/U412/Y (NOR3X1)                         0.12       6.61 r
+  mode5_ln/ln/add/U264/Y (INVX1)                          0.06       6.67 f
+  mode5_ln/ln/add/U411/Y (NAND3X1)                        0.03       6.70 r
+  mode5_ln/ln/add/U96/Y (OR2X2)                           0.08       6.79 r
+  mode5_ln/ln/add/U97/Y (INVX1)                           0.03       6.81 f
+  mode5_ln/ln/add/U70/Y (AND2X1)                          0.04       6.86 f
+  mode5_ln/ln/add/U71/Y (INVX1)                           0.00       6.86 r
+  mode5_ln/ln/add/U410/Y (NAND3X1)                        0.02       6.88 f
+  mode5_ln/ln/add/z[0] (logunit_DW_fp_addsub_0)           0.00       6.88 f
+  mode5_ln/ln/z[0] (logunit)                              0.00       6.88 f
+  mode5_ln/outp[0] (mode5_ln)                             0.00       6.88 f
+  U3085/Y (AOI22X1)                                       0.05       6.92 r
+  U9220/Y (INVX1)                                         0.02       6.95 f
+  mode5_outp_log_reg_reg[0]/D (DFFPOSX1)                  0.00       6.95 f
+  data arrival time                                                  6.95
+
+  clock CLK_0 (rise edge)                                10.00      10.00
+  clock network delay (ideal)                             0.00      10.00
+  mode5_outp_log_reg_reg[0]/CLK (DFFPOSX1)                0.00      10.00 r
+  library setup time                                     -0.06       9.94
+  data required time                                                 9.94
+  --------------------------------------------------------------------------
+  data required time                                                 9.94
+  data arrival time                                                 -6.95
+  --------------------------------------------------------------------------
+  slack (MET)                                                        2.99
+
+
