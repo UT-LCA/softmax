@@ -24,8 +24,6 @@ compile:
 	-sverilog \
 	-full64 \
 	-debug_access+all \
-	+incdir+../../sim_ver/lib/16bits/ \
-	+incdir+../../sim_ver3/ \
 	+incdir+../../sim_ver3/ \
 	softmax_${SUFFIX}.v \
   softmax_tb_${SUFFIX}.v \
@@ -39,5 +37,5 @@ waves:
 	${VCS_HOME}/bin/dve -full64 -vpd vcdplus.vpd&
 
 clean:
-	\rm -rf csrc simv.daidir/ simv *.vpd ucli.key DVEfiles/ *.v
+	\rm -rf csrc simv.daidir/ simv *.vpd ucli.key DVEfiles/ *.v *.txt
 
