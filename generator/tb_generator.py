@@ -49,12 +49,19 @@ class tb_generator:
                         action='store',
                         default="../tb_template.v",
                         help='Path+Name of the top level template file')
+    parser.add_argument("-u",
+                        "--suffix",
+                        action='store',
+                        default='default',
+                        type=str,
+                        help='The suffix for the file name')
     args = parser.parse_args()
     self.template_file = args.template_file
     self.num_inp_pins = args.num_inp_pins
     self.num_inp_vals = args.num_inp_vals
     self.precision = args.precision
     self.storage = args.storage
+    self.suffix = args.suffix
     self.num_blank_locations = args.num_blank_locations
 
   def print_it(self):
@@ -132,9 +139,17 @@ class tb_generator:
         if parallelism_if_tag is not None:
           print("    if(parallelism==%d) begin" % (self.num_inp_pins))
 
-        #memory2_3_inst
-        memory2_3_inst_tag = re.search(r'memory2_3_inst', line)
-        if memory2_3_inst_tag is not None:
+        #memory_inst
+        memory_inst_tag = re.search(r'<memory_inst>', line)
+        if memory_inst_tag is not None:
+          print("  ram#(data_width, `ADDRSIZE, depth) memory1 (");
+          print("    .clk(clk),");
+          print("    .we0(1'b0), ");  
+          print("    .addr0(addr), "); 
+          print("    .d0({`DATAWIDTH*`NUM{1'b0}}),");
+          print("    .q0(inp) ");
+          print("  );");
+
           if self.storage == "mem":
             print("  ram#(data_width, `ADDRSIZE, depth) memory2 (")
             print("    .clk(clk),")
@@ -156,12 +171,13 @@ class tb_generator:
           else:
             raise SystemExit("Incorrect value of 'Storage' knob passed (%s)" % (self.storage))
         
-        #memory2_3_load
-        memory2_3_load_tag = re.search(r'memory2_3_load', line)
-        if memory2_3_load_tag is not None:
+        #memory_load
+        memory_load_tag = re.search(r'<memory_load>', line)
+        if memory_load_tag is not None:
+          print('        $readmemh("mem_%s.txt", memory1.ram);' % (self.suffix))
           if self.storage == "mem":
-            print('        $readmemh("mem.txt", memory2.ram);')
-            print('        $readmemh("mem.txt", memory3.ram);')
+            print('        $readmemh("mem_%s.txt", memory2.ram);' % (self.suffix))
+            print('        $readmemh("mem_%s.txt", memory3.ram);' % (self.suffix))
           elif self.storage == "reg":
             pass #nothing to print
           else:

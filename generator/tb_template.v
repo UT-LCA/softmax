@@ -62,15 +62,7 @@ module softmax_test;
   parameter data_width = `DATAWIDTH*`NUM; //each element of the memory stores these many bits
   parameter depth = (1<<`ADDRSIZE_FOR_TB)+1; //number of elements that can be stored in the memory. 
   parameter rst_mode = 0; 
-  ram#(data_width, `ADDRSIZE, depth) memory1 (
-    .clk(clk),
-    .we0(1'b0),   
-    .addr0(addr),  
-    .d0({`DATAWIDTH*`NUM{1'b0}}),
-    .q0(inp) 
-  );
-
-  <memory2_3_inst>
+  <memory_inst>
 
   always #2 clk = !clk;
 
@@ -83,9 +75,8 @@ module softmax_test;
         $error("Parallelism not provided on command line.");
         $finish;
      end
-     <parallelism_if>
-         $readmemh("mem.txt", memory1.ram);
-         <memory2_3_load>
+         <parallelism_if>
+         <memory_load>
          <start_addr_assign>
          <end_addr_assign>
      end
