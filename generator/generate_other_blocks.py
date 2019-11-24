@@ -87,7 +87,13 @@ class generate_exp():
                 else:
                     raise SystemExit("Incorrect value passed for implementation to the EXP block. Given = %s. Supported = lut, dw" % (self.implementation))
             elif fixed_match is not None:
-                FIXME
+                if self.implementation == "dw":
+                    #FIXME
+                    print("  Modified_DW_exp #(`DATAWIDTH) exp%d(.a(inp%d), .z(outp%d), .status());" % (iter, iter, iter))
+                elif self.implementation == "lut":
+                    print("  expunit_fixed exp%d(.a(inp%d), .z(outp%d), .status(), .stage_run(stage_run), .clk(clk), .reset(reset));" % (iter, iter, iter))
+                else:
+                    raise SystemExit("Incorrect value passed for implementation to the EXP block. Given = %s. Supported = lut, dw" % (self.implementation))
             else:
                 raise SystemExit("Incorrect value passed for dtype. Given = %s. Supported = float16, float32,  fixed16, fixed32" % (self.dtype))
         print("endmodule")
@@ -98,6 +104,7 @@ class generate_ln():
         self.num_inputs = num_inputs
         self.implementation = implementation
         self.name = name
+        self.dtype = dtype
         self.print_it()
     
     def print_it(self):
@@ -108,12 +115,24 @@ class generate_ln():
         print(");")
         print("  input  [`DATAWIDTH-1 : 0] inp;")  
         print("  output [`DATAWIDTH-1 : 0] outp;")
-        if self.implementation == "dw":
-            print("  DW_fp_ln #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE, 0, 0) ln(.a(inp), .z(outp), .status());")
-        elif self.implementation == "lut":
-            print("  logunit ln(.a(inp), .z(outp), .status());")
+        float_match = re.search(r'float', self.dtype)
+        fixed_match = re.search(r'fixed', self.dtype)
+        if float_match is not None:
+            if self.implementation == "dw":
+                print("  DW_fp_ln #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE, 0, 0) ln(.a(inp), .z(outp), .status());")
+            elif self.implementation == "lut":
+                print("  logunit ln(.a(inp), .z(outp), .status());")
+            else:
+                raise SystemExit("Incorrect value passed for implementation to the LOG block. Given = %s. Supported = lut, dw" % (self.implementation))
+        elif fixed_match is not None:
+            if self.implementation == "dw":
+                print("  DW_ln #(`DATAWIDTH) ln(.a(inp), .z(outp));")
+            elif self.implementation == "lut":
+                print("  logunit_fixed ln(.a(inp), .z(outp), .status());")
+            else:
+                raise SystemExit("Incorrect value passed for implementation to the LOG block. Given = %s. Supported = lut, dw" % (self.implementation))
         else:
-            raise SystemExit("Incorrect value passed for implementation to the LOG block. Given = %s. Supported = lut, dw" % (self.implementation))
+            raise SystemExit("Incorrect value passed for dtype. Given = %s. Supported = float16, float32,  fixed16, fixed32" % (self.dtype))
 
         print("endmodule")
         print("")
@@ -194,7 +213,19 @@ class generate_includes():
                 print('`include "exponentialunit.v"')
                 print('`include "logunit.v"')
         elif fixed_match is not None:
-            FIXME   
+            print('`include "DW01_cmp2.v"')
+            print('`include "DW01_add.v"')
+            print('`include "DW01_sub.v"')
+            print('`include "DW01_addsub.v"')
+            if self.accuracy=="dw":
+                print('`include "DW_ln.v"')
+                print('`include "DW_exp2.v"')
+                print('`include "DW_fp_exp.v"')
+            elif self.accuracy=="lut":
+                print('`include "DW02_mult.v"')
+                print('`include "exponentialunit_fixed.v"')
+                print('`include "logunit_fixed.v"')
+            #FIXME   
         else:
             raise SystemExit("Incorrect value passed for dtype. Given = %s. Supported = float16, float32, fixed16, fixed32" % (self.dtype))
         print("")

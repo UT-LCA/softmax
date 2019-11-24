@@ -6,6 +6,7 @@ import math
 class generate_addertree():
   def __init__(self, num_inputs, dtype="float16"):
     self.num_inputs = num_inputs
+    self.dtype = dtype
     #find if the num_inputs is a power of 2
     if ((self.num_inputs-1) & self.num_inputs) != 0:
       raise SystemError("adder tree only supports number of inputs = power of 2")
@@ -18,6 +19,8 @@ class generate_addertree():
     self.printit()
   
   def printit(self):
+    float_match = re.search(r'float', self.dtype)
+    fixed_match = re.search(r'fixed', self.dtype)
     print("")
     print("module mode4_adder_tree(")
     for iter in range(self.num_inputs):
@@ -89,9 +92,19 @@ class generate_addertree():
     for stage in reversed(range(self.num_add_stages_in_adder_tree)):
       if stage == 0:
         if(self.num_add_stages_in_adder_tree > 1):
-          print("  DW_fp_add #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE) add0_stage0(.a(outp),       .b(add0_out_stage1_reg),      .z(add0_out_stage0), .rnd(3'b000),    .status());")
+          if float_match is not None:
+            print("  DW_fp_add #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE) add0_stage0(.a(outp),       .b(add0_out_stage1_reg),      .z(add0_out_stage0), .rnd(3'b000),    .status());")
+          elif fixed_match is not None:
+            print("  DW01_add #(`DATAWIDTH) add0_stage0(.A(outp),       .B(add0_out_stage1_reg),    , .CI(1'b0),  .SUM(add0_out_stage0), .CO());")
+          else:
+            raise SystemExit("Incorrect value passed for dtype. Given = %s. Supported = float16, float32, fixed16, fixed32" % (self.dtype))
         else:
-          print("  DW_fp_add #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE) add0_stage0(.a(outp),       .b(inp0),      .z(add0_out_stage0), .rnd(3'b000),    .status());")
+          if float_match is not None:
+            print("  DW_fp_add #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE) add0_stage0(.a(outp),       .b(inp0),      .z(add0_out_stage0), .rnd(3'b000),    .status());")
+          elif fixed_match is not None:
+            print("  DW01_add #(`DATAWIDTH) add0_stage0(.A(outp),       .B(inp0),    , .CI(1'b0),  .SUM(add0_out_stage0), .CO());")
+          else:
+            raise SystemExit("Incorrect value passed for dtype. Given = %s. Supported = float16, float32, fixed16, fixed32" % (self.dtype))
         print("")
         continue
      
@@ -103,14 +116,24 @@ class generate_addertree():
       if stage == self.num_add_stages_in_adder_tree - 1:
         inp_num = 0
         for num_adder in range(num_adders_in_current_stage):
-          print("  DW_fp_add #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE) add%d_stage%d(.a(inp%d),       .b(inp%d),      .z(add%d_out_stage%d), .rnd(3'b000),    .status());" % (num_adder_cur_stage, stage, inp_num, inp_num+1, num_adder_cur_stage, stage))
+          if float_match is not None:
+            print("  DW_fp_add #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE) add%d_stage%d(.a(inp%d),       .b(inp%d),      .z(add%d_out_stage%d), .rnd(3'b000),    .status());" % (num_adder_cur_stage, stage, inp_num, inp_num+1, num_adder_cur_stage, stage))
+          elif fixed_match is not None:
+            print("  DW01_add #(`DATAWIDTH) add%d_stage%d(.A(inp%d),       .B(inp%d),    .CI(1'b0),  .SUM(add%d_out_stage%d), .CO());" % (num_adder_cur_stage, stage, inp_num, inp_num+1, num_adder_cur_stage, stage))
+          else:
+            raise SystemExit("Incorrect value passed for dtype. Given = %s. Supported = float16, float32, fixed16, fixed32" % (self.dtype))
           inp_num = inp_num + 2
           num_adder_cur_stage = num_adder_cur_stage + 1
         print("")
         continue
 
       for num_adder in range(num_adders_in_current_stage):
-        print("  DW_fp_add #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE) add%d_stage%d(.a(add%d_out_stage%d_reg),       .b(add%d_out_stage%d_reg),      .z(add%d_out_stage%d), .rnd(3'b000),    .status());" % (num_adder_cur_stage, stage, num_adder_last_stage, stage+1, num_adder_last_stage+1, stage+1, num_adder_cur_stage, stage))
+        if float_match is not None:
+          print("  DW_fp_add #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE) add%d_stage%d(.a(add%d_out_stage%d_reg),       .b(add%d_out_stage%d_reg),      .z(add%d_out_stage%d), .rnd(3'b000),    .status());" % (num_adder_cur_stage, stage, num_adder_last_stage, stage+1, num_adder_last_stage+1, stage+1, num_adder_cur_stage, stage))
+        elif fixed_match is not None:
+          print("  DW_fp_add #(`DATAWIDTH) add%d_stage%d(.A(add%d_out_stage%d_reg),       .B(add%d_out_stage%d_reg),     .CI(1'b0), .SUM(add%d_out_stage%d), .CO());" % (num_adder_cur_stage, stage, num_adder_last_stage, stage+1, num_adder_last_stage+1, stage+1, num_adder_cur_stage, stage))
+        else:
+          raise SystemExit("Incorrect value passed for dtype. Given = %s. Supported = float16, float32, fixed16, fixed32" % (self.dtype))
         num_adder_cur_stage = num_adder_cur_stage + 1
         num_adder_last_stage = num_adder_last_stage + 2
       print("")  

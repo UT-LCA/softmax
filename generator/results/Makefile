@@ -15,6 +15,8 @@ PRECISION ?= float16
 ACCURACY ?= lut
 NUM_INP_VALS ?= 8
 NUM_BLANK_LOCATIONS ?= 2
+START_RANGE ?= 0
+END_RANGE ?= 10
 SUFFIX ?= p${PARALLELISM}_s${STORAGE}_r${PRECISION}_a${ACCURACY}_v${NUM_INP_VALS}_b${NUM_BLANK_LOCATIONS}
 
 all: gen compile run compare
@@ -22,7 +24,7 @@ all: gen compile run compare
 #python3 is important here. Don't use python version 2.x
 gen:
 	python3 ../design_generator.py -p ${PARALLELISM} -s ${STORAGE} -r ${PRECISION} -a ${ACCURACY} -v ${NUM_INP_VALS} -b ${NUM_BLANK_LOCATIONS}  | tee softmax_${SUFFIX}.v
-	python3 ../golden_val_generator.py -p ${PARALLELISM} -v ${NUM_INP_VALS} -b ${NUM_BLANK_LOCATIONS} | tee mem_${SUFFIX}.txt
+	python3 ../golden_val_generator.py -p ${PARALLELISM} -v ${NUM_INP_VALS} -b ${NUM_BLANK_LOCATIONS} -r ${PRECISION} -sr ${START_RANGE} -er ${END_RANGE} | tee mem_${SUFFIX}.txt
 	python3 ../tb_generator.py -p ${PARALLELISM} -s ${STORAGE} -r ${PRECISION} -v ${NUM_INP_VALS} -b ${NUM_BLANK_LOCATIONS} -u ${SUFFIX} | tee softmax_tb_${SUFFIX}.v
 
 compile:
