@@ -67,7 +67,7 @@ if float_match is not None:
   input = np.random.uniform(float(start_range), float(end_range), size=(num_inp_vals,1)).astype(astype)
 elif fixed_match is not None:
   if precision == "fixed32":
-    astype = 'uint32'
+    astype = 'int32'
   elif precision == "fixed16":
     astype = 'uint16'
   else:
@@ -103,6 +103,10 @@ print('f'*(num_inp_pins)*(num_nibbles), end="")
 
 print("")
 
+if precision == "fixed32":
+  input = input / (2**16)
+  input = input.astype('float32')
+
 #print("----------MAX value is:-----------------------")
 MAX = np.max(input)
 #print(MAX)
@@ -110,6 +114,7 @@ MAX = np.max(input)
 
 #Calculate e^x
 #print("----------exp value in decimal is:------------")
+#convert to float32 before feeding to exp unit
 exp_array = np.exp(input)
 #print(exp_array)
 
@@ -117,21 +122,21 @@ exp_array = np.exp(input)
 sum_ = np.sum(exp_array)
 #print(sum)
 
-#Find probabilities: e^x/sum(e^x)
-probabilities = exp_array / sum_
+#Find prob: e^x/sum(e^x)
+prob = exp_array / sum_
 if precision == "fixed32":
-    probabilities = probabilities * (2**16)
-    probabilities = probabilities.astype('uint32')
+    prob = prob * (2**16)
+    prob = prob.astype('int32')
 
 #print("--------output value in decimal is:-----------")
-#print(probabilities)
+#print(prob)
 #print("----------output value in hex is:-------------")
 #iter = 1
-for x in range(probabilities.shape[0]):
+for x in range(prob.shape[0]):
   if precision == "float16":
-    H = hex(probabilities[x][0].view('H'))[2:].zfill(4)
+    H = hex(prob[x][0].view('H'))[2:].zfill(4)
   elif precision == "fixed32":
-    H = hex(probabilities[x][0])[2:].zfill(8)
+    H = hex(prob[x][0])[2:].zfill(8)
   else:
     raise SystemExit("Incorrect value passed for dtype. Given = %s. Supported = float16, fixed32" % (precision))
   #if (iter%num_inp_pins)==0:

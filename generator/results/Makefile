@@ -15,9 +15,18 @@ PRECISION ?= float16
 ACCURACY ?= lut
 NUM_INP_VALS ?= 8
 NUM_BLANK_LOCATIONS ?= 2
+SUFFIX ?= p${PARALLELISM}_s${STORAGE}_r${PRECISION}_a${ACCURACY}_v${NUM_INP_VALS}_b${NUM_BLANK_LOCATIONS}
+
+#Notes on range
+#For float16, we can use:
+#-0.1 to 0.1, -1 to 1, 5 to 15, -10 to 10, 0 to 100
+#For fixed32, we need to use: (we assume 16 bits before the decimal point for the integer part and 16 bits after the decimal point for the fraction)
+# 2^13 to 2^19 (equivalent to 16.some_4_bits to 0.some_4_bits)
+# 2^10 to 2^22 (equivalent to 128.some_6_bits to 0.some_6_bits)
+# -1835008 to 2^20 (equivalent to -28 to +16)
+#  -655360 to +655360 (equivalent to -10.some_16_bits to +10.some_16_bits)
 START_RANGE ?= 0
 END_RANGE ?= 10
-SUFFIX ?= p${PARALLELISM}_s${STORAGE}_r${PRECISION}_a${ACCURACY}_v${NUM_INP_VALS}_b${NUM_BLANK_LOCATIONS}
 
 all: gen compile run compare
 
@@ -48,5 +57,5 @@ waves:
 	${VCS_HOME}/bin/dve -full64 -vpd vcdplus.vpd&
 
 clean:
-	\rm -rf csrc simv.daidir/ simv *.vpd ucli.key DVEfiles/ *.v *.txt *.log
+	\rm -rf csrc simv.daidir/ simv *.vpd ucli.key DVEfiles/ *.v *.txt *.log *.csv
 
