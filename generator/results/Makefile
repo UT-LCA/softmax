@@ -3,15 +3,21 @@ export VCS_HOME=/usr/local/packages/synopsys_2018/vcs-mx/O-2018.09-SP1
 #Run commands like the following:
 #make PARALLELISM=8 NUM_INP_VALS=128 NUM_BLANK_LOCATIONS = 2 all
 
+#Possible values
+#PARALLELISM = 2,4,8,16,...
+#STORAGE = mem, reg
+#PRECISION = float16, fixed32
+#NUM_INP_VALS = 2,4,8,16,32
+
 PARALLELISM ?= 4
-STORAGE ?= "mem"
-PRECISION ?= "float16"
-ACCURACY ?= "lut"
+STORAGE ?= mem
+PRECISION ?= float16
+ACCURACY ?= lut
 NUM_INP_VALS ?= 8
 NUM_BLANK_LOCATIONS ?= 2
 SUFFIX ?= p${PARALLELISM}_s${STORAGE}_r${PRECISION}_a${ACCURACY}_v${NUM_INP_VALS}_b${NUM_BLANK_LOCATIONS}
 
-all: gen compile run 
+all: gen compile run compare
 
 #python3 is important here. Don't use python version 2.x
 gen:
@@ -31,11 +37,14 @@ compile:
 	-timescale=1ns/1ps \
 
 run:
-	./simv +parallelism=${PARALLELISM}
+	./simv +parallelism=${PARALLELISM} |& tee sim_${SUFFIX}.log
+
+compare:
+	python3 ../compare_results.py --expected mem_${SUFFIX}.txt --observed sim_${SUFFIX}.log -p ${PARALLELISM} -v ${NUM_INP_VALS} -r ${PRECISION} | tee comparison_${SUFFIX}.csv
 
 waves:
 	${VCS_HOME}/bin/dve -full64 -vpd vcdplus.vpd&
 
 clean:
-	\rm -rf csrc simv.daidir/ simv *.vpd ucli.key DVEfiles/ *.v *.txt
+	\rm -rf csrc simv.daidir/ simv *.vpd ucli.key DVEfiles/ *.v *.txt *.log
 

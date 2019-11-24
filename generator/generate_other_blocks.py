@@ -4,9 +4,10 @@ import argparse
 import math
 
 class generate_sub():
-    def __init__(self, name="mode2_sub", num_inputs=4):
+    def __init__(self, name="mode2_sub", num_inputs=4, dtype="float16"):
         self.num_inputs = num_inputs
         self.name = name
+        self.dtype = dtype
         self.print_it()
 
     def print_it(self):
@@ -28,15 +29,23 @@ class generate_sub():
         for iter in range(self.num_inputs):
             print("  output  [`DATAWIDTH-1 : 0] outp%d;" % iter)
         for iter in range(self.num_inputs):
-            print("  DW_fp_sub #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE) sub%d(.a(a_inp%d), .b(b_inp), .z(outp%d), .rnd(3'b000), .status());" % (iter, iter, iter))
+            float_match = re.search(r'float', self.dtype)
+            fixed_match = re.search(r'fixed', self.dtype)
+            if float_match is not None:
+                print("  DW_fp_sub #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE) sub%d(.a(a_inp%d), .b(b_inp), .z(outp%d), .rnd(3'b000), .status());" % (iter, iter, iter))
+            elif fixed_match is not None:
+                print("  DW_fp_sub #(`DATAWIDTH) sub%d(.A(a_inp%d), .B(b_inp), .CI(1'b0), .DIFF(outp%d), .CO());" % (iter, iter, iter))
+            else:
+                raise SystemExit("Incorrect value passed for dtype. Given = %s. Supported = float16, float32, fixed16, fixed32" % (self.dtype))
         print("endmodule")
         print("")
 
 class generate_exp():
-    def __init__(self, name="mode3_exp", num_inputs=4, implementation="dw"):
+    def __init__(self, name="mode3_exp", num_inputs=4, implementation="dw", dtype="float16"):
         self.num_inputs = num_inputs
         self.implementation = implementation
         self.name = name
+        self.dtype = dtype
         self.print_it()
 
     def print_it(self):
@@ -68,17 +77,24 @@ class generate_exp():
         for iter in range(self.num_inputs):
             print("  output  [`DATAWIDTH-1 : 0] outp%d;" % iter)
         for iter in range(self.num_inputs):
-            if self.implementation == "dw":
-                print("  DW_fp_exp #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE,0) exp%d(.a(inp%d), .z(outp%d), .status());" % (iter, iter, iter))
-            elif self.implementation == "lut":
-                print("  expunit exp%d(.a(inp%d), .z(outp%d), .status(), .stage_run(stage_run), .clk(clk), .reset(reset));" % (iter, iter, iter))
+            float_match = re.search(r'float', self.dtype)
+            fixed_match = re.search(r'fixed', self.dtype)
+            if float_match is not None:
+                if self.implementation == "dw":
+                    print("  DW_fp_exp #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE,0) exp%d(.a(inp%d), .z(outp%d), .status());" % (iter, iter, iter))
+                elif self.implementation == "lut":
+                    print("  expunit exp%d(.a(inp%d), .z(outp%d), .status(), .stage_run(stage_run), .clk(clk), .reset(reset));" % (iter, iter, iter))
+                else:
+                    raise SystemExit("Incorrect value passed for implementation to the EXP block. Given = %s. Supported = lut, dw" % (self.implementation))
+            elif fixed_match is not None:
+                FIXME
             else:
-                raise SystemExit("Incorrect value passed for implementation to the EXP block. Given = %s. Supported = lut, dw" % (self.implementation))
+                raise SystemExit("Incorrect value passed for dtype. Given = %s. Supported = float16, float32,  fixed16, fixed32" % (self.dtype))
         print("endmodule")
         print("")
 
 class generate_ln():
-    def __init__(self, name="mode5_ln", num_inputs=4, implementation="dw"):
+    def __init__(self, name="mode5_ln", num_inputs=4, implementation="dw", dtype="float16"):
         self.num_inputs = num_inputs
         self.implementation = implementation
         self.name = name
@@ -115,25 +131,37 @@ class generate_defines():
         print("")
         print("`ifndef DEFINES_DONE")
         print("`define DEFINES_DONE")
-        if self.dtype == "float16":
-            exponent_bits = 5
-            mantissa_bits = 10
-            sign_bits = 1
-        elif self.dtype == "bfloat16":
-            exponent_bits = 8
-            mantissa_bits = 7
-            sign_bits = 1
-        elif self.dtype == "float32":
-            exponent_bits = 8
-            mantissa_bits = 23
-            sign_bits = 1
+        float_match = re.search(r'float', self.dtype)
+        fixed_match = re.search(r'fixed', self.dtype)
+        if float_match is not None:
+            if self.dtype == "float16":
+                exponent_bits = 5
+                mantissa_bits = 10
+                sign_bits = 1
+            #elif self.dtype == "bfloat16":
+            #    exponent_bits = 8
+            #    mantissa_bits = 7
+            #    sign_bits = 1
+            elif self.dtype == "float32":
+                exponent_bits = 8
+                mantissa_bits = 23
+                sign_bits = 1
+            else:
+                raise SystemExit("Incorrect float value passed for dtype. Given = %s. Supported = float16, float32" % (self.dtype))
+            print("`define EXPONENT %d" % (exponent_bits))
+            print("`define MANTISSA %d" % (mantissa_bits))
+            print("`define SIGN %d" % (sign_bits))
+            print("`define DATAWIDTH (`SIGN+`EXPONENT+`MANTISSA)")
+            print("`define IEEE_COMPLIANCE 1")
+        elif fixed_match is not None:
+            if self.dtype == "fixed32":
+                print("`define DATAWIDTH 32")
+            elif self.dtype == "fixed16":
+                print("`define DATAWIDTH 16")
+            else:
+                raise SystemExit("Incorrect fixed value passed for dtype. Given = %s. Supported = fixed16, fixed32" % (self.dtype))
         else:
-            raise SystemExit("Incorrect value passed for dtype. Given = %s. Supported = float16, float32, bfloat16" % (self.dtype))
-        print("`define EXPONENT %d" % (exponent_bits))
-        print("`define MANTISSA %d" % (mantissa_bits))
-        print("`define SIGN %d" % (sign_bits))
-        print("`define DATAWIDTH (`SIGN+`EXPONENT+`MANTISSA)")
-        print("`define IEEE_COMPLIANCE 1")
+            raise SystemExit("Incorrect value passed for dtype. Given = %s. Supported = float16, float32, fixed16, fixed32" % (self.dtype))
         print("`define NUM %d" % (self.num_inputs))
         print("`define ADDRSIZE %d" % (self.addr_width))
         print("`define ADDRSIZE_FOR_TB %d" % (self.addr_width_for_tb))
@@ -141,25 +169,33 @@ class generate_defines():
         print("")
 
 class generate_includes():
-    def __init__(self, accuracy="dw"):
+    def __init__(self, accuracy="dw", dtype="float16"):
         self.accuracy = accuracy
+        self.dtype = dtype
         self.print_it()
     
     def print_it(self):
         print("")
-        print('`include "DW_fp_cmp.v"')
-        print('`include "DW_fp_addsub.v"')
-        print('`include "DW_fp_add.v"')
-        print('`include "DW_fp_sub.v"')
-        if self.accuracy=="dw":
-            print('`include "DW_ln.v"')
-            print('`include "DW_exp2.v"')
-            print('`include "DW_fp_exp.v"')
-            print('`include "DW_fp_ln.v"')
-        elif self.accuracy=="lut":
-            print('`include "DW_fp_mult.v"')
-            print('`include "DW01_ash.v"')
-            print('`include "exponentialunit.v"')
-            print('`include "logunit.v"')
+        float_match = re.search(r'float', self.dtype)
+        fixed_match = re.search(r'fixed', self.dtype)
+        if float_match is not None:
+            print('`include "DW_fp_cmp.v"')
+            print('`include "DW_fp_addsub.v"')
+            print('`include "DW_fp_add.v"')
+            print('`include "DW_fp_sub.v"')
+            if self.accuracy=="dw":
+                print('`include "DW_ln.v"')
+                print('`include "DW_exp2.v"')
+                print('`include "DW_fp_exp.v"')
+                print('`include "DW_fp_ln.v"')
+            elif self.accuracy=="lut":
+                print('`include "DW_fp_mult.v"')
+                print('`include "DW01_ash.v"')
+                print('`include "exponentialunit.v"')
+                print('`include "logunit.v"')
+        elif fixed_match is not None:
+            FIXME   
+        else:
+            raise SystemExit("Incorrect value passed for dtype. Given = %s. Supported = float16, float32, fixed16, fixed32" % (self.dtype))
         print("")
     

@@ -4,7 +4,7 @@ import argparse
 import math
 
 class generate_max_tree():
-  def __init__(self, num_inputs):
+  def __init__(self, num_inputs, dtype="float16"):
     self.num_inputs = num_inputs
     #find if the num_inputs is a power of 2
     if ((self.num_inputs-1) & self.num_inputs) != 0:

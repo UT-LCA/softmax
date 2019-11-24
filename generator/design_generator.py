@@ -70,15 +70,15 @@ class design_generator:
 
   def print_it(self):
     generate_defines(self.parallelism, self.precision, self.num_inp_vals, self.num_blank_locations)
-    generate_includes(self.accuracy)
+    generate_includes(self.accuracy, self.precision)
     generate_softmax(self.template_file, self.parallelism, self.accuracy, self.storage)
-    generate_max_tree(self.parallelism)
-    generate_sub("mode2_sub", self.parallelism)
-    generate_exp("mode3_exp", self.parallelism, self.accuracy)
-    generate_addertree(self.parallelism)
-    generate_ln("mode5_ln", self.parallelism, self.accuracy)
-    generate_sub("mode6_sub", self.parallelism)
-    generate_exp("mode7_exp", self.parallelism, self.accuracy)
+    generate_max_tree(self.parallelism, self.precision)
+    generate_sub("mode2_sub", self.parallelism, self.precision)
+    generate_exp("mode3_exp", self.parallelism, self.accuracy, self.precision)
+    generate_addertree(self.parallelism, self.precision)
+    generate_ln("mode5_ln", self.parallelism, self.accuracy, self.precision)
+    generate_sub("mode6_sub", self.parallelism, self.precision)
+    generate_exp("mode7_exp", self.parallelism, self.accuracy, self.precision)
 
 # ###############################################################
 # main()

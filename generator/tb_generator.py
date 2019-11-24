@@ -201,29 +201,35 @@ class tb_generator:
         #output_check
         output_check_tag = re.search(r'output_check', line)
         if output_check_tag is not None:
-          for i in range(self.num_inp_pins):
-            print("  initial begin");
-            print("    int iter = 0;")
-            print("    @(negedge reset);")
-            print("    forever begin")
-            print("      @(outp%d);" % (i))
-            loc_of_output = self.num_blank_locations + int(self.num_inp_vals/self.num_inp_pins) - i + self.num_inp_pins
-            bitcount = re.search(r'(\d+)', self.precision)
-            if bitcount is not None:
-              msb = int(bitcount.group(1)) - 1
-            else:
-              raise SystemExit("Unable to find number of bits from the precision string.")
-            #print("      if (outp%d[%d:2] !== memory1.ram[%d+iter][%d:2]) begin" % (i, msb, loc_of_output, msb))
-            print("      if (($signed(outp%d - memory1.ram[%d+iter]) >= 4)  || ($signed(outp%d - memory1.ram[%d+iter]) <= -4))begin" % (i, loc_of_output, i, loc_of_output))
-            #print("        $error(\"Mismatch in outp%d at location %d (expected=%%0d, actual=%%0d)\", memory1.ram[%d+iter], outp%d);" % (i, loc_of_output, loc_of_output, i))
-            print("        $error(\"Mismatch in outp%d at location %d (expected=%%0h, actual=%%0h)\", memory1.ram[%d+iter], outp%d);" % (i, loc_of_output, loc_of_output, i))
-            print("      end")
-            print("      else begin")
-            print("        $info(\"Match in outp%d at location %d (expected=%%0h, actual=%%0h)\", memory1.ram[%d+iter], outp%d);" % (i, loc_of_output, loc_of_output, i))
-            print("      end")
-            print("      iter = iter+%d;" % (self.num_inp_pins))
-            print("    end")
-            print("  end")
+          print("  always @(posedge clk) begin")
+          print("    if (done==1) begin")
+          for i in reversed(range(self.num_inp_pins)):
+            print('      $display("outp%d = %%h", outp%d);' % (i,i))
+          print("  end")
+          print("end")
+
+            #print("  initial begin");
+            #print("    int iter = 0;")
+            #print("    @(negedge reset);")
+            #print("    forever begin")
+            #print("      @(outp%d);" % (i))
+            #loc_of_output = self.num_blank_locations + int(self.num_inp_vals/self.num_inp_pins) - i + self.num_inp_pins
+            #bitcount = re.search(r'(\d+)', self.precision)
+            #if bitcount is not None:
+            #  msb = int(bitcount.group(1)) - 1
+            #else:
+            #  raise SystemExit("Unable to find number of bits from the precision string.")
+            ##print("      if (outp%d[%d:2] !== memory1.ram[%d+iter][%d:2]) begin" % (i, msb, loc_of_output, msb))
+            #print("      if (($signed(outp%d - memory1.ram[%d+iter]) >= 4)  || ($signed(outp%d - memory1.ram[%d+iter]) <= -4))begin" % (i, loc_of_output, i, loc_of_output))
+            ##print("        $error(\"Mismatch in outp%d at location %d (expected=%%0d, actual=%%0d)\", memory1.ram[%d+iter], outp%d);" % (i, loc_of_output, loc_of_output, i))
+            #print("        $error(\"Mismatch in outp%d at location %d (expected=%%0h, actual=%%0h)\", memory1.ram[%d+iter], outp%d);" % (i, loc_of_output, loc_of_output, i))
+            #print("      end")
+            #print("      else begin")
+            #print("        $info(\"Match in outp%d at location %d (expected=%%0h, actual=%%0h)\", memory1.ram[%d+iter], outp%d);" % (i, loc_of_output, loc_of_output, i))
+            #print("      end")
+            #print("      iter = iter+%d;" % (self.num_inp_pins))
+            #print("    end")
+            #print("  end")
         
       else:      
         print(line)
