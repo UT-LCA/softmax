@@ -1,21 +1,38 @@
 
-module expunit (a, z, status);
+module expunit (a, z, status, stage_run, clk, reset);
 
-	parameter int_width = 3; // fixed point integer length
-	parameter frac_width = 3; // fixed point fraction length
-		
-	input [15:0] a;
-	output [15:0] z;
-	output [7:0] status;
+  parameter int_width = 3; // fixed point integer length
+  parameter frac_width = 3; // fixed point fraction length
+  	
+  input [15:0] a;
+  input stage_run;
+  input clk;
+  input reset;
+  output [15:0] z;
+  output [7:0] status;
+  
+  wire [int_width + frac_width - 1: 0] fxout;
+  wire [31:0] LUTout;
+  reg  [31:0] LUTout_reg;
+  wire [15:0] Mult_out;
+  reg  [15:0] Mult_out_reg;
 
-	wire [int_width + frac_width - 1: 0] fxout;
-	wire [31:0] LUTout;
-	wire [15:0] Mult_out;
+  always @(posedge clk) begin
+    if(reset) begin
+      Mult_out_reg <= 0;
+      LUTout_reg <= 0;
+    end else if(stage_run) begin
+      Mult_out_reg <= Mult_out;
+      LUTout_reg <= LUTout;
+    end
+  end
 
-	fptofixed_para fpfx (.fp(a), .fx(fxout));
-	LUT lut(.addr(fxout[int_width + frac_width - 1 : 0]), .exp(LUTout)); 
-	DW_fp_mult #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE) fpmult (.a(a), .b(LUTout[31:16]), .rnd(3'b000), .z(Mult_out), .status());
-	DW_fp_add #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE) fpsub (.a(Mult_out), .b(LUTout[15:0]), .rnd(3'b000), .z(z), .status(status[7:0]));
+  
+        
+  fptofixed_para fpfx (.fp(a), .fx(fxout));
+  LUT lut(.addr(fxout[int_width + frac_width - 1 : 0]), .exp(LUTout)); 
+  DW_fp_mult #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE) fpmult (.a(a), .b(LUTout[31:16]), .rnd(3'b000), .z(Mult_out), .status());
+  DW_fp_add #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE) fpsub (.a(Mult_out_reg), .b(LUTout_reg[15:0]), .rnd(3'b000), .z(z), .status(status[7:0]));
 endmodule
 
 module fptofixed_para (
