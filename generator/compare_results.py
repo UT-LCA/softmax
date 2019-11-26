@@ -29,7 +29,7 @@ class compare_results:
                         type=str,
                         help='Simulation log file containing the observed results')
     parser.add_argument("-p",
-                        "--num_inp_pins",
+                        "--parallelism",
                         action='store',
                         default=4,
                         type=int,
@@ -46,12 +46,43 @@ class compare_results:
                         default='float16',
                         type=str,
                         help='Value of the precision knob - float16 or fixed32')
+    parser.add_argument("-a",
+                        "--accuracy",
+                        action='store',
+                        default='lut',
+                        type=str,
+                        help='Value of the accuracy knob - lut or dw')
+    parser.add_argument("-s",
+                        "--storage",
+                        action='store',
+                        default='mem',
+                        type=str,
+                        help='Value of the storage knob - mem or reg')
+    parser.add_argument("-b",
+                        "--num_blank_locations",
+                        action='store',
+                        default=2,
+                        type=int,
+                        help='Number of blank memory locations')
+    parser.add_argument("-sr",
+                        "--start_range",
+                        action='store',
+                        help='Starting value for the range you want inputs in')
+    parser.add_argument("-er",
+                        "--end_range",
+                        action='store',
+                        help='Ending value for the range you want inputs in')
     args = parser.parse_args()
     self.expected = args.expected
     self.observed = args.observed
-    self.num_inp_pins = args.num_inp_pins
+    self.parallelism = args.parallelism
     self.num_inp_vals = args.num_inp_vals
     self.precision = args.precision
+    self.start_range = args.start_range
+    self.end_range = args.end_range
+    self.accuracy = args.accuracy
+    self.storage = args.storage
+    self.num_blank_locations = args.num_blank_locations
     
     #find number of bits
     bitcount = re.search(r'(\d+)', self.precision)
@@ -61,6 +92,7 @@ class compare_results:
       raise SystemExit("Unable to find number of bits from the precision string.")
 
   def do_comp(self):
+    input_values    = []
     observed_values = []
     expected_values = []
 
@@ -74,7 +106,11 @@ class compare_results:
 
     mem_txt_file = open(self.expected, 'r')
     all_f_line_found = 0
+    line_count = 0
     for line in mem_txt_file:
+      line_count = line_count + 1
+      if line_count <= self.num_blank_locations:
+        continue
       
       #if the all f line is found, all lines after that have the expected output
       if all_f_line_found == 1:
@@ -83,23 +119,35 @@ class compare_results:
         expected_values.append(line[-1*self.num_nibbles:])
 
       #look for the line with all fs
-      all_f_line = re.search('f'*self.num_inp_pins*self.num_nibbles, line)
+      all_f_line = re.search('f'*self.parallelism*self.num_nibbles, line)
       if all_f_line is not None:
         all_f_line_found = 1
 
+      #if the all f line is not found, all lines have the input
+      if all_f_line_found == 0:
+        line = line.rstrip()
+        len_ = len(line)
+        for i in range(self.parallelism):
+          input_values.append(line[i*self.num_nibbles: i*self.num_nibbles+self.num_nibbles])
+
+    assert(len(input_values) == len(observed_values)), ("input_values = %d, observed_values = %d" % (len(input_values), len(observed_values)))
+    assert(len(input_values) == len(expected_values)), ("input_values = %d, expected_values = %d" % (len(input_values), len(expected_values)))
+
     #now, let's do the actual comparison
-    print("observed, obs_dec, expected, exp_dec, obs_dec-exp_dec")
-    for observed, expected in  zip(observed_values, expected_values):
+    print("start_range, end_range, start_end, input_value, parallelism, accuracy, precision, storage, num_inp_vals, observed, obs_dec, expected, exp_dec, obs_dec-exp_dec, abs_err")
+    for observed, expected, inp_val in  zip(observed_values, expected_values, input_values):
         #convert string representing the number into magnitude
         #observed = struct.unpack('<h', bytes.fromhex(observed))[0]
         #expected = struct.unpack('<h', bytes.fromhex(expected))[0]
         obs_tmp = struct.pack("H",int(observed,16))
-        obs_dec = np.frombuffer(obs_tmp, dtype =np.float16)[0]
+        obs_dec = np.frombuffer(obs_tmp, dtype=np.float16)[0]
 
         exp_tmp = struct.pack("H",int(expected,16))
-        exp_dec = np.frombuffer(exp_tmp, dtype =np.float16)[0]
+        exp_dec = np.frombuffer(exp_tmp, dtype=np.float16)[0]
         
-        print("0x" + observed, ",", obs_dec, ",", "0x" + expected, ",", exp_dec, ",", obs_dec-exp_dec)
+        print(float(self.start_range), ",", float(self.end_range), ",", float(self.start_range), " to ", float(self.end_range), ",", end="", sep="")
+        print("0x", inp_val, ",", self.parallelism, ",", self.accuracy, ",", self.precision, ",", self.storage, ",", self.num_inp_vals, ",", end="", sep="")
+        print("0x" + observed, ",", obs_dec, ",", "0x" + expected, ",", exp_dec, ",", obs_dec-exp_dec, ",", abs(obs_dec-exp_dec), sep="")
 
 # ###############################################################
 # main()

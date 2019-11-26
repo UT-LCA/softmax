@@ -1,0 +1,219 @@
+Information: Updating design information... (UID-85)
+Warning: Design 'softmax' contains 1 high-fanout nets. A fanout number of 1000 will be used for delay calculations involving these nets. (TIM-134)
+ 
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -max_paths 1
+        -sort_by group
+Design : softmax
+Version: O-2018.06-SP5
+Date   : Mon Nov 25 22:14:59 2019
+****************************************
+
+ # A fanout number of 1000 was used for high fanout net computations.
+
+Operating Conditions: typical   Library: gscl45nm
+Wire Load Model Mode: top
+
+  Startpoint: mode6_outp_logsub1_reg_reg[2]
+              (rising edge-triggered flip-flop clocked by CLK_0)
+  Endpoint: outp1_reg[10]
+            (rising edge-triggered flip-flop clocked by CLK_0)
+  Path Group: CLK_0
+  Path Type: max
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock CLK_0 (rise edge)                                 0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  mode6_outp_logsub1_reg_reg[2]/CLK (DFFPOSX1)            0.00 #     0.00 r
+  mode6_outp_logsub1_reg_reg[2]/Q (DFFPOSX1)              0.15       0.15 r
+  mode7_exp/inp1[2] (mode7_exp)                           0.00       0.15 r
+  mode7_exp/exp1/a[2] (mode7_exp_DW_fp_exp_6)             0.00       0.15 r
+  mode7_exp/exp1/mult_217/a[8] (mode7_exp_DW_mult_uns_14)
+                                                          0.00       0.15 r
+  mode7_exp/exp1/mult_217/U504/Y (INVX1)                  0.05       0.20 f
+  mode7_exp/exp1/mult_217/U251/YS (HAX1)                  0.07       0.27 r
+  mode7_exp/exp1/mult_217/U250/YS (FAX1)                  0.09       0.36 f
+  mode7_exp/exp1/mult_217/U249/YS (FAX1)                  0.08       0.44 r
+  mode7_exp/exp1/mult_217/U299/Y (OR2X1)                  0.06       0.49 r
+  mode7_exp/exp1/mult_217/U443/Y (INVX1)                  0.03       0.52 f
+  mode7_exp/exp1/mult_217/U413/Y (OR2X1)                  0.05       0.57 f
+  mode7_exp/exp1/mult_217/U414/Y (INVX1)                  0.01       0.59 r
+  mode7_exp/exp1/mult_217/U297/Y (AND2X1)                 0.03       0.61 r
+  mode7_exp/exp1/mult_217/U301/Y (INVX1)                  0.02       0.64 f
+  mode7_exp/exp1/mult_217/U134/Y (OAI21X1)                0.04       0.68 r
+  mode7_exp/exp1/mult_217/U479/Y (BUFX2)                  0.08       0.76 r
+  mode7_exp/exp1/mult_217/U34/Y (AOI21X1)                 0.03       0.79 f
+  mode7_exp/exp1/mult_217/U351/Y (BUFX2)                  0.04       0.83 f
+  mode7_exp/exp1/mult_217/U17/Y (XOR2X1)                  0.04       0.86 f
+  mode7_exp/exp1/mult_217/product[31] (mode7_exp_DW_mult_uns_14)
+                                                          0.00       0.86 f
+  mode7_exp/exp1/U548/Y (MUX2X1)                          0.09       0.95 r
+  mode7_exp/exp1/U590/Y (AOI22X1)                         0.05       1.00 f
+  mode7_exp/exp1/U130/Y (INVX1)                           0.01       1.01 r
+  mode7_exp/exp1/U44/Y (OR2X1)                            0.04       1.05 r
+  mode7_exp/exp1/U43/Y (OR2X1)                            0.06       1.11 r
+  mode7_exp/exp1/U338/Y (INVX1)                           0.03       1.14 f
+  mode7_exp/exp1/U592/Y (AOI22X1)                         0.04       1.18 r
+  mode7_exp/exp1/U51/Y (BUFX2)                            0.04       1.21 r
+  mode7_exp/exp1/U593/Y (OAI21X1)                         0.02       1.23 f
+  mode7_exp/exp1/U325/Y (INVX1)                           0.02       1.25 r
+  mode7_exp/exp1/U12/Y (AND2X1)                           0.06       1.31 r
+  mode7_exp/exp1/U13/Y (AND2X1)                           0.05       1.36 r
+  mode7_exp/exp1/U14/Y (AND2X1)                           0.05       1.41 r
+  mode7_exp/exp1/U307/Y (AND2X1)                          0.05       1.45 r
+  mode7_exp/exp1/U306/Y (AND2X1)                          0.05       1.50 r
+  mode7_exp/exp1/U16/Y (AND2X1)                           0.06       1.56 r
+  mode7_exp/exp1/U17/Y (AND2X1)                           0.06       1.62 r
+  mode7_exp/exp1/U15/Y (AND2X1)                           0.05       1.66 r
+  mode7_exp/exp1/U18/Y (AND2X1)                           0.05       1.71 r
+  mode7_exp/exp1/U309/Y (AND2X1)                          0.05       1.76 r
+  mode7_exp/exp1/U308/Y (AND2X1)                          0.05       1.80 r
+  mode7_exp/exp1/U261/Y (AND2X1)                          0.04       1.85 r
+  mode7_exp/exp1/U515/Y (XOR2X1)                          0.04       1.88 f
+  mode7_exp/exp1/U645/Y (MUX2X1)                          0.04       1.92 r
+  mode7_exp/exp1/U401/Y (INVX1)                           0.03       1.95 f
+  mode7_exp/exp1/U2/a[12] (mode7_exp_DW_exp2_6)           0.00       1.95 f
+  mode7_exp/exp1/U2/U1673/Y (INVX1)                       0.01       1.96 r
+  mode7_exp/exp1/U2/U1526/Y (AND2X1)                      0.06       2.02 r
+  mode7_exp/exp1/U2/U41/Y (AND2X1)                        0.15       2.17 r
+  mode7_exp/exp1/U2/U1448/Y (AND2X1)                      0.06       2.23 r
+  mode7_exp/exp1/U2/U1449/Y (INVX1)                       0.05       2.28 f
+  mode7_exp/exp1/U2/U2010/Y (NAND3X1)                     0.04       2.32 r
+  mode7_exp/exp1/U2/U534/Y (BUFX2)                        0.04       2.36 r
+  mode7_exp/exp1/U2/U2011/Y (NOR3X1)                      0.02       2.38 f
+  mode7_exp/exp1/U2/U4/Y (AND2X1)                         0.04       2.43 f
+  mode7_exp/exp1/U2/U54/Y (INVX1)                         0.00       2.43 r
+  mode7_exp/exp1/U2/U8/Y (OR2X1)                          0.05       2.48 r
+  mode7_exp/exp1/U2/U912/Y (INVX1)                        0.02       2.50 f
+  mode7_exp/exp1/U2/U2042/Y (NAND3X1)                     0.04       2.54 r
+  mode7_exp/exp1/U2/U306/Y (BUFX2)                        0.04       2.57 r
+  mode7_exp/exp1/U2/U2051/Y (NOR3X1)                      0.03       2.61 f
+  mode7_exp/exp1/U2/U2056/Y (NAND3X1)                     0.04       2.64 r
+  mode7_exp/exp1/U2/U949/Y (BUFX2)                        0.04       2.69 r
+  mode7_exp/exp1/U2/U2174/Y (NOR3X1)                      0.02       2.71 f
+  mode7_exp/exp1/U2/U2177/Y (NAND3X1)                     0.04       2.74 r
+  mode7_exp/exp1/U2/add_4987_DP_OP_296_2275_18/I1[2] (mode7_exp_add_4987_DP_OP_296_2275_2)
+                                                          0.00       2.74 r
+  mode7_exp/exp1/U2/add_4987_DP_OP_296_2275_18/U609/Y (INVX1)
+                                                          0.04       2.78 f
+  mode7_exp/exp1/U2/add_4987_DP_OP_296_2275_18/U412/Y (OR2X1)
+                                                          0.04       2.83 f
+  mode7_exp/exp1/U2/add_4987_DP_OP_296_2275_18/U413/Y (INVX1)
+                                                          0.03       2.85 r
+  mode7_exp/exp1/U2/add_4987_DP_OP_296_2275_18/U234/YS (FAX1)
+                                                          0.09       2.95 f
+  mode7_exp/exp1/U2/add_4987_DP_OP_296_2275_18/U233/YC (FAX1)
+                                                          0.08       3.03 f
+  mode7_exp/exp1/U2/add_4987_DP_OP_296_2275_18/U229/YS (FAX1)
+                                                          0.08       3.11 r
+  mode7_exp/exp1/U2/add_4987_DP_OP_296_2275_18/U360/Y (OR2X1)
+                                                          0.05       3.16 r
+  mode7_exp/exp1/U2/add_4987_DP_OP_296_2275_18/U370/Y (AND2X1)
+                                                          0.04       3.20 r
+  mode7_exp/exp1/U2/add_4987_DP_OP_296_2275_18/U384/Y (INVX1)
+                                                          0.02       3.22 f
+  mode7_exp/exp1/U2/add_4987_DP_OP_296_2275_18/U131/Y (OAI21X1)
+                                                          0.04       3.26 r
+  mode7_exp/exp1/U2/add_4987_DP_OP_296_2275_18/U90/Y (AOI21X1)
+                                                          0.02       3.29 f
+  mode7_exp/exp1/U2/add_4987_DP_OP_296_2275_18/U389/Y (BUFX2)
+                                                          0.03       3.32 f
+  mode7_exp/exp1/U2/add_4987_DP_OP_296_2275_18/U51/Y (OAI21X1)
+                                                          0.06       3.38 r
+  mode7_exp/exp1/U2/add_4987_DP_OP_296_2275_18/U43/Y (AOI21X1)
+                                                          0.03       3.41 f
+  mode7_exp/exp1/U2/add_4987_DP_OP_296_2275_18/U604/Y (BUFX2)
+                                                          0.04       3.45 f
+  mode7_exp/exp1/U2/add_4987_DP_OP_296_2275_18/U37/Y (OAI21X1)
+                                                          0.06       3.50 r
+  mode7_exp/exp1/U2/add_4987_DP_OP_296_2275_18/U29/Y (AOI21X1)
+                                                          0.03       3.53 f
+  mode7_exp/exp1/U2/add_4987_DP_OP_296_2275_18/U584/Y (BUFX2)
+                                                          0.04       3.57 f
+  mode7_exp/exp1/U2/add_4987_DP_OP_296_2275_18/U23/Y (OAI21X1)
+                                                          0.06       3.63 r
+  mode7_exp/exp1/U2/add_4987_DP_OP_296_2275_18/U21/YC (FAX1)
+                                                          0.08       3.70 r
+  mode7_exp/exp1/U2/add_4987_DP_OP_296_2275_18/U20/YC (FAX1)
+                                                          0.07       3.78 r
+  mode7_exp/exp1/U2/add_4987_DP_OP_296_2275_18/U19/YS (FAX1)
+                                                          0.08       3.86 f
+  mode7_exp/exp1/U2/add_4987_DP_OP_296_2275_18/O2[22] (mode7_exp_add_4987_DP_OP_296_2275_2)
+                                                          0.00       3.86 f
+  mode7_exp/exp1/U2/add_4994/A[6] (mode7_exp_DW01_inc_25)
+                                                          0.00       3.86 f
+  mode7_exp/exp1/U2/add_4994/U9/YS (HAX1)                 0.08       3.94 r
+  mode7_exp/exp1/U2/add_4994/SUM[6] (mode7_exp_DW01_inc_25)
+                                                          0.00       3.94 r
+  mode7_exp/exp1/U2/z[4] (mode7_exp_DW_exp2_6)            0.00       3.94 r
+  mode7_exp/exp1/U296/Y (AND2X1)                          0.05       3.99 r
+  mode7_exp/exp1/U292/Y (AND2X1)                          0.06       4.05 r
+  mode7_exp/exp1/U49/Y (AND2X1)                           0.06       4.10 r
+  mode7_exp/exp1/U22/Y (AND2X1)                           0.06       4.16 r
+  mode7_exp/exp1/U23/Y (AND2X1)                           0.06       4.22 r
+  mode7_exp/exp1/U28/Y (AND2X1)                           0.06       4.27 r
+  mode7_exp/exp1/U283/Y (AND2X1)                          0.06       4.33 r
+  mode7_exp/exp1/U47/Y (AND2X1)                           0.05       4.38 r
+  mode7_exp/exp1/U529/Y (XOR2X1)                          0.05       4.43 r
+  mode7_exp/exp1/U29/Y (INVX1)                            0.04       4.46 f
+  mode7_exp/exp1/U694/Y (AOI22X1)                         0.04       4.50 r
+  mode7_exp/exp1/U162/Y (INVX1)                           0.02       4.53 f
+  mode7_exp/exp1/U45/Y (OR2X1)                            0.04       4.57 f
+  mode7_exp/exp1/U42/Y (OR2X1)                            0.07       4.63 f
+  mode7_exp/exp1/U695/Y (AOI22X1)                         0.03       4.67 r
+  mode7_exp/exp1/U133/Y (INVX1)                           0.02       4.69 f
+  mode7_exp/exp1/U46/Y (OR2X1)                            0.04       4.73 f
+  mode7_exp/exp1/U48/Y (OR2X1)                            0.05       4.78 f
+  mode7_exp/exp1/U710/Y (NOR3X1)                          0.05       4.83 r
+  mode7_exp/exp1/U721/Y (NAND3X1)                         0.02       4.86 f
+  mode7_exp/exp1/U52/Y (BUFX2)                            0.03       4.89 f
+  mode7_exp/exp1/U722/Y (OAI21X1)                         0.04       4.93 r
+  mode7_exp/exp1/U418/Y (AND2X1)                          0.05       4.98 r
+  mode7_exp/exp1/U374/Y (AND2X1)                          0.06       5.04 r
+  mode7_exp/exp1/U34/Y (AND2X1)                           0.06       5.10 r
+  mode7_exp/exp1/U35/Y (AND2X1)                           0.06       5.15 r
+  mode7_exp/exp1/U375/Y (AND2X1)                          0.06       5.21 r
+  mode7_exp/exp1/U7/Y (AND2X1)                            0.06       5.26 r
+  mode7_exp/exp1/U376/Y (AND2X1)                          0.06       5.32 r
+  mode7_exp/exp1/U8/Y (AND2X1)                            0.06       5.38 r
+  mode7_exp/exp1/U377/Y (AND2X1)                          0.06       5.43 r
+  mode7_exp/exp1/U481/Y (XOR2X1)                          0.04       5.48 r
+  mode7_exp/exp1/U724/Y (NOR3X1)                          0.03       5.50 f
+  mode7_exp/exp1/U39/Y (AND2X1)                           0.04       5.54 f
+  mode7_exp/exp1/U734/Y (AOI21X1)                         0.04       5.58 r
+  mode7_exp/exp1/U111/Y (INVX1)                           0.02       5.60 f
+  mode7_exp/exp1/U112/Y (INVX1)                           0.00       5.60 r
+  mode7_exp/exp1/U735/Y (OAI21X1)                         0.02       5.62 f
+  mode7_exp/exp1/U128/Y (AND2X1)                          0.05       5.66 f
+  mode7_exp/exp1/U129/Y (INVX1)                           0.01       5.68 r
+  mode7_exp/exp1/U38/Y (OR2X1)                            0.05       5.72 r
+  mode7_exp/exp1/U50/Y (INVX1)                            0.02       5.74 f
+  mode7_exp/exp1/U737/Y (OAI21X1)                         0.02       5.76 r
+  mode7_exp/exp1/U11/Y (INVX2)                            0.04       5.80 f
+  mode7_exp/exp1/U41/Y (AND2X1)                           0.03       5.83 f
+  mode7_exp/exp1/U275/Y (INVX1)                           0.04       5.87 r
+  mode7_exp/exp1/U739/Y (OAI21X1)                         0.02       5.89 f
+  mode7_exp/exp1/z[10] (mode7_exp_DW_fp_exp_6)            0.00       5.89 f
+  mode7_exp/outp1[10] (mode7_exp)                         0.00       5.89 f
+  U3382/Y (AND2X1)                                        0.03       5.92 f
+  U3383/Y (INVX1)                                         0.00       5.92 r
+  U5032/Y (OAI21X1)                                       0.01       5.93 f
+  outp1_reg[10]/D (DFFPOSX1)                              0.00       5.93 f
+  data arrival time                                                  5.93
+
+  clock CLK_0 (rise edge)                                 6.00       6.00
+  clock network delay (ideal)                             0.00       6.00
+  outp1_reg[10]/CLK (DFFPOSX1)                            0.00       6.00 r
+  library setup time                                     -0.07       5.93
+  data required time                                                 5.93
+  --------------------------------------------------------------------------
+  data required time                                                 5.93
+  data arrival time                                                 -5.93
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.00
+
+

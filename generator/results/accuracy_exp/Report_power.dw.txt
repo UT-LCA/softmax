@@ -1,0 +1,52 @@
+Loading db file '/usr/local/packages/cadence_2007/FreePDK45/osu_soc/lib/files/gscl45nm.db'
+Information: Propagating switching activity (low effort zero delay simulation). (PWR-6)
+Warning: Design has unannotated primary inputs. (PWR-414)
+Warning: Design has unannotated sequential cell outputs. (PWR-415)
+ 
+****************************************
+Report : power
+        -analysis_effort low
+Design : softmax
+Version: O-2018.06-SP5
+Date   : Mon Nov 25 22:16:53 2019
+****************************************
+
+
+Library(s) Used:
+
+    gscl45nm (File: /usr/local/packages/cadence_2007/FreePDK45/osu_soc/lib/files/gscl45nm.db)
+
+
+Operating Conditions: typical   Library: gscl45nm
+Wire Load Model Mode: top
+
+
+Global Operating Voltage = 1.1  
+Power-specific unit information :
+    Voltage Units = 1V
+    Capacitance Units = 1.000000pf
+    Time Units = 1ns
+    Dynamic Power Units = 1mW    (derived from V,C,T units)
+    Leakage Power Units = 1nW
+
+
+  Cell Internal Power  =   3.3328 mW   (92%)
+  Net Switching Power  = 286.4826 uW    (8%)
+                         ---------
+Total Dynamic Power    =   3.6193 mW  (100%)
+
+Cell Leakage Power     =   1.1002 mW
+
+
+                 Internal         Switching           Leakage            Total
+Power Group      Power            Power               Power              Power   (   %    )  Attrs
+--------------------------------------------------------------------------------------------------
+io_pad             0.0000            0.0000            0.0000            0.0000  (   0.00%)
+memory             0.0000            0.0000            0.0000            0.0000  (   0.00%)
+black_box          0.0000            0.0000            0.0000            0.0000  (   0.00%)
+clock_network      0.0000            0.0000            0.0000            0.0000  (   0.00%)
+register           3.0504        2.2774e-02        7.0756e+04            3.1439  (  66.62%)
+sequential         0.0000            0.0000            0.0000            0.0000  (   0.00%)
+combinational      0.2824            0.2637        1.0294e+06            1.5756  (  33.38%)
+--------------------------------------------------------------------------------------------------
+Total              3.3328 mW         0.2865 mW     1.1002e+06 nW         4.7195 mW

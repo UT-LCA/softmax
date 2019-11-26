@@ -69,7 +69,7 @@ elif fixed_match is not None:
   if precision == "fixed32":
     astype = 'int32'
   elif precision == "fixed16":
-    astype = 'uint16'
+    astype = 'int16'
   else:
     raise SystemExit("Incorrect fixed value passed for dtype. Given = %s. Supported = fixed16, fixed32" % (precision))
   input = np.random.randint(int(start_range), int(end_range), size=(num_inp_vals,1), dtype=astype)
