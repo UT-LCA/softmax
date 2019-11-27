@@ -1,0 +1,328 @@
+
+uplevel #0 { report_timing -path full -delay max -nworst 1 -max_paths 1 -significant_digits 2 -sort_by group }
+Information: Updating design information... (UID-85)
+Warning: Design 'softmax' contains 1 high-fanout nets. A fanout number of 1000 will be used for delay calculations involving these nets. (TIM-134)
+
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -max_paths 1
+        -sort_by group
+Design : softmax
+Version: O-2018.06-SP5
+Date   : Tue Nov 26 22:05:13 2019
+****************************************
+
+ # A fanout number of 1000 was used for high fanout net computations.
+
+Operating Conditions: typical   Library: gscl45nm
+Wire Load Model Mode: top
+
+  Startpoint: mode6_outp_logsub0_reg_reg[10]
+              (rising edge-triggered flip-flop clocked by CLK_0)
+  Endpoint: mode7_exp/exp0/Mult_out_reg_reg[0]
+            (rising edge-triggered flip-flop clocked by CLK_0)
+  Path Group: CLK_0
+  Path Type: max
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock CLK_0 (rise edge)                                 0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  mode6_outp_logsub0_reg_reg[10]/CLK (DFFPOSX1)           0.00 #     0.00 r
+  mode6_outp_logsub0_reg_reg[10]/Q (DFFPOSX1)             0.11       0.11 f
+  mode7_exp/inp0[10] (mode7_exp)                          0.00       0.11 f
+  mode7_exp/exp0/a[10] (expunit_8)                        0.00       0.11 f
+  mode7_exp/exp0/fpfx/fp[10] (fptofixed_para_8)           0.00       0.11 f
+  mode7_exp/exp0/fpfx/U23/Y (XNOR2X1)                     0.06       0.17 r
+  mode7_exp/exp0/fpfx/U31/Y (INVX2)                       0.03       0.19 f
+  mode7_exp/exp0/fpfx/U82/Y (MUX2X1)                      0.04       0.23 f
+  mode7_exp/exp0/fpfx/U21/Y (INVX1)                       0.00       0.23 r
+  mode7_exp/exp0/fpfx/U37/Y (AND2X2)                      0.03       0.26 r
+  mode7_exp/exp0/fpfx/U60/Y (INVX1)                       0.02       0.28 f
+  mode7_exp/exp0/fpfx/U88/Y (NAND3X1)                     0.03       0.31 r
+  mode7_exp/exp0/fpfx/U43/Y (BUFX2)                       0.03       0.34 r
+  mode7_exp/exp0/fpfx/U38/Y (AND2X2)                      0.03       0.37 r
+  mode7_exp/exp0/fpfx/U52/Y (INVX1)                       0.01       0.39 f
+  mode7_exp/exp0/fpfx/U89/Y (NAND2X1)                     0.01       0.40 r
+  mode7_exp/exp0/fpfx/fx[1] (fptofixed_para_8)            0.00       0.40 r
+  mode7_exp/exp0/lut/addr[1] (LUT_8)                      0.00       0.40 r
+  mode7_exp/exp0/lut/U255/Y (BUFX2)                       0.04       0.44 r
+  mode7_exp/exp0/lut/U128/Y (OR2X2)                       0.05       0.49 r
+  mode7_exp/exp0/lut/U28/Y (INVX8)                        0.03       0.52 f
+  mode7_exp/exp0/lut/U215/Y (AND2X2)                      0.04       0.56 f
+  mode7_exp/exp0/lut/U173/Y (INVX1)                       0.00       0.56 r
+  mode7_exp/exp0/lut/U217/Y (AND2X2)                      0.04       0.59 r
+  mode7_exp/exp0/lut/U172/Y (INVX1)                       0.02       0.61 f
+  mode7_exp/exp0/lut/U578/Y (NOR3X1)                      0.04       0.65 r
+  mode7_exp/exp0/lut/U249/Y (AND2X2)                      0.04       0.68 r
+  mode7_exp/exp0/lut/U250/Y (INVX1)                       0.02       0.70 f
+  mode7_exp/exp0/lut/U604/Y (NOR3X1)                      0.03       0.73 r
+  mode7_exp/exp0/lut/U605/Y (NAND3X1)                     0.02       0.75 f
+  mode7_exp/exp0/lut/U495/Y (INVX1)                       0.01       0.76 r
+  mode7_exp/exp0/lut/U244/Y (AND2X2)                      0.03       0.79 r
+  mode7_exp/exp0/lut/U245/Y (INVX1)                       0.02       0.80 f
+  mode7_exp/exp0/lut/U606/Y (NOR3X1)                      0.02       0.83 r
+  mode7_exp/exp0/lut/U225/Y (AND2X2)                      0.03       0.86 r
+  mode7_exp/exp0/lut/U226/Y (INVX1)                       0.02       0.88 f
+  mode7_exp/exp0/lut/exp[18] (LUT_8)                      0.00       0.88 f
+  mode7_exp/exp0/fpmult/b[2] (expunit_8_DW_fp_mult_0)     0.00       0.88 f
+  mode7_exp/exp0/fpmult/U235/Y (INVX1)                    0.00       0.88 r
+  mode7_exp/exp0/fpmult/U736/Y (AOI21X1)                  0.01       0.89 f
+  mode7_exp/exp0/fpmult/U218/Y (BUFX2)                    0.03       0.93 f
+  mode7_exp/exp0/fpmult/U737/Y (OAI21X1)                  0.04       0.97 r
+  mode7_exp/exp0/fpmult/U738/Y (AOI21X1)                  0.02       0.99 f
+  mode7_exp/exp0/fpmult/U219/Y (BUFX2)                    0.03       1.03 f
+  mode7_exp/exp0/fpmult/U739/Y (OAI21X1)                  0.04       1.06 r
+  mode7_exp/exp0/fpmult/U174/Y (INVX1)                    0.03       1.09 f
+  mode7_exp/exp0/fpmult/U246/Y (OR2X2)                    0.04       1.12 f
+  mode7_exp/exp0/fpmult/U247/Y (INVX1)                    0.00       1.12 r
+  mode7_exp/exp0/fpmult/U499/Y (AND2X2)                   0.04       1.16 r
+  mode7_exp/exp0/fpmult/add_412/U1_1/YC (FAX1)            0.07       1.23 r
+  mode7_exp/exp0/fpmult/add_412/U1_2/YC (FAX1)            0.07       1.31 r
+  mode7_exp/exp0/fpmult/U217/Y (AND2X2)                   0.04       1.35 r
+  mode7_exp/exp0/fpmult/U196/Y (NOR3X1)                   0.03       1.37 f
+  mode7_exp/exp0/fpmult/U10/Y (INVX2)                     0.02       1.39 r
+  mode7_exp/exp0/fpmult/sub_330_2/B[4] (expunit_8_DW01_sub_7)
+                                                          0.00       1.39 r
+  mode7_exp/exp0/fpmult/sub_330_2/U58/Y (INVX1)           0.02       1.41 f
+  mode7_exp/exp0/fpmult/sub_330_2/U82/Y (OR2X2)           0.04       1.45 f
+  mode7_exp/exp0/fpmult/sub_330_2/U66/Y (AND2X2)          0.04       1.49 f
+  mode7_exp/exp0/fpmult/sub_330_2/U55/Y (XOR2X1)          0.06       1.55 r
+  mode7_exp/exp0/fpmult/sub_330_2/DIFF[4] (expunit_8_DW01_sub_7)
+                                                          0.00       1.55 r
+  mode7_exp/exp0/fpmult/U758/Y (XOR2X1)                   0.07       1.63 r
+  mode7_exp/exp0/fpmult/U767/Y (XOR2X1)                   0.06       1.68 r
+  mode7_exp/exp0/fpmult/U769/Y (MUX2X1)                   0.03       1.71 f
+  mode7_exp/exp0/fpmult/U772/Y (NOR3X1)                   0.02       1.74 r
+  mode7_exp/exp0/fpmult/U170/Y (AND2X2)                   0.04       1.77 r
+  mode7_exp/exp0/fpmult/U208/Y (AND2X2)                   0.03       1.81 r
+  mode7_exp/exp0/fpmult/U143/Y (INVX1)                    0.02       1.83 f
+  mode7_exp/exp0/fpmult/U153/Y (AND2X2)                   0.04       1.87 f
+  mode7_exp/exp0/fpmult/U198/Y (MUX2X1)                   0.03       1.91 f
+  mode7_exp/exp0/fpmult/U115/Y (INVX1)                    0.01       1.91 r
+  mode7_exp/exp0/fpmult/add_445_2/B[1] (expunit_8_DW01_add_12)
+                                                          0.00       1.91 r
+  mode7_exp/exp0/fpmult/add_445_2/U56/Y (OR2X2)           0.04       1.95 r
+  mode7_exp/exp0/fpmult/add_445_2/U55/Y (INVX1)           0.02       1.97 f
+  mode7_exp/exp0/fpmult/add_445_2/U68/Y (OAI21X1)         0.05       2.02 r
+  mode7_exp/exp0/fpmult/add_445_2/U19/Y (AOI21X1)         0.02       2.04 f
+  mode7_exp/exp0/fpmult/add_445_2/U77/Y (BUFX2)           0.04       2.08 f
+  mode7_exp/exp0/fpmult/add_445_2/U69/Y (OAI21X1)         0.04       2.12 r
+  mode7_exp/exp0/fpmult/add_445_2/U5/Y (AOI21X1)          0.02       2.14 f
+  mode7_exp/exp0/fpmult/add_445_2/U84/Y (INVX1)           0.02       2.17 r
+  mode7_exp/exp0/fpmult/add_445_2/U40/Y (AND2X2)          0.03       2.20 r
+  mode7_exp/exp0/fpmult/add_445_2/U60/Y (OR2X2)           0.04       2.24 r
+  mode7_exp/exp0/fpmult/add_445_2/U59/Y (OR2X2)           0.04       2.28 r
+  mode7_exp/exp0/fpmult/add_445_2/U45/Y (XNOR2X1)         0.03       2.31 f
+  mode7_exp/exp0/fpmult/add_445_2/SUM[6] (expunit_8_DW01_add_12)
+                                                          0.00       2.31 f
+  mode7_exp/exp0/fpmult/U573/Y (OR2X2)                    0.05       2.36 f
+  mode7_exp/exp0/fpmult/U157/Y (MUX2X1)                   0.04       2.40 r
+  mode7_exp/exp0/fpmult/U850/Y (NAND3X1)                  0.02       2.41 f
+  mode7_exp/exp0/fpmult/U180/Y (INVX1)                    0.01       2.42 r
+  mode7_exp/exp0/fpmult/U179/Y (NOR3X1)                   0.02       2.43 f
+  mode7_exp/exp0/fpmult/U156/Y (INVX1)                    0.01       2.44 r
+  mode7_exp/exp0/fpmult/U851/Y (NOR3X1)                   0.02       2.46 f
+  mode7_exp/exp0/fpmult/U863/Y (OAI21X1)                  0.04       2.50 r
+  mode7_exp/exp0/fpmult/U21/Y (INVX1)                     0.03       2.53 f
+  mode7_exp/exp0/fpmult/U159/Y (AND2X2)                   0.04       2.58 f
+  mode7_exp/exp0/fpmult/add_484/U1_1/YC (FAX1)            0.07       2.65 f
+  mode7_exp/exp0/fpmult/U507/Y (AND2X2)                   0.04       2.68 f
+  mode7_exp/exp0/fpmult/U502/Y (NAND3X1)                  0.03       2.71 r
+  mode7_exp/exp0/fpmult/U460/Y (BUFX2)                    0.04       2.75 r
+  mode7_exp/exp0/fpmult/U503/Y (NOR3X1)                   0.03       2.77 f
+  mode7_exp/exp0/fpmult/U940/Y (NAND3X1)                  0.03       2.81 r
+  mode7_exp/exp0/fpmult/U231/Y (BUFX2)                    0.04       2.85 r
+  mode7_exp/exp0/fpmult/U7/Y (XOR2X1)                     0.04       2.89 r
+  mode7_exp/exp0/fpmult/U130/Y (OR2X2)                    0.04       2.93 r
+  mode7_exp/exp0/fpmult/U941/Y (OAI21X1)                  0.01       2.95 f
+  mode7_exp/exp0/fpmult/U718/Y (INVX1)                    0.00       2.94 r
+  mode7_exp/exp0/fpmult/U222/Y (AND2X2)                   0.03       2.97 r
+  mode7_exp/exp0/fpmult/U223/Y (INVX1)                    0.02       2.99 f
+  mode7_exp/exp0/fpmult/U942/Y (NAND3X1)                  0.03       3.02 r
+  mode7_exp/exp0/fpmult/U229/Y (BUFX2)                    0.04       3.06 r
+  mode7_exp/exp0/fpmult/U947/Y (AOI21X1)                  0.02       3.07 f
+  mode7_exp/exp0/fpmult/U216/Y (BUFX2)                    0.04       3.11 f
+  mode7_exp/exp0/fpmult/U949/Y (OAI21X1)                  0.04       3.15 r
+  mode7_exp/exp0/fpmult/U166/Y (OR2X2)                    0.05       3.19 r
+  mode7_exp/exp0/fpmult/U152/Y (INVX2)                    0.03       3.22 f
+  mode7_exp/exp0/fpmult/U951/Y (AOI22X1)                  0.05       3.26 r
+  mode7_exp/exp0/fpmult/U286/Y (INVX1)                    0.02       3.29 f
+  mode7_exp/exp0/fpmult/U287/Y (INVX1)                    0.00       3.29 r
+  mode7_exp/exp0/fpmult/U952/Y (OAI21X1)                  0.01       3.30 f
+  mode7_exp/exp0/fpmult/z[0] (expunit_8_DW_fp_mult_0)     0.00       3.30 f
+  mode7_exp/exp0/U33/Y (AND2X1)                           0.03       3.33 f
+  mode7_exp/exp0/U34/Y (INVX1)                            0.00       3.32 r
+  mode7_exp/exp0/U118/Y (OAI21X1)                         0.01       3.33 f
+  mode7_exp/exp0/Mult_out_reg_reg[0]/D (DFFPOSX1)         0.00       3.33 f
+  data arrival time                                                  3.33
+
+  clock CLK_0 (rise edge)                                 3.40       3.40
+  clock network delay (ideal)                             0.00       3.40
+  mode7_exp/exp0/Mult_out_reg_reg[0]/CLK (DFFPOSX1)       0.00       3.40 r
+  library setup time                                     -0.07       3.33
+  data required time                                                 3.33
+  --------------------------------------------------------------------------
+  data required time                                                 3.33
+  data arrival time                                                 -3.33
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.00
+
+
+1
+uplevel #0 { report_area }
+
+****************************************
+Report : area
+Design : softmax
+Version: O-2018.06-SP5
+Date   : Tue Nov 26 22:05:13 2019
+****************************************
+
+Library(s) Used:
+
+    gscl45nm (File: /usr/local/packages/cadence_2007/FreePDK45/osu_soc/lib/files/gscl45nm.db)
+
+Number of ports:                        25590
+Number of nets:                        137215
+Number of cells:                       114834
+Number of combinational cells:         111571
+Number of sequential cells:              1801
+Number of macros/black boxes:               0
+Number of buf/inv:                      51533
+Number of references:                      23
+
+Combinational area:             265343.153783
+Buf/Inv area:                    83110.212426
+Noncombinational area:           14368.557781
+Macro/Black Box area:                0.000000
+Net Interconnect area:      undefined  (No wire load specified)
+
+Total cell area:                279711.711564
+Total area:                 undefined
+1
+uplevel #0 { report_power -analysis_effort low }
+Loading db file '/usr/local/packages/cadence_2007/FreePDK45/osu_soc/lib/files/gscl45nm.db'
+Information: Propagating switching activity (low effort zero delay simulation). (PWR-6)
+Warning: Design has unannotated primary inputs. (PWR-414)
+Warning: Design has unannotated sequential cell outputs. (PWR-415)
+
+****************************************
+Report : power
+        -analysis_effort low
+Design : softmax
+Version: O-2018.06-SP5
+Date   : Tue Nov 26 22:05:25 2019
+****************************************
+
+
+Library(s) Used:
+
+    gscl45nm (File: /usr/local/packages/cadence_2007/FreePDK45/osu_soc/lib/files/gscl45nm.db)
+
+
+Operating Conditions: typical   Library: gscl45nm
+Wire Load Model Mode: top
+
+
+Global Operating Voltage = 1.1
+Power-specific unit information :
+    Voltage Units = 1V
+    Capacitance Units = 1.000000pf
+    Time Units = 1ns
+    Dynamic Power Units = 1mW    (derived from V,C,T units)
+    Leakage Power Units = 1nW
+
+
+  Cell Internal Power  =   8.1851 mW   (92%)
+  Net Switching Power  = 693.8491 uW    (8%)
+                         ---------
+Total Dynamic Power    =   8.8790 mW  (100%)
+
+Cell Leakage Power     =   1.3112 mW
+
+
+                 Internal         Switching           Leakage            Total
+Power Group      Power            Power               Power              Power   (   %    )  Attrs
+--------------------------------------------------------------------------------------------------
+io_pad             0.0000            0.0000            0.0000            0.0000  (   0.00%)
+memory             0.0000            0.0000            0.0000            0.0000  (   0.00%)
+black_box          0.0000            0.0000            0.0000            0.0000  (   0.00%)
+clock_network      0.0000            0.0000            0.0000            0.0000  (   0.00%)
+register           7.5145        2.8931e-02        9.9014e+04            7.6424  (  75.00%)
+sequential         0.0000            0.0000            0.0000            0.0000  (   0.00%)
+combinational      0.6706            0.6649        1.2122e+06            2.5478  (  25.00%)
+--------------------------------------------------------------------------------------------------
+Total              8.1851 mW         0.6938 mW     1.3112e+06 nW        10.1902 mW
+1
+uplevel #0 { report_design -nosplit }
+
+****************************************
+Report : design
+Design : softmax
+Version: O-2018.06-SP5
+Date   : Tue Nov 26 22:05:27 2019
+****************************************
+
+Design allows ideal nets on clock nets.
+
+Library(s) Used:
+
+    gscl45nm (File: /usr/local/packages/cadence_2007/FreePDK45/osu_soc/lib/files/gscl45nm.db)
+
+Local Link Library:
+
+    {/usr/local/packages/cadence_2007/FreePDK45/osu_soc/lib/files/gscl45nm.db}
+
+Flip-Flop Types:
+
+    No flip-flop types specified.
+
+Latch Types:
+
+    No latch types specified.
+
+Operating Conditions:
+
+
+    Operating Condition Name : typical
+    Library : gscl45nm
+    Process :   1.00
+    Temperature :  27.00
+    Voltage :   1.10
+
+Wire Loading Model:
+
+    No wire loading specified.
+
+
+Wire Loading Model Mode: top.
+
+Timing Ranges:
+
+    No timing ranges specified.
+
+Pin Input Delays:
+
+    None specified.
+
+Pin Output Delays:
+
+    None specified.
+
+Disabled Timing Arcs:
+
+    No arcs disabled.
+
+Required Licenses:
+
+    None Required
+
+Design Parameters:
+
+    None specified.
+1
+1
+design_vision> Current design is 'softmax'.
