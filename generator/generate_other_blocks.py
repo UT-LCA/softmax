@@ -34,7 +34,7 @@ class generate_sub():
             if float_match is not None:
                 print("  DW_fp_sub #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE) sub%d(.a(a_inp%d), .b(b_inp), .z(outp%d), .rnd(3'b000), .status());" % (iter, iter, iter))
             elif fixed_match is not None:
-                print("  DW_fp_sub #(`DATAWIDTH) sub%d(.A(a_inp%d), .B(b_inp), .CI(1'b0), .DIFF(outp%d), .CO());" % (iter, iter, iter))
+                print("  DW01_sub #(`DATAWIDTH) sub%d(.A(a_inp%d), .B(b_inp), .CI(1'b0), .DIFF(outp%d), .CO());" % (iter, iter, iter))
             else:
                 raise SystemExit("Incorrect value passed for dtype. Given = %s. Supported = float16, float32, fixed16, fixed32" % (self.dtype))
         print("endmodule")
@@ -217,6 +217,8 @@ class generate_includes():
             print('`include "DW01_add.v"')
             print('`include "DW01_sub.v"')
             print('`include "DW01_addsub.v"')
+            print('`include "DW01_ash.v"')
+            print('`include "DW_lzd.v"')
             if self.accuracy=="dw":
                 print('`include "DW_ln.v"')
                 print('`include "DW_exp2.v"')

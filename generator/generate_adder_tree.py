@@ -95,14 +95,14 @@ class generate_addertree():
           if float_match is not None:
             print("  DW_fp_add #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE) add0_stage0(.a(outp),       .b(add0_out_stage1_reg),      .z(add0_out_stage0), .rnd(3'b000),    .status());")
           elif fixed_match is not None:
-            print("  DW01_add #(`DATAWIDTH) add0_stage0(.A(outp),       .B(add0_out_stage1_reg),    , .CI(1'b0),  .SUM(add0_out_stage0), .CO());")
+            print("  DW01_add #(`DATAWIDTH) add0_stage0(.A(outp),       .B(add0_out_stage1_reg),     .CI(1'b0),  .SUM(add0_out_stage0), .CO());")
           else:
             raise SystemExit("Incorrect value passed for dtype. Given = %s. Supported = float16, float32, fixed16, fixed32" % (self.dtype))
         else:
           if float_match is not None:
             print("  DW_fp_add #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE) add0_stage0(.a(outp),       .b(inp0),      .z(add0_out_stage0), .rnd(3'b000),    .status());")
           elif fixed_match is not None:
-            print("  DW01_add #(`DATAWIDTH) add0_stage0(.A(outp),       .B(inp0),    , .CI(1'b0),  .SUM(add0_out_stage0), .CO());")
+            print("  DW01_add #(`DATAWIDTH) add0_stage0(.A(outp),       .B(inp0),     .CI(1'b0),  .SUM(add0_out_stage0), .CO());")
           else:
             raise SystemExit("Incorrect value passed for dtype. Given = %s. Supported = float16, float32, fixed16, fixed32" % (self.dtype))
         print("")
@@ -131,7 +131,7 @@ class generate_addertree():
         if float_match is not None:
           print("  DW_fp_add #(`MANTISSA, `EXPONENT, `IEEE_COMPLIANCE) add%d_stage%d(.a(add%d_out_stage%d_reg),       .b(add%d_out_stage%d_reg),      .z(add%d_out_stage%d), .rnd(3'b000),    .status());" % (num_adder_cur_stage, stage, num_adder_last_stage, stage+1, num_adder_last_stage+1, stage+1, num_adder_cur_stage, stage))
         elif fixed_match is not None:
-          print("  DW_fp_add #(`DATAWIDTH) add%d_stage%d(.A(add%d_out_stage%d_reg),       .B(add%d_out_stage%d_reg),     .CI(1'b0), .SUM(add%d_out_stage%d), .CO());" % (num_adder_cur_stage, stage, num_adder_last_stage, stage+1, num_adder_last_stage+1, stage+1, num_adder_cur_stage, stage))
+          print("  DW01_add #(`DATAWIDTH) add%d_stage%d(.A(add%d_out_stage%d_reg),       .B(add%d_out_stage%d_reg),     .CI(1'b0), .SUM(add%d_out_stage%d), .CO());" % (num_adder_cur_stage, stage, num_adder_last_stage, stage+1, num_adder_last_stage+1, stage+1, num_adder_cur_stage, stage))
         else:
           raise SystemExit("Incorrect value passed for dtype. Given = %s. Supported = float16, float32, fixed16, fixed32" % (self.dtype))
         num_adder_cur_stage = num_adder_cur_stage + 1
