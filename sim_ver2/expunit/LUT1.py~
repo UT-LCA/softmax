@@ -1,0 +1,30 @@
+#run this to generate LUT for PLF exp unit with 7 bits used to address LUT
+import numpy as np
+import math
+
+a = np.float64(0)
+print("module LUT(addr, exp);")
+print("    input [6:0] addr;")
+print("    output reg [31:0] exp;")
+print("")
+print("    always @(addr) begin")
+print("        case (addr)")
+for i in range (128):
+	temp = math.exp(a)
+	temp2 = math.exp(a-0.0625)
+	lutval1 = (temp - temp2)/0.0625
+	lutval3 = np.float16(lutval1)
+	lutval2 = temp - (lutval1*a)
+	lutval4 = np.float16(lutval2)
+	print lutval3
+	print lutval4		
+	#print temp
+	lutval3 = bin(np.float16(lutval3).view('H'))[2:].zfill(16)
+	lutval4 = bin(np.float16(lutval4).view('H'))[2:].zfill(16)
+	print("			7'b{0:b}".format(i).zfill(7)),
+	print("		: exp = 32'b{0}{1};".format(lutval3,lutval4))
+	a -=0.0625
+print("            default: exp = 0;")
+print("        endcase")
+print("    end")
+print("endmodule")
