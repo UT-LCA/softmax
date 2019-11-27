@@ -1,0 +1,6 @@
+design_vision -64bit -f synth.reg.8
+design_vision -64bit -f synth.reg.16
+design_vision -64bit -f synth.reg.32
+design_vision -64bit -f synth.reg.64
+design_vision -64bit -f synth.reg.128
+design_vision -64bit -f synth.reg.256
