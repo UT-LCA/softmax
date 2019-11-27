@@ -1,0 +1,317 @@
+Information: Updating design information... (UID-85)
+Warning: Design 'softmax' contains 1 high-fanout nets. A fanout number of 1000 will be used for delay calculations involving these nets. (TIM-134)
+ 
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -max_paths 1
+        -sort_by group
+Design : softmax
+Version: O-2018.06-SP5
+Date   : Wed Nov 27 00:06:09 2019
+****************************************
+
+ # A fanout number of 1000 was used for high fanout net computations.
+
+Operating Conditions: typical   Library: gscl45nm
+Wire Load Model Mode: top
+
+  Startpoint: mode1_max/outp_reg[11]
+              (rising edge-triggered flip-flop clocked by CLK_0)
+  Endpoint: mode6_outp_presub3_reg_reg[9]
+            (rising edge-triggered flip-flop clocked by CLK_0)
+  Path Group: CLK_0
+  Path Type: max
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock CLK_0 (rise edge)                                 0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  mode1_max/outp_reg[11]/CLK (DFFPOSX1)                   0.00 #     0.00 r
+  mode1_max/outp_reg[11]/Q (DFFPOSX1)                     0.10       0.10 f
+  mode1_max/outp[11] (mode1_max_tree)                     0.00       0.10 f
+  pre_sub/b_inp[11] (mode6_sub_0)                         0.00       0.10 f
+  pre_sub/U25/Y (INVX1)                                   0.01       0.12 r
+  pre_sub/U12/Y (INVX4)                                   0.03       0.15 f
+  pre_sub/sub3/b[11] (mode6_sub_0_DW_fp_sub_0)            0.00       0.15 f
+  pre_sub/sub3/U1/b[11] (mode6_sub_0_DW_fp_addsub_0)      0.00       0.15 f
+  pre_sub/sub3/U1/U87/Y (AND2X2)                          0.03       0.18 f
+  pre_sub/sub3/U1/U328/Y (INVX1)                          0.00       0.19 r
+  pre_sub/sub3/U1/U462/Y (NAND3X1)                        0.02       0.21 f
+  pre_sub/sub3/U1/U260/Y (BUFX2)                          0.03       0.24 f
+  pre_sub/sub3/U1/U463/Y (OAI21X1)                        0.01       0.25 r
+  pre_sub/sub3/U1/U26/Y (INVX1)                           0.03       0.28 f
+  pre_sub/sub3/U1/U466/Y (AOI22X1)                        0.05       0.33 r
+  pre_sub/sub3/U1/U300/Y (BUFX2)                          0.04       0.37 r
+  pre_sub/sub3/U1/U88/Y (AND2X2)                          0.03       0.40 r
+  pre_sub/sub3/U1/U245/Y (AOI21X1)                        0.01       0.41 f
+  pre_sub/sub3/U1/U114/Y (BUFX2)                          0.04       0.44 f
+  pre_sub/sub3/U1/U487/Y (AOI22X1)                        0.04       0.48 r
+  pre_sub/sub3/U1/U115/Y (BUFX2)                          0.05       0.53 r
+  pre_sub/sub3/U1/U92/Y (INVX8)                           0.03       0.56 f
+  pre_sub/sub3/U1/U683/Y (MUX2X1)                         0.04       0.60 f
+  pre_sub/sub3/U1/U680/Y (NAND3X1)                        0.04       0.64 r
+  pre_sub/sub3/U1/U274/Y (BUFX2)                          0.04       0.67 r
+  pre_sub/sub3/U1/U677/Y (NOR3X1)                         0.03       0.70 f
+  pre_sub/sub3/U1/U14/Y (AND2X2)                          0.04       0.74 f
+  pre_sub/sub3/U1/U309/Y (INVX1)                          0.01       0.75 r
+  pre_sub/sub3/U1/U35/Y (AND2X1)                          0.05       0.80 r
+  pre_sub/sub3/U1/U338/Y (INVX1)                          0.02       0.82 f
+  pre_sub/sub3/U1/U671/Y (NAND3X1)                        0.03       0.85 r
+  pre_sub/sub3/U1/U111/Y (BUFX2)                          0.05       0.90 r
+  pre_sub/sub3/U1/U343/Y (OR2X2)                          0.06       0.96 r
+  pre_sub/sub3/U1/sub_225/U2_1/YS (FAX1)                  0.07       1.03 r
+  pre_sub/sub3/U1/U75/Y (INVX1)                           0.04       1.07 f
+  pre_sub/sub3/U1/U337/Y (AND2X2)                         0.05       1.11 f
+  pre_sub/sub3/U1/U21/Y (AND2X1)                          0.03       1.14 f
+  pre_sub/sub3/U1/U273/Y (INVX1)                          0.00       1.15 r
+  pre_sub/sub3/U1/U603/Y (AOI22X1)                        0.02       1.17 f
+  pre_sub/sub3/U1/U272/Y (BUFX2)                          0.04       1.21 f
+  pre_sub/sub3/U1/U601/Y (NAND3X1)                        0.03       1.24 r
+  pre_sub/sub3/U1/U109/Y (BUFX2)                          0.04       1.27 r
+  pre_sub/sub3/U1/U600/Y (AOI22X1)                        0.01       1.29 f
+  pre_sub/sub3/U1/U110/Y (BUFX2)                          0.04       1.33 f
+  pre_sub/sub3/U1/U599/Y (NAND3X1)                        0.03       1.35 r
+  pre_sub/sub3/U1/U269/Y (BUFX2)                          0.04       1.39 r
+  pre_sub/sub3/U1/U598/Y (MUX2X1)                         0.04       1.43 r
+  pre_sub/sub3/U1/U29/Y (AND2X1)                          0.03       1.46 r
+  pre_sub/sub3/U1/U86/Y (INVX1)                           0.03       1.49 f
+  pre_sub/sub3/U1/add_1_root_add_240_2/B[0] (mode6_sub_0_DW01_add_0)
+                                                          0.00       1.49 f
+  pre_sub/sub3/U1/add_1_root_add_240_2/U2/Y (AND2X1)      0.04       1.54 f
+  pre_sub/sub3/U1/add_1_root_add_240_2/U3/Y (AND2X2)      0.04       1.57 f
+  pre_sub/sub3/U1/add_1_root_add_240_2/U1/Y (AND2X2)      0.04       1.61 f
+  pre_sub/sub3/U1/add_1_root_add_240_2/U1_3/YC (FAX1)     0.08       1.69 f
+  pre_sub/sub3/U1/add_1_root_add_240_2/U1_4/YC (FAX1)     0.08       1.77 f
+  pre_sub/sub3/U1/add_1_root_add_240_2/U1_5/YC (FAX1)     0.08       1.85 f
+  pre_sub/sub3/U1/add_1_root_add_240_2/U1_6/YC (FAX1)     0.08       1.93 f
+  pre_sub/sub3/U1/add_1_root_add_240_2/U1_7/YC (FAX1)     0.08       2.01 f
+  pre_sub/sub3/U1/add_1_root_add_240_2/U1_8/YC (FAX1)     0.08       2.10 f
+  pre_sub/sub3/U1/add_1_root_add_240_2/U1_9/YC (FAX1)     0.08       2.18 f
+  pre_sub/sub3/U1/add_1_root_add_240_2/U1_10/YC (FAX1)
+                                                          0.08       2.26 f
+  pre_sub/sub3/U1/add_1_root_add_240_2/U1_11/YC (FAX1)
+                                                          0.08       2.34 f
+  pre_sub/sub3/U1/add_1_root_add_240_2/U1_12/YC (FAX1)
+                                                          0.08       2.42 f
+  pre_sub/sub3/U1/add_1_root_add_240_2/U1_13/YC (FAX1)
+                                                          0.08       2.50 f
+  pre_sub/sub3/U1/add_1_root_add_240_2/U5/Y (XOR2X1)      0.06       2.56 r
+  pre_sub/sub3/U1/add_1_root_add_240_2/SUM[14] (mode6_sub_0_DW01_add_0)
+                                                          0.00       2.56 r
+  pre_sub/sub3/U1/U1/a[13] (mode6_sub_0_DW_lzd_0)         0.00       2.56 r
+  pre_sub/sub3/U1/U1/U14/Y (OR2X1)                        0.04       2.60 r
+  pre_sub/sub3/U1/U1/U15/Y (INVX1)                        0.02       2.62 f
+  pre_sub/sub3/U1/U1/U41/Y (NAND3X1)                      0.03       2.64 r
+  pre_sub/sub3/U1/U1/U13/Y (BUFX2)                        0.04       2.68 r
+  pre_sub/sub3/U1/U1/U22/Y (OR2X2)                        0.04       2.72 r
+  pre_sub/sub3/U1/U1/U23/Y (INVX2)                        0.03       2.75 f
+  pre_sub/sub3/U1/U1/enc[3] (mode6_sub_0_DW_lzd_0)        0.00       2.75 f
+  pre_sub/sub3/U1/U24/Y (AND2X1)                          0.03       2.78 f
+  pre_sub/sub3/U1/U307/Y (INVX1)                          0.01       2.79 r
+  pre_sub/sub3/U1/U451/Y (NAND3X1)                        0.02       2.81 f
+  pre_sub/sub3/U1/U99/Y (BUFX2)                           0.03       2.84 f
+  pre_sub/sub3/U1/U452/Y (OAI21X1)                        0.02       2.86 r
+  pre_sub/sub3/U1/U94/Y (INVX2)                           0.02       2.88 f
+  pre_sub/sub3/U1/U454/Y (AOI22X1)                        0.03       2.91 r
+  pre_sub/sub3/U1/U103/Y (BUFX2)                          0.04       2.95 r
+  pre_sub/sub3/U1/U28/Y (AND2X1)                          0.03       2.98 r
+  pre_sub/sub3/U1/U102/Y (INVX1)                          0.02       3.00 f
+  pre_sub/sub3/U1/U79/Y (OAI21X1)                         0.03       3.03 r
+  pre_sub/sub3/U1/U669/Y (MUX2X1)                         0.06       3.09 r
+  pre_sub/sub3/U1/U7/Y (INVX2)                            0.03       3.12 f
+  pre_sub/sub3/U1/U256/Y (AND2X2)                         0.04       3.16 f
+  pre_sub/sub3/U1/U84/Y (BUFX4)                           0.04       3.20 f
+  pre_sub/sub3/U1/U648/Y (AOI22X1)                        0.03       3.23 r
+  pre_sub/sub3/U1/U98/Y (BUFX2)                           0.04       3.27 r
+  pre_sub/sub3/U1/U239/Y (AND2X2)                         0.03       3.30 r
+  pre_sub/sub3/U1/U240/Y (INVX1)                          0.02       3.32 f
+  pre_sub/sub3/U1/U647/Y (MUX2X1)                         0.05       3.37 r
+  pre_sub/sub3/U1/U305/Y (AND2X1)                         0.04       3.41 r
+  pre_sub/sub3/U1/add_278/A[1] (mode6_sub_0_DW01_inc_0)
+                                                          0.00       3.41 r
+  pre_sub/sub3/U1/add_278/U1_1_1/YC (HAX1)                0.05       3.46 r
+  pre_sub/sub3/U1/add_278/U1_1_2/YC (HAX1)                0.05       3.51 r
+  pre_sub/sub3/U1/add_278/U1_1_3/YC (HAX1)                0.05       3.55 r
+  pre_sub/sub3/U1/add_278/U1_1_4/YC (HAX1)                0.05       3.60 r
+  pre_sub/sub3/U1/add_278/U1_1_5/YC (HAX1)                0.05       3.65 r
+  pre_sub/sub3/U1/add_278/U1_1_6/YC (HAX1)                0.05       3.70 r
+  pre_sub/sub3/U1/add_278/U1_1_7/YC (HAX1)                0.05       3.75 r
+  pre_sub/sub3/U1/add_278/U1_1_8/YC (HAX1)                0.05       3.80 r
+  pre_sub/sub3/U1/add_278/U2/Y (XNOR2X1)                  0.03       3.83 f
+  pre_sub/sub3/U1/add_278/SUM[9] (mode6_sub_0_DW01_inc_0)
+                                                          0.00       3.83 f
+  pre_sub/sub3/U1/U61/Y (AND2X1)                          0.03       3.86 f
+  pre_sub/sub3/U1/U147/Y (INVX1)                          0.00       3.86 r
+  pre_sub/sub3/U1/U488/Y (OAI21X1)                        0.01       3.87 f
+  pre_sub/sub3/U1/z[9] (mode6_sub_0_DW_fp_addsub_0)       0.00       3.87 f
+  pre_sub/sub3/z[9] (mode6_sub_0_DW_fp_sub_0)             0.00       3.87 f
+  pre_sub/outp3[9] (mode6_sub_0)                          0.00       3.87 f
+  U379/Y (AOI22X1)                                        0.04       3.92 r
+  U9472/Y (INVX1)                                         0.02       3.94 f
+  mode6_outp_presub3_reg_reg[9]/D (DFFPOSX1)              0.00       3.94 f
+  data arrival time                                                  3.94
+
+  clock CLK_0 (rise edge)                                 4.00       4.00
+  clock network delay (ideal)                             0.00       4.00
+  mode6_outp_presub3_reg_reg[9]/CLK (DFFPOSX1)            0.00       4.00 r
+  library setup time                                     -0.06       3.94
+  data required time                                                 3.94
+  --------------------------------------------------------------------------
+  data required time                                                 3.94
+  data arrival time                                                 -3.94
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.00
+
+
+1
+ 
+****************************************
+Report : area
+Design : softmax
+Version: O-2018.06-SP5
+Date   : Wed Nov 27 00:06:09 2019
+****************************************
+
+Library(s) Used:
+
+    gscl45nm (File: /usr/local/packages/cadence_2007/FreePDK45/osu_soc/lib/files/gscl45nm.db)
+
+Number of ports:                         9231
+Number of nets:                         58053
+Number of cells:                        48990
+Number of combinational cells:          46633
+Number of sequential cells:              1918
+Number of macros/black boxes:               0
+Number of buf/inv:                      20165
+Number of references:                      19
+
+Combinational area:             119624.568149
+Buf/Inv area:                    35135.082256
+Noncombinational area:           15301.995461
+Macro/Black Box area:                0.000000
+Net Interconnect area:      undefined  (No wire load specified)
+
+Total cell area:                134926.563610
+Total area:                 undefined
+1
+Loading db file '/usr/local/packages/cadence_2007/FreePDK45/osu_soc/lib/files/gscl45nm.db'
+Information: Propagating switching activity (low effort zero delay simulation). (PWR-6)
+Warning: Design has unannotated primary inputs. (PWR-414)
+Warning: Design has unannotated sequential cell outputs. (PWR-415)
+ 
+****************************************
+Report : power
+        -analysis_effort low
+Design : softmax
+Version: O-2018.06-SP5
+Date   : Wed Nov 27 00:06:13 2019
+****************************************
+
+
+Library(s) Used:
+
+    gscl45nm (File: /usr/local/packages/cadence_2007/FreePDK45/osu_soc/lib/files/gscl45nm.db)
+
+
+Operating Conditions: typical   Library: gscl45nm
+Wire Load Model Mode: top
+
+
+Global Operating Voltage = 1.1  
+Power-specific unit information :
+    Voltage Units = 1V
+    Capacitance Units = 1.000000pf
+    Time Units = 1ns
+    Dynamic Power Units = 1mW    (derived from V,C,T units)
+    Leakage Power Units = 1nW
+
+
+  Cell Internal Power  =   7.2396 mW   (94%)
+  Net Switching Power  = 485.5222 uW    (6%)
+                         ---------
+Total Dynamic Power    =   7.7251 mW  (100%)
+
+Cell Leakage Power     = 653.9742 uW
+
+
+                 Internal         Switching           Leakage            Total
+Power Group      Power            Power               Power              Power   (   %    )  Attrs
+--------------------------------------------------------------------------------------------------
+io_pad             0.0000            0.0000            0.0000            0.0000  (   0.00%)
+memory             0.0000            0.0000            0.0000            0.0000  (   0.00%)
+black_box          0.0000            0.0000            0.0000            0.0000  (   0.00%)
+clock_network      0.0000            0.0000            0.0000            0.0000  (   0.00%)
+register           6.8043        2.8702e-02        1.0545e+05            6.9385  (  82.81%)
+sequential         0.0000            0.0000            0.0000            0.0000  (   0.00%)
+combinational      0.4353            0.4568        5.4853e+05            1.4406  (  17.19%)
+--------------------------------------------------------------------------------------------------
+Total              7.2396 mW         0.4855 mW     6.5397e+05 nW         8.3791 mW
+1
+ 
+****************************************
+Report : design
+Design : softmax
+Version: O-2018.06-SP5
+Date   : Wed Nov 27 00:06:13 2019
+****************************************
+
+Design allows ideal nets on clock nets.
+
+Library(s) Used:
+
+    gscl45nm (File: /usr/local/packages/cadence_2007/FreePDK45/osu_soc/lib/files/gscl45nm.db)
+
+Local Link Library:
+
+    {/usr/local/packages/cadence_2007/FreePDK45/osu_soc/lib/files/gscl45nm.db}
+
+Flip-Flop Types:
+
+    No flip-flop types specified.
+
+Latch Types:
+
+    No latch types specified.
+
+Operating Conditions:
+
+
+    Operating Condition Name : typical
+    Library : gscl45nm
+    Process :   1.00
+    Temperature :  27.00
+    Voltage :   1.10
+
+Wire Loading Model:
+
+    No wire loading specified.
+
+
+Wire Loading Model Mode: top.
+
+Timing Ranges:
+
+    No timing ranges specified.
+
+Pin Input Delays:
+
+    None specified.
+
+Pin Output Delays:
+
+    None specified.
+
+Disabled Timing Arcs:
+
+    No arcs disabled.
+
+Required Licenses:
+
+    DesignWare
+
+Design Parameters:
+
+    None specified.
+1
