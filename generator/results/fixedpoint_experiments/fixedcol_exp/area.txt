@@ -1,0 +1,30 @@
+ 
+****************************************
+Report : area
+Design : softmax
+Version: O-2018.06-SP5
+Date   : Wed Nov 27 02:00:32 2019
+****************************************
+
+Library(s) Used:
+
+    gscl45nm (File: /usr/local/packages/cadence_2007/FreePDK45/osu_soc/lib/files/gscl45nm.db)
+
+Number of ports:                         2643
+Number of nets:                        277519
+Number of cells:                       274757
+Number of combinational cells:         241363
+Number of sequential cells:             33294
+Number of macros/black boxes:               0
+Number of buf/inv:                      99921
+Number of references:                      24
+
+Combinational area:             541272.776241
+Buf/Inv area:                   149242.090071
+Noncombinational area:          265622.855507
+Macro/Black Box area:                0.000000
+Net Interconnect area:      undefined  (No wire load specified)
+
+Total cell area:                806895.631747
+Total area:                 undefined
+1

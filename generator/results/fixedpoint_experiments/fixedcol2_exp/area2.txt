@@ -1,0 +1,60 @@
+ 
+****************************************
+Report : area
+Design : softmax
+Version: O-2018.06-SP5
+Date   : Wed Nov 27 01:27:11 2019
+****************************************
+
+Library(s) Used:
+
+    gscl45nm (File: /usr/local/packages/cadence_2007/FreePDK45/osu_soc/lib/files/gscl45nm.db)
+
+Number of ports:                         2727
+Number of nets:                         25774
+Number of cells:                        22948
+Number of combinational cells:          22322
+Number of sequential cells:               526
+Number of macros/black boxes:               0
+Number of buf/inv:                       9300
+Number of references:                      22
+
+Combinational area:              54817.993366
+Buf/Inv area:                    15961.361908
+Noncombinational area:            4196.480507
+Macro/Black Box area:                0.000000
+Net Interconnect area:      undefined  (No wire load specified)
+
+Total cell area:                 59014.473873
+Total area:                 undefined
+1
+ 
+****************************************
+Report : area
+Design : softmax
+Version: O-2018.06-SP5
+Date   : Wed Nov 27 02:16:02 2019
+****************************************
+
+Library(s) Used:
+
+    gscl45nm (File: /usr/local/packages/cadence_2007/FreePDK45/osu_soc/lib/files/gscl45nm.db)
+
+Number of ports:                         2727
+Number of nets:                         25774
+Number of cells:                        22948
+Number of combinational cells:          22322
+Number of sequential cells:               526
+Number of macros/black boxes:               0
+Number of buf/inv:                       9300
+Number of references:                      22
+
+Combinational area:              54817.993366
+Buf/Inv area:                    15961.361908
+Noncombinational area:            4196.480507
+Macro/Black Box area:                0.000000
+Net Interconnect area:      undefined  (No wire load specified)
+
+Total cell area:                 59014.473873
+Total area:                 undefined
+1

@@ -1,0 +1,188 @@
+Information: Updating design information... (UID-85)
+ 
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -max_paths 1
+        -sort_by group
+Design : softmax
+Version: O-2018.06-SP5
+Date   : Wed Nov 27 10:14:48 2019
+****************************************
+
+Operating Conditions: typical   Library: gscl45nm
+Wire Load Model Mode: top
+
+  Startpoint: inp_reg_reg[32]
+              (rising edge-triggered flip-flop clocked by CLK_0)
+  Endpoint: mode1_max/outp_reg[0]
+            (rising edge-triggered flip-flop clocked by CLK_0)
+  Path Group: CLK_0
+  Path Type: max
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock CLK_0 (rise edge)                                 0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  inp_reg_reg[32]/CLK (DFFPOSX1)                          0.00       0.00 r
+  inp_reg_reg[32]/Q (DFFPOSX1)                            0.11       0.11 f
+  mode1_max/inp1[0] (mode1_max_tree)                      0.00       0.11 f
+  mode1_max/cmp0_stage1/B[0] (mode1_max_tree_DW01_cmp2_1)
+                                                          0.00       0.11 f
+  mode1_max/cmp0_stage1/U5/Y (AND2X2)                     0.04       0.14 f
+  mode1_max/cmp0_stage1/U2/Y (OAI21X1)                    0.04       0.18 r
+  mode1_max/cmp0_stage1/U3/Y (INVX1)                      0.02       0.20 f
+  mode1_max/cmp0_stage1/U128/Y (AOI22X1)                  0.03       0.23 r
+  mode1_max/cmp0_stage1/U28/Y (BUFX2)                     0.04       0.27 r
+  mode1_max/cmp0_stage1/U126/Y (AOI22X1)                  0.03       0.29 f
+  mode1_max/cmp0_stage1/U25/Y (BUFX2)                     0.04       0.33 f
+  mode1_max/cmp0_stage1/U124/Y (AOI22X1)                  0.02       0.35 r
+  mode1_max/cmp0_stage1/U15/Y (BUFX2)                     0.04       0.39 r
+  mode1_max/cmp0_stage1/U122/Y (AOI22X1)                  0.03       0.42 f
+  mode1_max/cmp0_stage1/U24/Y (BUFX2)                     0.04       0.46 f
+  mode1_max/cmp0_stage1/U120/Y (AOI22X1)                  0.02       0.48 r
+  mode1_max/cmp0_stage1/U14/Y (BUFX2)                     0.04       0.52 r
+  mode1_max/cmp0_stage1/U118/Y (AOI22X1)                  0.03       0.54 f
+  mode1_max/cmp0_stage1/U23/Y (BUFX2)                     0.04       0.58 f
+  mode1_max/cmp0_stage1/U116/Y (AOI22X1)                  0.02       0.60 r
+  mode1_max/cmp0_stage1/U13/Y (BUFX2)                     0.04       0.64 r
+  mode1_max/cmp0_stage1/U114/Y (AOI22X1)                  0.03       0.67 f
+  mode1_max/cmp0_stage1/U36/Y (BUFX2)                     0.04       0.71 f
+  mode1_max/cmp0_stage1/U113/Y (AOI22X1)                  0.02       0.73 r
+  mode1_max/cmp0_stage1/U33/Y (BUFX2)                     0.04       0.77 r
+  mode1_max/cmp0_stage1/U111/Y (AOI22X1)                  0.03       0.79 f
+  mode1_max/cmp0_stage1/U32/Y (BUFX2)                     0.04       0.83 f
+  mode1_max/cmp0_stage1/U109/Y (AOI22X1)                  0.02       0.85 r
+  mode1_max/cmp0_stage1/U31/Y (BUFX2)                     0.04       0.89 r
+  mode1_max/cmp0_stage1/U107/Y (AOI22X1)                  0.03       0.92 f
+  mode1_max/cmp0_stage1/U30/Y (BUFX2)                     0.04       0.96 f
+  mode1_max/cmp0_stage1/U105/Y (AOI22X1)                  0.02       0.98 r
+  mode1_max/cmp0_stage1/U29/Y (BUFX2)                     0.04       1.02 r
+  mode1_max/cmp0_stage1/U103/Y (AOI22X1)                  0.03       1.04 f
+  mode1_max/cmp0_stage1/U27/Y (BUFX2)                     0.04       1.08 f
+  mode1_max/cmp0_stage1/U101/Y (AOI22X1)                  0.02       1.11 r
+  mode1_max/cmp0_stage1/U26/Y (BUFX2)                     0.04       1.14 r
+  mode1_max/cmp0_stage1/U99/Y (AOI22X1)                   0.03       1.17 f
+  mode1_max/cmp0_stage1/U22/Y (BUFX2)                     0.04       1.21 f
+  mode1_max/cmp0_stage1/U97/Y (AOI22X1)                   0.02       1.23 r
+  mode1_max/cmp0_stage1/U12/Y (BUFX2)                     0.04       1.27 r
+  mode1_max/cmp0_stage1/U95/Y (AOI22X1)                   0.03       1.29 f
+  mode1_max/cmp0_stage1/U21/Y (BUFX2)                     0.04       1.33 f
+  mode1_max/cmp0_stage1/U93/Y (AOI22X1)                   0.02       1.36 r
+  mode1_max/cmp0_stage1/U11/Y (BUFX2)                     0.04       1.39 r
+  mode1_max/cmp0_stage1/U91/Y (AOI22X1)                   0.03       1.42 f
+  mode1_max/cmp0_stage1/U20/Y (BUFX2)                     0.04       1.46 f
+  mode1_max/cmp0_stage1/U89/Y (AOI22X1)                   0.02       1.48 r
+  mode1_max/cmp0_stage1/U10/Y (BUFX2)                     0.04       1.52 r
+  mode1_max/cmp0_stage1/U87/Y (AOI22X1)                   0.03       1.54 f
+  mode1_max/cmp0_stage1/U19/Y (BUFX2)                     0.04       1.58 f
+  mode1_max/cmp0_stage1/U85/Y (AOI22X1)                   0.02       1.61 r
+  mode1_max/cmp0_stage1/U9/Y (BUFX2)                      0.04       1.64 r
+  mode1_max/cmp0_stage1/U83/Y (AOI22X1)                   0.03       1.67 f
+  mode1_max/cmp0_stage1/U18/Y (BUFX2)                     0.04       1.71 f
+  mode1_max/cmp0_stage1/U81/Y (AOI22X1)                   0.02       1.73 r
+  mode1_max/cmp0_stage1/U8/Y (BUFX2)                      0.04       1.77 r
+  mode1_max/cmp0_stage1/U79/Y (AOI22X1)                   0.03       1.79 f
+  mode1_max/cmp0_stage1/U17/Y (BUFX2)                     0.04       1.83 f
+  mode1_max/cmp0_stage1/U77/Y (AOI22X1)                   0.02       1.86 r
+  mode1_max/cmp0_stage1/U7/Y (BUFX2)                      0.04       1.89 r
+  mode1_max/cmp0_stage1/U75/Y (AOI22X1)                   0.03       1.92 f
+  mode1_max/cmp0_stage1/U16/Y (BUFX2)                     0.04       1.96 f
+  mode1_max/cmp0_stage1/U73/Y (AOI22X1)                   0.02       1.98 r
+  mode1_max/cmp0_stage1/U6/Y (BUFX2)                      0.04       2.02 r
+  mode1_max/cmp0_stage1/U72/Y (OAI21X1)                   0.01       2.03 f
+  mode1_max/cmp0_stage1/U71/Y (OAI21X1)                   0.02       2.05 r
+  mode1_max/cmp0_stage1/GE_GT (mode1_max_tree_DW01_cmp2_1)
+                                                          0.00       2.05 r
+  mode1_max/U68/Y (INVX1)                                 0.03       2.08 f
+  mode1_max/U137/Y (AOI22X1)                              0.04       2.12 r
+  mode1_max/U151/Y (BUFX2)                                0.04       2.15 r
+  mode1_max/U228/Y (INVX1)                                0.02       2.17 f
+  mode1_max/cmp0_stage0/B[0] (mode1_max_tree_DW01_cmp2_0)
+                                                          0.00       2.17 f
+  mode1_max/cmp0_stage0/U5/Y (AND2X2)                     0.04       2.20 f
+  mode1_max/cmp0_stage0/U4/Y (OAI21X1)                    0.04       2.24 r
+  mode1_max/cmp0_stage0/U3/Y (INVX1)                      0.02       2.26 f
+  mode1_max/cmp0_stage0/U130/Y (AOI22X1)                  0.03       2.29 r
+  mode1_max/cmp0_stage0/U20/Y (BUFX2)                     0.04       2.33 r
+  mode1_max/cmp0_stage0/U128/Y (AOI22X1)                  0.03       2.35 f
+  mode1_max/cmp0_stage0/U35/Y (BUFX2)                     0.04       2.39 f
+  mode1_max/cmp0_stage0/U126/Y (AOI22X1)                  0.02       2.41 r
+  mode1_max/cmp0_stage0/U19/Y (BUFX2)                     0.04       2.45 r
+  mode1_max/cmp0_stage0/U124/Y (AOI22X1)                  0.03       2.48 f
+  mode1_max/cmp0_stage0/U34/Y (BUFX2)                     0.04       2.52 f
+  mode1_max/cmp0_stage0/U122/Y (AOI22X1)                  0.02       2.54 r
+  mode1_max/cmp0_stage0/U18/Y (BUFX2)                     0.04       2.58 r
+  mode1_max/cmp0_stage0/U120/Y (AOI22X1)                  0.03       2.60 f
+  mode1_max/cmp0_stage0/U33/Y (BUFX2)                     0.04       2.64 f
+  mode1_max/cmp0_stage0/U118/Y (AOI22X1)                  0.02       2.66 r
+  mode1_max/cmp0_stage0/U17/Y (BUFX2)                     0.04       2.70 r
+  mode1_max/cmp0_stage0/U116/Y (AOI22X1)                  0.03       2.73 f
+  mode1_max/cmp0_stage0/U32/Y (BUFX2)                     0.04       2.77 f
+  mode1_max/cmp0_stage0/U115/Y (AOI22X1)                  0.02       2.79 r
+  mode1_max/cmp0_stage0/U16/Y (BUFX2)                     0.04       2.83 r
+  mode1_max/cmp0_stage0/U113/Y (AOI22X1)                  0.03       2.85 f
+  mode1_max/cmp0_stage0/U31/Y (BUFX2)                     0.04       2.89 f
+  mode1_max/cmp0_stage0/U111/Y (AOI22X1)                  0.02       2.92 r
+  mode1_max/cmp0_stage0/U15/Y (BUFX2)                     0.04       2.95 r
+  mode1_max/cmp0_stage0/U109/Y (AOI22X1)                  0.03       2.98 f
+  mode1_max/cmp0_stage0/U30/Y (BUFX2)                     0.04       3.02 f
+  mode1_max/cmp0_stage0/U107/Y (AOI22X1)                  0.02       3.04 r
+  mode1_max/cmp0_stage0/U14/Y (BUFX2)                     0.04       3.08 r
+  mode1_max/cmp0_stage0/U105/Y (AOI22X1)                  0.03       3.10 f
+  mode1_max/cmp0_stage0/U29/Y (BUFX2)                     0.04       3.14 f
+  mode1_max/cmp0_stage0/U103/Y (AOI22X1)                  0.02       3.17 r
+  mode1_max/cmp0_stage0/U13/Y (BUFX2)                     0.04       3.20 r
+  mode1_max/cmp0_stage0/U101/Y (AOI22X1)                  0.03       3.23 f
+  mode1_max/cmp0_stage0/U28/Y (BUFX2)                     0.04       3.27 f
+  mode1_max/cmp0_stage0/U99/Y (AOI22X1)                   0.02       3.29 r
+  mode1_max/cmp0_stage0/U12/Y (BUFX2)                     0.04       3.33 r
+  mode1_max/cmp0_stage0/U97/Y (AOI22X1)                   0.03       3.35 f
+  mode1_max/cmp0_stage0/U27/Y (BUFX2)                     0.04       3.39 f
+  mode1_max/cmp0_stage0/U95/Y (AOI22X1)                   0.02       3.42 r
+  mode1_max/cmp0_stage0/U11/Y (BUFX2)                     0.04       3.45 r
+  mode1_max/cmp0_stage0/U93/Y (AOI22X1)                   0.03       3.48 f
+  mode1_max/cmp0_stage0/U26/Y (BUFX2)                     0.04       3.52 f
+  mode1_max/cmp0_stage0/U91/Y (AOI22X1)                   0.02       3.54 r
+  mode1_max/cmp0_stage0/U10/Y (BUFX2)                     0.04       3.58 r
+  mode1_max/cmp0_stage0/U89/Y (AOI22X1)                   0.03       3.60 f
+  mode1_max/cmp0_stage0/U24/Y (INVX1)                     0.01       3.61 r
+  mode1_max/cmp0_stage0/U25/Y (INVX1)                     0.01       3.62 f
+  mode1_max/cmp0_stage0/U87/Y (AOI22X1)                   0.03       3.65 r
+  mode1_max/cmp0_stage0/U9/Y (BUFX2)                      0.04       3.69 r
+  mode1_max/cmp0_stage0/U85/Y (AOI22X1)                   0.03       3.71 f
+  mode1_max/cmp0_stage0/U23/Y (BUFX2)                     0.04       3.75 f
+  mode1_max/cmp0_stage0/U83/Y (AOI22X1)                   0.02       3.78 r
+  mode1_max/cmp0_stage0/U8/Y (BUFX2)                      0.04       3.81 r
+  mode1_max/cmp0_stage0/U81/Y (AOI22X1)                   0.03       3.84 f
+  mode1_max/cmp0_stage0/U22/Y (BUFX2)                     0.04       3.88 f
+  mode1_max/cmp0_stage0/U79/Y (AOI22X1)                   0.02       3.90 r
+  mode1_max/cmp0_stage0/U7/Y (BUFX2)                      0.04       3.94 r
+  mode1_max/cmp0_stage0/U77/Y (AOI22X1)                   0.03       3.96 f
+  mode1_max/cmp0_stage0/U21/Y (BUFX2)                     0.04       4.00 f
+  mode1_max/cmp0_stage0/U75/Y (AOI22X1)                   0.02       4.03 r
+  mode1_max/cmp0_stage0/U6/Y (BUFX2)                      0.04       4.06 r
+  mode1_max/cmp0_stage0/U74/Y (OAI21X1)                   0.01       4.07 f
+  mode1_max/cmp0_stage0/U73/Y (OAI21X1)                   0.02       4.10 r
+  mode1_max/cmp0_stage0/GE_GT (mode1_max_tree_DW01_cmp2_0)
+                                                          0.00       4.10 r
+  mode1_max/U3/Y (OR2X2)                                  0.05       4.14 r
+  mode1_max/U50/Y (BUFX2)                                 0.05       4.19 r
+  mode1_max/U101/Y (OAI21X1)                              0.02       4.21 f
+  mode1_max/outp_reg[0]/D (DFFPOSX1)                      0.00       4.21 f
+  data arrival time                                                  4.21
+
+  clock CLK_0 (rise edge)                                 4.00       4.00
+  clock network delay (ideal)                             0.00       4.00
+  mode1_max/outp_reg[0]/CLK (DFFPOSX1)                    0.00       4.00 r
+  library setup time                                     -0.06       3.94
+  data required time                                                 3.94
+  --------------------------------------------------------------------------
+  data required time                                                 3.94
+  data arrival time                                                 -4.21
+  --------------------------------------------------------------------------
+  slack (VIOLATED)                                                  -0.27
+
+
+1
