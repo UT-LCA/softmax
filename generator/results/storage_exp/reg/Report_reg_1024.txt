@@ -1,0 +1,334 @@
+Information: Updating design information... (UID-85)
+Warning: Design 'softmax' contains 1 high-fanout nets. A fanout number of 1000 will be used for delay calculations involving these nets. (TIM-134)
+ 
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -max_paths 1
+        -sort_by group
+Design : softmax
+Version: O-2018.06-SP5
+Date   : Wed Nov 27 14:10:42 2019
+****************************************
+
+ # A fanout number of 1000 was used for high fanout net computations.
+
+Operating Conditions: typical   Library: gscl45nm
+Wire Load Model Mode: top
+
+  Startpoint: mode3_outp_exp1_reg_reg[9]
+              (rising edge-triggered flip-flop clocked by CLK_0)
+  Endpoint: mode4_adder_tree/add0_out_stage2_reg_reg[2]
+            (rising edge-triggered flip-flop clocked by CLK_0)
+  Path Group: CLK_0
+  Path Type: max
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock CLK_0 (rise edge)                                 0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  mode3_outp_exp1_reg_reg[9]/CLK (DFFPOSX1)               0.00 #     0.00 r
+  mode3_outp_exp1_reg_reg[9]/Q (DFFPOSX1)                 0.11       0.11 f
+  mode4_adder_tree/inp1[9] (mode4_adder_tree)             0.00       0.11 f
+  mode4_adder_tree/add0_stage2/b[9] (mode4_adder_tree_DW_fp_add_3)
+                                                          0.00       0.11 f
+  mode4_adder_tree/add0_stage2/U1/b[9] (mode4_adder_tree_DW_fp_addsub_3)
+                                                          0.00       0.11 f
+  mode4_adder_tree/add0_stage2/U1/U359/Y (INVX1)          0.02       0.13 r
+  mode4_adder_tree/add0_stage2/U1/U56/Y (OR2X1)           0.04       0.16 r
+  mode4_adder_tree/add0_stage2/U1/U246/Y (INVX1)          0.02       0.19 f
+  mode4_adder_tree/add0_stage2/U1/U204/Y (OR2X2)          0.04       0.23 f
+  mode4_adder_tree/add0_stage2/U1/U205/Y (INVX1)          0.00       0.23 r
+  mode4_adder_tree/add0_stage2/U1/U385/Y (AOI22X1)        0.01       0.24 f
+  mode4_adder_tree/add0_stage2/U1/U203/Y (BUFX2)          0.04       0.28 f
+  mode4_adder_tree/add0_stage2/U1/U386/Y (AOI22X1)        0.03       0.31 r
+  mode4_adder_tree/add0_stage2/U1/U202/Y (BUFX2)          0.04       0.35 r
+  mode4_adder_tree/add0_stage2/U1/U16/Y (AND2X1)          0.03       0.38 r
+  mode4_adder_tree/add0_stage2/U1/U389/Y (AOI21X1)        0.02       0.39 f
+  mode4_adder_tree/add0_stage2/U1/U161/Y (INVX1)          0.00       0.40 r
+  mode4_adder_tree/add0_stage2/U1/U162/Y (INVX1)          0.02       0.41 f
+  mode4_adder_tree/add0_stage2/U1/U408/Y (AOI22X1)        0.05       0.46 r
+  mode4_adder_tree/add0_stage2/U1/U85/Y (BUFX2)           0.05       0.51 r
+  mode4_adder_tree/add0_stage2/U1/U70/Y (INVX8)           0.03       0.54 f
+  mode4_adder_tree/add0_stage2/U1/U609/Y (MUX2X1)         0.05       0.59 r
+  mode4_adder_tree/add0_stage2/U1/U607/Y (NAND3X1)        0.02       0.61 f
+  mode4_adder_tree/add0_stage2/U1/U212/Y (BUFX2)          0.03       0.65 f
+  mode4_adder_tree/add0_stage2/U1/U604/Y (NOR3X1)         0.05       0.69 r
+  mode4_adder_tree/add0_stage2/U1/U210/Y (AND2X2)         0.04       0.73 r
+  mode4_adder_tree/add0_stage2/U1/U211/Y (INVX1)          0.02       0.76 f
+  mode4_adder_tree/add0_stage2/U1/U258/Y (AND2X2)         0.04       0.80 f
+  mode4_adder_tree/add0_stage2/U1/U181/Y (INVX2)          0.04       0.84 r
+  mode4_adder_tree/add0_stage2/U1/U590/Y (NAND3X1)        0.02       0.85 f
+  mode4_adder_tree/add0_stage2/U1/U180/Y (INVX1)          0.00       0.86 r
+  mode4_adder_tree/add0_stage2/U1/U26/Y (INVX2)           0.03       0.89 f
+  mode4_adder_tree/add0_stage2/U1/U71/Y (OR2X2)           0.05       0.94 f
+  mode4_adder_tree/add0_stage2/U1/sub_225/U2_1/YC (FAX1)
+                                                          0.08       1.02 f
+  mode4_adder_tree/add0_stage2/U1/sub_225/U2_2/YC (FAX1)
+                                                          0.08       1.10 f
+  mode4_adder_tree/add0_stage2/U1/sub_225/U2_3/YC (FAX1)
+                                                          0.08       1.18 f
+  mode4_adder_tree/add0_stage2/U1/sub_225/U2_4/YS (FAX1)
+                                                          0.10       1.28 f
+  mode4_adder_tree/add0_stage2/U1/U516/Y (NOR3X1)         0.06       1.33 r
+  mode4_adder_tree/add0_stage2/U1/U19/Y (AND2X1)          0.06       1.40 r
+  mode4_adder_tree/add0_stage2/U1/U227/Y (INVX1)          0.04       1.44 f
+  mode4_adder_tree/add0_stage2/U1/U500/Y (OAI21X1)        0.05       1.49 r
+  mode4_adder_tree/add0_stage2/U1/U499/Y (XNOR2X1)        0.04       1.53 f
+  mode4_adder_tree/add0_stage2/U1/add_1_root_add_240_2/B[1] (mode4_adder_tree_DW01_add_3)
+                                                          0.00       1.53 f
+  mode4_adder_tree/add0_stage2/U1/add_1_root_add_240_2/U2/Y (AND2X1)
+                                                          0.06       1.59 f
+  mode4_adder_tree/add0_stage2/U1/add_1_root_add_240_2/U3/Y (AND2X2)
+                                                          0.04       1.63 f
+  mode4_adder_tree/add0_stage2/U1/add_1_root_add_240_2/U1_3/YC (FAX1)
+                                                          0.08       1.71 f
+  mode4_adder_tree/add0_stage2/U1/add_1_root_add_240_2/U1_4/YC (FAX1)
+                                                          0.08       1.79 f
+  mode4_adder_tree/add0_stage2/U1/add_1_root_add_240_2/U1_5/YC (FAX1)
+                                                          0.08       1.87 f
+  mode4_adder_tree/add0_stage2/U1/add_1_root_add_240_2/U1_6/YC (FAX1)
+                                                          0.08       1.95 f
+  mode4_adder_tree/add0_stage2/U1/add_1_root_add_240_2/U1_7/YC (FAX1)
+                                                          0.08       2.03 f
+  mode4_adder_tree/add0_stage2/U1/add_1_root_add_240_2/U1_8/YC (FAX1)
+                                                          0.08       2.12 f
+  mode4_adder_tree/add0_stage2/U1/add_1_root_add_240_2/U1_9/YC (FAX1)
+                                                          0.08       2.20 f
+  mode4_adder_tree/add0_stage2/U1/add_1_root_add_240_2/U1_10/YC (FAX1)
+                                                          0.08       2.28 f
+  mode4_adder_tree/add0_stage2/U1/add_1_root_add_240_2/U1_11/YC (FAX1)
+                                                          0.08       2.36 f
+  mode4_adder_tree/add0_stage2/U1/add_1_root_add_240_2/U1_12/YC (FAX1)
+                                                          0.08       2.44 f
+  mode4_adder_tree/add0_stage2/U1/add_1_root_add_240_2/U1_13/YC (FAX1)
+                                                          0.08       2.52 f
+  mode4_adder_tree/add0_stage2/U1/add_1_root_add_240_2/U5/Y (XOR2X1)
+                                                          0.07       2.59 r
+  mode4_adder_tree/add0_stage2/U1/add_1_root_add_240_2/SUM[14] (mode4_adder_tree_DW01_add_3)
+                                                          0.00       2.59 r
+  mode4_adder_tree/add0_stage2/U1/U1/a[13] (mode4_adder_tree_DW_lzd_3)
+                                                          0.00       2.59 r
+  mode4_adder_tree/add0_stage2/U1/U1/U14/Y (OR2X1)        0.04       2.63 r
+  mode4_adder_tree/add0_stage2/U1/U1/U15/Y (INVX1)        0.02       2.65 f
+  mode4_adder_tree/add0_stage2/U1/U1/U40/Y (NAND3X1)      0.03       2.68 r
+  mode4_adder_tree/add0_stage2/U1/U1/U13/Y (BUFX2)        0.04       2.72 r
+  mode4_adder_tree/add0_stage2/U1/U1/U22/Y (OR2X2)        0.04       2.75 r
+  mode4_adder_tree/add0_stage2/U1/U1/U1/Y (INVX1)         0.03       2.79 f
+  mode4_adder_tree/add0_stage2/U1/U1/enc[3] (mode4_adder_tree_DW_lzd_3)
+                                                          0.00       2.79 f
+  mode4_adder_tree/add0_stage2/U1/U5/Y (AND2X1)           0.04       2.82 f
+  mode4_adder_tree/add0_stage2/U1/U146/Y (INVX1)          0.01       2.83 r
+  mode4_adder_tree/add0_stage2/U1/U371/Y (NAND3X1)        0.02       2.85 f
+  mode4_adder_tree/add0_stage2/U1/U372/Y (OAI21X1)        0.02       2.87 r
+  mode4_adder_tree/add0_stage2/U1/U17/Y (INVX1)           0.03       2.89 f
+  mode4_adder_tree/add0_stage2/U1/U374/Y (AOI22X1)        0.03       2.93 r
+  mode4_adder_tree/add0_stage2/U1/U72/Y (AND2X2)          0.03       2.96 r
+  mode4_adder_tree/add0_stage2/U1/U73/Y (INVX1)           0.01       2.98 f
+  mode4_adder_tree/add0_stage2/U1/U377/Y (OAI21X1)        0.02       3.00 r
+  mode4_adder_tree/add0_stage2/U1/U185/Y (BUFX4)          0.03       3.03 r
+  mode4_adder_tree/add0_stage2/U1/U588/Y (MUX2X1)         0.06       3.09 r
+  mode4_adder_tree/add0_stage2/U1/U280/Y (AND2X1)         0.04       3.13 r
+  mode4_adder_tree/add0_stage2/U1/U268/Y (BUFX2)          0.05       3.19 r
+  mode4_adder_tree/add0_stage2/U1/U570/Y (AOI22X1)        0.04       3.22 f
+  mode4_adder_tree/add0_stage2/U1/U178/Y (AND2X2)         0.04       3.27 f
+  mode4_adder_tree/add0_stage2/U1/U179/Y (INVX1)          0.03       3.29 r
+  mode4_adder_tree/add0_stage2/U1/U451/Y (NAND3X1)        0.01       3.31 f
+  mode4_adder_tree/add0_stage2/U1/U84/Y (BUFX2)           0.03       3.34 f
+  mode4_adder_tree/add0_stage2/U1/U450/Y (NAND3X1)        0.03       3.37 r
+  mode4_adder_tree/add0_stage2/U1/U163/Y (INVX1)          0.02       3.39 f
+  mode4_adder_tree/add0_stage2/U1/U164/Y (INVX1)          0.01       3.40 r
+  mode4_adder_tree/add0_stage2/U1/U448/Y (NOR3X1)         0.02       3.42 f
+  mode4_adder_tree/add0_stage2/U1/U445/Y (NAND3X1)        0.04       3.46 r
+  mode4_adder_tree/add0_stage2/U1/U209/Y (BUFX2)          0.04       3.50 r
+  mode4_adder_tree/add0_stage2/U1/U444/Y (OAI21X1)        0.02       3.52 f
+  mode4_adder_tree/add0_stage2/U1/U68/Y (AND2X2)          0.04       3.56 f
+  mode4_adder_tree/add0_stage2/U1/U443/Y (NOR3X1)         0.04       3.60 r
+  mode4_adder_tree/add0_stage2/U1/U201/Y (BUFX4)          0.04       3.64 r
+  mode4_adder_tree/add0_stage2/U1/U262/Y (INVX1)          0.02       3.66 f
+  mode4_adder_tree/add0_stage2/U1/U109/Y (AND2X1)         0.03       3.69 f
+  mode4_adder_tree/add0_stage2/U1/U110/Y (INVX1)          0.01       3.70 r
+  mode4_adder_tree/add0_stage2/U1/U440/Y (NOR3X1)         0.03       3.73 f
+  mode4_adder_tree/add0_stage2/U1/U114/Y (INVX1)          0.01       3.73 r
+  mode4_adder_tree/add0_stage2/U1/U117/Y (NOR2X1)         0.01       3.74 f
+  mode4_adder_tree/add0_stage2/U1/U118/Y (INVX1)          0.00       3.74 r
+  mode4_adder_tree/add0_stage2/U1/U116/Y (NOR2X1)         0.01       3.75 f
+  mode4_adder_tree/add0_stage2/U1/U113/Y (INVX1)          0.00       3.75 r
+  mode4_adder_tree/add0_stage2/U1/U64/Y (BUFX2)           0.03       3.78 r
+  mode4_adder_tree/add0_stage2/U1/U183/Y (BUFX2)          0.05       3.83 r
+  mode4_adder_tree/add0_stage2/U1/U416/Y (OAI21X1)        0.02       3.85 f
+  mode4_adder_tree/add0_stage2/U1/z[2] (mode4_adder_tree_DW_fp_addsub_3)
+                                                          0.00       3.85 f
+  mode4_adder_tree/add0_stage2/z[2] (mode4_adder_tree_DW_fp_add_3)
+                                                          0.00       3.85 f
+  mode4_adder_tree/U107/Y (AOI22X1)                       0.04       3.90 r
+  mode4_adder_tree/U19/Y (BUFX2)                          0.03       3.93 r
+  mode4_adder_tree/U48/Y (INVX1)                          0.01       3.94 f
+  mode4_adder_tree/add0_out_stage2_reg_reg[2]/D (DFFPOSX1)
+                                                          0.00       3.94 f
+  data arrival time                                                  3.94
+
+  clock CLK_0 (rise edge)                                 4.00       4.00
+  clock network delay (ideal)                             0.00       4.00
+  mode4_adder_tree/add0_out_stage2_reg_reg[2]/CLK (DFFPOSX1)
+                                                          0.00       4.00 r
+  library setup time                                     -0.06       3.94
+  data required time                                                 3.94
+  --------------------------------------------------------------------------
+  data required time                                                 3.94
+  data arrival time                                                 -3.94
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.00
+
+
+1
+ 
+****************************************
+Report : area
+Design : softmax
+Version: O-2018.06-SP5
+Date   : Wed Nov 27 14:10:42 2019
+****************************************
+
+Library(s) Used:
+
+    gscl45nm (File: /usr/local/packages/cadence_2007/FreePDK45/osu_soc/lib/files/gscl45nm.db)
+
+Number of ports:                         9300
+Number of nets:                        300569
+Number of cells:                       291424
+Number of combinational cells:         257305
+Number of sequential cells:             33677
+Number of macros/black boxes:               0
+Number of buf/inv:                     107309
+Number of references:                      25
+
+Combinational area:             585649.314644
+Buf/Inv area:                   160960.510847
+Noncombinational area:          268678.467739
+Macro/Black Box area:                0.000000
+Net Interconnect area:      undefined  (No wire load specified)
+
+Total cell area:                854327.782383
+Total area:                 undefined
+1
+Loading db file '/usr/local/packages/cadence_2007/FreePDK45/osu_soc/lib/files/gscl45nm.db'
+Information: Propagating switching activity (low effort zero delay simulation). (PWR-6)
+Warning: Design has unannotated primary inputs. (PWR-414)
+Warning: Design has unannotated sequential cell outputs. (PWR-415)
+ 
+****************************************
+Report : power
+        -analysis_effort low
+Design : softmax
+Version: O-2018.06-SP5
+Date   : Wed Nov 27 14:11:02 2019
+****************************************
+
+
+Library(s) Used:
+
+    gscl45nm (File: /usr/local/packages/cadence_2007/FreePDK45/osu_soc/lib/files/gscl45nm.db)
+
+
+Operating Conditions: typical   Library: gscl45nm
+Wire Load Model Mode: top
+
+
+Global Operating Voltage = 1.1  
+Power-specific unit information :
+    Voltage Units = 1V
+    Capacitance Units = 1.000000pf
+    Time Units = 1ns
+    Dynamic Power Units = 1mW    (derived from V,C,T units)
+    Leakage Power Units = 1nW
+
+
+  Cell Internal Power  = 118.8790 mW  (100%)
+  Net Switching Power  = 356.9507 uW    (0%)
+                         ---------
+Total Dynamic Power    = 119.2360 mW  (100%)
+
+Cell Leakage Power     =   3.9248 mW
+
+
+                 Internal         Switching           Leakage            Total
+Power Group      Power            Power               Power              Power   (   %    )  Attrs
+--------------------------------------------------------------------------------------------------
+io_pad             0.0000            0.0000            0.0000            0.0000  (   0.00%)
+memory             0.0000            0.0000            0.0000            0.0000  (   0.00%)
+black_box          0.0000            0.0000            0.0000            0.0000  (   0.00%)
+clock_network      0.0000            0.0000            0.0000            0.0000  (   0.00%)
+register         118.4829        2.3927e-02        1.8515e+06          120.3555  (  97.71%)
+sequential         0.0000            0.0000            0.0000            0.0000  (   0.00%)
+combinational      0.4125            0.3330        2.0733e+06            2.8188  (   2.29%)
+--------------------------------------------------------------------------------------------------
+Total            118.8954 mW         0.3570 mW     3.9248e+06 nW       123.1743 mW
+1
+ 
+****************************************
+Report : design
+Design : softmax
+Version: O-2018.06-SP5
+Date   : Wed Nov 27 14:11:04 2019
+****************************************
+
+Design allows ideal nets on clock nets.
+
+Library(s) Used:
+
+    gscl45nm (File: /usr/local/packages/cadence_2007/FreePDK45/osu_soc/lib/files/gscl45nm.db)
+
+Local Link Library:
+
+    {/usr/local/packages/cadence_2007/FreePDK45/osu_soc/lib/files/gscl45nm.db}
+
+Flip-Flop Types:
+
+    No flip-flop types specified.
+
+Latch Types:
+
+    No latch types specified.
+
+Operating Conditions:
+
+
+    Operating Condition Name : typical
+    Library : gscl45nm
+    Process :   1.00
+    Temperature :  27.00
+    Voltage :   1.10
+
+Wire Loading Model:
+
+    No wire loading specified.
+
+
+Wire Loading Model Mode: top.
+
+Timing Ranges:
+
+    No timing ranges specified.
+
+Pin Input Delays:
+
+    None specified.
+
+Pin Output Delays:
+
+    None specified.
+
+Disabled Timing Arcs:
+
+    No arcs disabled.
+
+Required Licenses:
+
+    DesignWare
+
+Design Parameters:
+
+    None specified.
+1
