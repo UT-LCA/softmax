@@ -1,0 +1,32 @@
+Error: Current design is not defined. (UID-4)
+0
+ 
+****************************************
+Report : area
+Design : softmax
+Version: O-2018.06-SP5
+Date   : Wed Nov 27 01:25:45 2019
+****************************************
+
+Library(s) Used:
+
+    gscl45nm (File: /usr/local/packages/cadence_2007/FreePDK45/osu_soc/lib/files/gscl45nm.db)
+
+Number of ports:                         8689
+Number of nets:                         58579
+Number of cells:                        49287
+Number of combinational cells:          47240
+Number of sequential cells:              1770
+Number of macros/black boxes:               0
+Number of buf/inv:                      19249
+Number of references:                      22
+
+Combinational area:             123623.004118
+Buf/Inv area:                    32241.378531
+Noncombinational area:           14121.236687
+Macro/Black Box area:                0.000000
+Net Interconnect area:      undefined  (No wire load specified)
+
+Total cell area:                137744.240805
+Total area:                 undefined
+1
