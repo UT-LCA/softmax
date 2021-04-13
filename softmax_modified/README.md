@@ -8,13 +8,20 @@ The huge always block containing the control logic in the top-level module was s
 
 # Float16 design
 Added 3 pipeline stages in mode1
+
 Added 1 pipeline stage in mode3
+
 Added 3 pipeline stages in mode4
+
 Added 1 pipeline stage in mode7
 
 # Fixed16 design
 Added 2 pipeline stages in mode1
+
 Added 1 pipeline stage in mode3
+
 Added 2 pipeline stages in mode4
+
 Added 2 pipeline stages in mode5
+
 Added 1 pipeline stage in mode7
