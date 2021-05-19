@@ -2143,7 +2143,7 @@ module ExpLUT(addr, exp);
     end
 endmodule
 
-
+//Dummy adder module for simulation
 module adder_fp(
 input [15:0] a,
 input [15:0] b,
